@@ -1,0 +1,43 @@
+#!/bin/bash -e
+
+# Flash Attention for efficiency
+export USE_FLASH_ATTENTION=1
+
+# Avoid CUDA memory fragmentation
+export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
+
+# === CONTAINER-PATHS: MyWD is bound to /workspace ===
+CONTAINER_BASE="/workspace"
+
+CONFIG_FILE="${CONTAINER_BASE}/configs/qlora/llama3_2_1B_qlora_single_device_XSum.yaml"
+PYTHON_FILE="${CONTAINER_BASE}/recipes/single_device/lora_finetune_single_device.py"
+OUTPUT_DIR="${CONTAINER_BASE}/results/checkpoints_out/llama3_2_1B_qlora_single_device"
+LOGGING_DIR="${CONTAINER_BASE}/results/qlora_finetune_1B_output"
+
+echo "=== Running inside Apptainer ==="
+echo "CONFIG_FILE: ${CONFIG_FILE}"
+echo "PYTHON_FILE: ${PYTHON_FILE}"
+echo "OUTPUT_DIR: ${OUTPUT_DIR}"
+echo "LOGGING_DIR: ${LOGGING_DIR}"
+echo
+
+# Verify critical files exist
+if [ ! -f "${PYTHON_FILE}" ]; then
+  echo "-- ERROR: Python script not found at ${PYTHON_FILE}"
+  exit 1
+fi
+
+if [ ! -f "${CONFIG_FILE}" ]; then
+  echo "--ERROR: Config file not found at ${CONFIG_FILE}"
+  exit 1
+fi
+
+echo "--All paths resolved. Starting fine-tuning..."
+echo
+
+# Run the fine-tuning script
+# To override output dirs (optional):
+# python "${PYTHON_FILE}" --config "${CONFIG_FILE}" checkpointer.output_dir="${OUTPUT_DIR}" output_dir="${LOGGING_DIR}" epochs=1
+
+# Default execution
+python "${PYTHON_FILE}" --config "${CONFIG_FILE}"

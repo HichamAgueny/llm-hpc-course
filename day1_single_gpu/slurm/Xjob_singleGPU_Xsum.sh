@@ -1,0 +1,107 @@
+#!/bin/bash -e
+#SBATCH --job-name=ft-llama3-1B-lora-1gpu_Xsum
+#SBATCH --account=nn9997k
+#SBATCH --time=00:29:00
+#SBATCH --partition=accel
+#SBATCH --nodes=1
+#SBATCH --gpus=1
+#SBATCH --gpus-per-node=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=1
+#SBATCH -o ./out/%x-%j.out
+#SBATCH --mem-per-cpu=8G
+
+# Set proxy settings for HTTP and HTTPS traffic
+#export http_proxy=http://10.63.2.48:3128/
+#export https_proxy=http://10.63.2.48:3128/
+
+
+echo "--Node: $(hostname)"
+echo
+
+# --- Variables and Paths ---
+# Set working directory and paths
+MyWD="/cluster/projects/nn9997k/$USER/llm-hpc-course"
+FINETUNE_DIR="${MyWD}/day1_single_gpu"
+CONTAINER_DIR="${MyWD}/setup/apptainer"
+APPTAINER_SIF="${CONTAINER_DIR}/pytorch_25.05_cuda12.9_arm_custom.sif"
+
+CONFIG_DIR="${MyWD}/configs/lora"
+RECIPES_DIR="${MyWD}/recipes/single_device"
+
+# Xsum
+# Set the path to the configuration file for the LORA finetuning process
+CONFIG_FILE="${CONFIG_DIR}/llama3_2_1B_lora_single_device_XSum.yaml"
+
+# Set the path to the Python script that performs the LORA finetuning on a single GPU
+PYTHON_FILE="${RECIPES_DIR}/lora_finetune_single_device.py"
+
+# Define the output & logging directories for fine-tuning results
+OUTPUT_DIR="$MyWD/results/checkpoints_out/llama3_2_1B_lora_single_device"
+LOGGING_DIR="$MyWD/results/lora_finetune_1B_output"
+
+# Create OUTPUT_DIR if it doesn't exist
+if [ ! -d "$OUTPUT_DIR" ]; then
+  echo "Creating output directory: $OUTPUT_DIR"
+  mkdir -p "$OUTPUT_DIR"
+fi
+
+# Create LOGGING_DIR if it doesn't exist
+if [ ! -d "$LOGGING_DIR" ]; then
+  echo "Creating logging directory: $LOGGING_DIR"
+  mkdir -p "$LOGGING_DIR"
+fi
+
+# --- Locale Settings ---
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+
+echo "--- My Main Directory: ${MyWD}"
+echo "--- My FineTune Directory: ${FINETUNE_DIR}"
+echo "--- My Container Directory: ${CONTAINER_DIR}"
+echo "--- My Config-Files Directory: ${CONFIG_DIR}"
+echo "--- My Python-Files Directory: ${RECIPES_DIR}"
+echo
+
+# --- Create the Inner Script ---
+# Use a temporary file for the inner script to avoid conflicts and ensure atomicity.
+INNER_SCRIPT_TEMP="./.my_script_temp_${SLURM_JOB_ID}"
+
+cat > "${INNER_SCRIPT_TEMP}" << EOF
+#!/bin/bash -e
+
+# Flash Attention for efficiency
+export USE_FLASH_ATTENTION=1
+
+# To avoid Fragmentation: If reserved but unallocated memory is large try setting
+export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
+
+echo "Running fine-tuning command:"
+
+# Example of overriding output (comment if NOT needed)
+#python "${PYTHON_FILE}" --config "${CONFIG_FILE}" checkpointer.output_dir="${OUTPUT_DIR}" output_dir="${LOGGING_DIR}" epochs=1
+
+# Default usage (no overrides) 
+python "${PYTHON_FILE}" --config "${CONFIG_FILE}"
+EOF
+
+chmod +x "${INNER_SCRIPT_TEMP}"
+
+# --- Suppress LMOD Debugging ---
+export LMOD_SH_DBG_ON=0
+
+echo
+echo "--- Launching the application ---"
+
+# --- Execute with Apptainer ---
+# Ensure -B bindings are correct. 
+# Pass the full path to the temporary script.
+time srun apptainer exec --nv -B "${MyWD}:/workspace" \
+      "${APPTAINER_SIF}" \
+      "${INNER_SCRIPT_TEMP}"
+
+# --- Clean Up Temporary Script ---
+rm -f "${INNER_SCRIPT_TEMP}"
+
+echo
+echo "--- Finished :) ---"
