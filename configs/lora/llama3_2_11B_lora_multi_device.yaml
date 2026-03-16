@@ -1,0 +1,146 @@
+# Config for multi-device LoRA finetuning in lora_finetune_distributed.py
+# using a Llama3.2 11B Vision Instruct model
+#
+# This config assumes that you've run the following command before launching:
+#   tune download meta-llama/Llama-3.2-11B-Vision-Instruct --output-dir /tmp/Llama-3.2-11B-Vision-Instruct --ignore-patterns "original/consolidated*"
+#
+# To launch on 2 devices, run the following command from root:
+#   tune run --nproc_per_node 2 lora_finetune_distributed --config llama3_2_vision/11B_lora
+#
+# You can add specific overrides through the command line. For example
+# to override the checkpointer directory while launching training:
+#   tune run --nproc_per_node 2 lora_finetune_distributed --config llama3_2_vision/11B_lora checkpointer.checkpoint_dir=<YOUR_CHECKPOINT_DIR>
+#
+# This config works best when the model is being fine-tuned on 2+ GPUs.
+# For single device LoRA finetuning please use 11B_lora_single_device.yaml
+# or 11B_qlora_single_device.yaml
+
+
+# NOTE: The host path '/cluster/projects/nn9997k/hicham/llm-hpc-course' is 
+#       bind-mounted to '/workspace' inside the Apptainer container.
+#       All paths below must use '/workspace' to be accessible during training.
+#
+# Root directory of the project (inside container)
+project_dir: /workspace
+
+# Shared resources directory (models, datasets, etc.)
+shared_dir: ${project_dir}/shared
+
+# Base model checkpoint directory (pre-trained Llama weights)
+checkpoint_dir: ${shared_dir}/models/Llama-3.2-11B-Vision-Instruct
+
+# Training dataset file path (XSum summarization dataset)
+dataset_dir: ${shared_dir}/datasets/GPT-4-LLM/alpaca_gpt4_data.json
+
+# Parent directory for all training outputs
+result_dir: ${project_dir}/results
+
+# Where fine-tuned model checkpoints/weights will be saved
+output_dir: ${result_dir}/checkpoints_out/llama3_2_11B_lora_multi_device
+
+# Where training logs and metrics will be stored
+log_dir: ${result_dir}/logs/lora_finetune_11B_output
+
+# Where profiling traces/timing data will be saved (if profiler enabled)
+profiling_dir: ${result_dir}/profiles/profiling_outputs
+
+# Model Arguments
+model:
+  _component_: torchtune.models.llama3_2_vision.lora_llama3_2_vision_11b
+  decoder_trainable: "frozen"
+  encoder_trainable: "lora"
+  fusion_trainable: "lora"
+  lora_attn_modules: ['q_proj', 'v_proj', 'output_proj']
+  apply_lora_to_mlp: True
+  apply_lora_to_output: False
+  lora_rank: 8  # higher increases accuracy and memory
+  lora_alpha: 16  # usually alpha=2*rank
+  lora_dropout: 0.0
+  image_size: 560 # Make sure this matches the image_size in tokenizer
+
+# Transformer
+tokenizer:
+  _component_: torchtune.models.llama3_2_vision.llama3_2_vision_transform
+  path: ${checkpoint_dir}/original/tokenizer.model
+  image_size: 560
+  max_seq_len: 8192
+
+checkpointer:
+  _component_: torchtune.training.FullModelHFCheckpointer
+  checkpoint_dir: ${checkpoint_dir}
+  checkpoint_files:
+    filename_format: model-{}-of-{}.safetensors
+    max_filename: "00005"
+  recipe_checkpoint: null
+  output_dir: ${output_dir}
+  model_type: LLAMA3_VISION
+resume_from_checkpoint: False
+save_adapter_weights_only: True # PeFT formatting not available yet. This will save it in torchtune format only.
+                                #True:LoRA weights are NOT merged - they are saved separately
+
+# Dataset
+dataset:
+  _component_: torchtune.datasets.multimodal.the_cauldron_dataset
+  packed: False  # True increases speed
+  subset: ocrvqa
+seed: null
+shuffle: True
+collate_fn: torchtune.data.padded_collate_tiled_images_and_mask
+
+# Fine-tuning arguments
+epochs: 1
+max_steps_per_epoch: null
+batch_size: 2
+gradient_accumulation_steps: 1  # Use to increase effective batch size
+optimizer:
+  _component_: torch.optim.AdamW
+  fused: True
+  weight_decay: 0.01
+  lr: 1e-4
+
+lr_scheduler:
+  _component_: torchtune.training.lr_schedulers.get_cosine_schedule_with_warmup
+  num_warmup_steps: 100
+loss:
+  _component_: torchtune.modules.loss.CEWithChunkedOutputLoss
+clip_grad_norm: 1.0
+compile: False  # torch.compile the model + loss, True increases speed + decreases memory
+
+# Training env
+device: cuda
+
+# Memory management
+enable_activation_checkpointing: False  # True reduces memory
+dtype: bf16
+
+# Logging
+metric_logger:
+  _component_: torchtune.training.metric_logging.DiskLogger
+  log_dir: ${log_dir}
+log_every_n_steps: 10
+log_peak_memory_stats: True
+
+# Profiler (disabled)
+profiler:
+  _component_: torchtune.training.setup_torch_profiler
+  enabled: False
+
+  #Output directory of trace artifacts
+  output_dir: ${profiling_dir}
+
+  #`torch.profiler.ProfilerActivity` types to trace
+  cpu: True
+  cuda: True
+
+  #trace options passed to `torch.profiler.profile`
+  profile_memory: False
+  with_stack: False
+  record_shapes: True
+  with_flops: False
+
+  # `torch.profiler.schedule` options:
+  # wait_steps -> wait, warmup_steps -> warmup, active_steps -> active, num_cycles -> repeat
+  wait_steps: 5
+  warmup_steps: 3
+  active_steps: 2
+  num_cycles: 1
