@@ -1,0 +1,113 @@
+Traceback (most recent call last):
+  File "/cluster/projects/nn9997k/hicham/llm-hpc-course/recipes/inference/vllm_distributed_kim.py", line 292, in <module>
+Traceback (most recent call last):
+  File "/cluster/projects/nn9997k/hicham/llm-hpc-course/recipes/inference/vllm_distributed_kim.py", line 292, in <module>
+    main()    
+main()
+  File "/cluster/projects/nn9997k/hicham/llm-hpc-course/recipes/inference/vllm_distributed_kim.py", line 150, in main
+  File "/cluster/projects/nn9997k/hicham/llm-hpc-course/recipes/inference/vllm_distributed_kim.py", line 150, in main
+    world_size = dist.get_world_size()    
+world_size = dist.get_world_size()
+                 ^^^^^^^^^^^^^^^^^^^^^
+     File "/usr/local/lib/python3.12/dist-packages/torch/distributed/distributed_c10d.py", line 2374, in get_world_size
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/torch/distributed/distributed_c10d.py", line 2374, in get_world_size
+Traceback (most recent call last):
+  File "/cluster/projects/nn9997k/hicham/llm-hpc-course/recipes/inference/vllm_distributed_kim.py", line 292, in <module>
+    return _get_group_size(group)    
+main()
+    File "/cluster/projects/nn9997k/hicham/llm-hpc-course/recipes/inference/vllm_distributed_kim.py", line 150, in main
+  Traceback (most recent call last):
+        File "/cluster/projects/nn9997k/hicham/llm-hpc-course/recipes/inference/vllm_distributed_kim.py", line 292, in <module>
+ world_size = dist.get_world_size() 
+                    ^^^^^    ^^^^^^^^^^^^^^^^^
+^main()^
+  File "/usr/local/lib/python3.12/dist-packages/torch/distributed/distributed_c10d.py", line 2374, in get_world_size
+^^  File "/cluster/projects/nn9997k/hicham/llm-hpc-course/recipes/inference/vllm_distributed_kim.py", line 150, in main
+^^^^^^^^^^^^^^^    ^world_size = dist.get_world_size()^
+
+                   File "/usr/local/lib/python3.12/dist-packages/torch/distributed/distributed_c10d.py", line 1094, in _get_group_size
+^^^^^^^^^    ^^^^^^^^^^^^
+return _get_group_size(group)
+  File "/usr/local/lib/python3.12/dist-packages/torch/distributed/distributed_c10d.py", line 2374, in get_world_size
+               ^^^^^^^^^^^^^^^^^^^^^^
+return _get_group_size(group)
+  File "/usr/local/lib/python3.12/dist-packages/torch/distributed/distributed_c10d.py", line 1094, in _get_group_size
+     return _get_group_size(group) 
+      default_pg = _get_default_group()
+                        ^^^^^^^^^^^^^^^^^^^^
+      ^^^^^^^^^^^^^^^^^^^^^^
+   File "/usr/local/lib/python3.12/dist-packages/torch/distributed/distributed_c10d.py", line 1303, in _get_default_group
+   File "/usr/local/lib/python3.12/dist-packages/torch/distributed/distributed_c10d.py", line 1094, in _get_group_size
+   ^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/torch/distributed/distributed_c10d.py", line 1094, in _get_group_size
+    raise ValueError(
+    default_pg = _get_default_group()
+ValueError: Default process group has not been initialized, please make sure to call init_process_group.
+     default_pg = _get_default_group() 
+               ^^^^^^^^^^^^^^^^^^^^
+    File "/usr/local/lib/python3.12/dist-packages/torch/distributed/distributed_c10d.py", line 1303, in _get_default_group
+               ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/torch/distributed/distributed_c10d.py", line 1303, in _get_default_group
+    raise ValueError(
+ValueError: Default process group has not been initialized, please make sure to call init_process_group.
+    default_pg = _get_default_group()
+                 ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/torch/distributed/distributed_c10d.py", line 1303, in _get_default_group
+    raise ValueError(
+ValueError: Default process group has not been initialized, please make sure to call init_process_group.
+    raise ValueError(
+ValueError: Default process group has not been initialized, please make sure to call init_process_group.
+E0314 01:53:20.931000 536154 torch/distributed/elastic/multiprocessing/api.py:882] failed (exitcode: 1) local_rank: 0 (pid: 536235) of binary: /usr/bin/python3
+Traceback (most recent call last):
+  File "/cluster/software/NRIS/neoverse_v2/software/vLLM/0.11.0/bin/bin/torchrun", line 8, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/torch/distributed/elastic/multiprocessing/errors/__init__.py", line 357, in wrapper
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/torch/distributed/run.py", line 936, in main
+    run(args)
+  File "/usr/local/lib/python3.12/dist-packages/torch/distributed/run.py", line 927, in run
+    elastic_launch(
+  File "/usr/local/lib/python3.12/dist-packages/torch/distributed/launcher/api.py", line 156, in __call__
+    return launch_agent(self._config, self._entrypoint, list(args))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/torch/distributed/launcher/api.py", line 293, in launch_agent
+    raise ChildFailedError(
+torch.distributed.elastic.multiprocessing.errors.ChildFailedError: 
+============================================================
+/cluster/projects/nn9997k/hicham/llm-hpc-course/recipes/inference/vllm_distributed_kim.py FAILED
+------------------------------------------------------------
+Failures:
+[1]:
+  time      : 2026-03-14_01:53:20
+  host      : gpu-1-16.hostmgmt2000.cm.americas.sgi.com
+  rank      : 1 (local_rank: 1)
+  exitcode  : 1 (pid: 536236)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+[2]:
+  time      : 2026-03-14_01:53:20
+  host      : gpu-1-16.hostmgmt2000.cm.americas.sgi.com
+  rank      : 2 (local_rank: 2)
+  exitcode  : 1 (pid: 536237)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+[3]:
+  time      : 2026-03-14_01:53:20
+  host      : gpu-1-16.hostmgmt2000.cm.americas.sgi.com
+  rank      : 3 (local_rank: 3)
+  exitcode  : 1 (pid: 536238)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+------------------------------------------------------------
+Root Cause (first observed failure):
+[0]:
+  time      : 2026-03-14_01:53:20
+  host      : gpu-1-16.hostmgmt2000.cm.americas.sgi.com
+  rank      : 0 (local_rank: 0)
+  exitcode  : 1 (pid: 536235)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+============================================================

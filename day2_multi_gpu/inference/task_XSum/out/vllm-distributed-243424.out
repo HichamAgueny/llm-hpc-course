@@ -1,0 +1,83 @@
+Starting job 243424 on gpu-1-16 on Olivia at Sat Mar 14 02:41:59 CET 2026
+
+----------------------------------------
+Configuration:
+  Model: /cluster/projects/nn9997k/hicham/llm-hpc-course/shared/models/Llama-3.2-1B-Instruct
+  LoRA: /cluster/projects/nn9997k/hicham/llm-hpc-course/results/checkpoints_out/llama3_2_1B_lora_single_device/epoch_0
+  Prompt file: /cluster/projects/nn9997k/hicham/llm-hpc-course/day2_multi_gpu/inference/task_XSum/prompt_XSum.json
+  Quantization: None
+  Tensor Parallel: 4
+  Pipeline Parallel: 1
+  GPUs: 4
+----------------------------------------
+Started GPU monitor (PID: 552856) logging to /cluster/projects/nn9997k/hicham/llm-hpc-course/day2_multi_gpu/inference/logs/multi_gpu_utilization_243424.csv
+Launching torchrun with 4 processes...
+Task 3: RANK=0, LOCAL_RANK=0, WORLD_SIZE = 4, LOCAL_WORLD_SIZE = 
+LOCAL_RANK: 3, CUDA_VISIBLE_DEVICES: 0,1,2,3
+Task 2: RANK=0, LOCAL_RANK=0, WORLD_SIZE = 4, LOCAL_WORLD_SIZE = 
+LOCAL_RANK: 2, CUDA_VISIBLE_DEVICES: 0,1,2,3
+Task 1: RANK=0, LOCAL_RANK=0, WORLD_SIZE = 4, LOCAL_WORLD_SIZE = 
+LOCAL_RANK: 1, CUDA_VISIBLE_DEVICES: 0,1,2,3
+Task 0: RANK=0, LOCAL_RANK=0, WORLD_SIZE = 4, LOCAL_WORLD_SIZE = 
+LOCAL_RANK: 0, CUDA_VISIBLE_DEVICES: 0,1,2,3
+[Gloo] Rank 3 is connected to 3 peer ranks. Expected number of connected peer ranks is : 3
+[Gloo] Rank 2 is connected to 3 peer ranks. Expected number of connected peer ranks is : 3
+[Gloo] Rank 0 is connected to 3 peer ranks. Expected number of connected peer ranks is : 3
+[Gloo] Rank 1 is connected to 3 peer ranks. Expected number of connected peer ranks is : 3
+[Gloo] Rank 1 is connected to 3 peer ranks. Expected number of connected peer ranks is : 3
+[Gloo] Rank 2 is connected to 3 peer ranks. Expected number of connected peer ranks is : 3
+[Gloo] Rank 3 is connected to 3 peer ranks. Expected number of connected peer ranks is : 3
+[Gloo] Rank 0 is connected to 3 peer ranks. Expected number of connected peer ranks is : 3
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 2 is connected to 3 peer ranks. Expected number of connected peer ranks is : 3
+[Gloo] Rank 0 is connected to 3 peer ranks. Expected number of connected peer ranks is : 3
+[Gloo] Rank 3 is connected to 3 peer ranks. Expected number of connected peer ranks is : 3
+[Gloo] Rank 1 is connected to 3 peer ranks. Expected number of connected peer ranks is : 3
+[Rank 0/4] Loaded 1 prompts
+--------------------------------------------------
+Prompt: '--Summarize this text: High-Performance Computing (HPC) refers to the use of supercomputers and parallel processing techniques for solving complex computational problems at high speeds. These systems perform quadrillions of calculations per second, far surpassing the capabilities of standard desktop or server machines. HPC plays a critical role in both academic research and industrial applications, driving advancements in fields such as climate modeling, aerospace engineering, genomics, and financial modeling.\n\nAt its core, HPC relies on the integration of thousands - or even millions - of processing cores working in parallel to perform highly demanding tasks. These systems typically consist of tightly coupled clusters of nodes, high-speed interconnects, and parallel file systems to manage enormous volumes of data efficiently. Software used in HPC is often optimized for scalability, enabling it to take full advantage of the available hardware resources.\n\nOne of the most impactful uses of HPC is in scientific research. For instance, researchers use HPC to simulate the behavior of molecules at the atomic level, enabling breakthroughs in drug discovery and materials science. In climate science, HPC is used to model global weather patterns with high accuracy, which is essential for understanding climate change and developing mitigation strategies. In engineering, simulations of airflow over aircraft wings or stress analysis in bridges are performed using HPC to reduce the need for physical prototypes.\n\nIndustries are also harnessing HPC for real-time data analytics, artificial intelligence (AI), and machine learning. These tasks require processing massive datasets, training complex models, and delivering insights quickly - something HPC systems are uniquely suited to handle. For example, the automotive industry uses HPC to develop autonomous driving algorithms and simulate crash tests in virtual environments.\n\nAs demands for computational power continue to rise, the future of HPC is increasingly tied to innovations like quantum computing, energy-efficient processor architectures, and hybrid cloud infrastructure. Moreover, initiatives like exascale computing aim to push performance to new levels, enabling systems to execute a billion billion (10^18) operations per second.\n\n--Output:'
+Generated text: ' absolut interesse guarded Marian guarded Zw guarded"}\n\n Marianrire Marian Rebel guarded"}\n\n IPS Zw guarded"}\n\n IPSCascaderire IPSrirerire RebelCascade Rebel IPS IPSrire Rebel"}\n\nrire/ar"}\n\n/ar"}\n\n Rebelrire IPS/ar"}\n\n/ar"}\n\n Rebelrire IPS/arCascade/arCascade"}\n\n/ar"}\n\n Rebel/arCascaderire Rebel"}\n\n Rebel Rebel"}\n\n/arCascade Rebel"}\n\n/ar IPSCascade RebelCascade"}\n\n RebelCascade IPSCascade"}\n\n/ar"}\n\n/arCascadeCascaderire Marian guarded"}\n\n/arCascade IPSCascaderirerire/arrire IPS IPSrire RebelCascade IPS"}\n\n Rebel IPSCascaderire Rebel IPSCascade IPS"}\n\n Rebel IPS"}\n\n/ar IPS IPSrire Marian guardedrirerire IPS"}\n\n/arrireCascaderire"}\n\n Rebel"}\n\n/ar IPS"}\n\n IPSrire IPSCascaderire IPS IPS"}\n\nArgentina IPS IPSrirerire Rebel IPSCascade IPSCascade IPSCascade IPSCascade IPS"}\n\n RebelCascaderire IPS"}\n\n/ar guarded IPS"}\n\n Rebelrirerirerire IPSCascaderire"}\n\n/ar guardedrire IPSrirerire guarded IPSCascade"}\n\n/ar guarded guardedCascade IPS"}\n\n/a[Rank 2/4] Loaded 1 prompts
+r"}\n\n guardedrire IPS IPS"}\n\n/ar guarded Marian Marian IPS"}\n\n IPS IPSCascade/ar guarded guarded MarianCascaderirerirerirerirerire IPSCascade IPSCascade"}\n\n Marian IPS"}\n\n IPSCascaderirerire Rebel"}\n\n/arCascade IPS IPS"}\n\n/ar"}\n\n/arCascaderirerirerirerire IPS IPS"}\n\n Rebel"}\n\nrire/ar IPSCascade IPS"}\n\n Rebelrire IPSCascaderirerirerirerire"}\n\n/ar guardedrirerirerire IPS IPS"}\n\n Rebel IPSCascade IPSCascade IPS"}\n\n Rebelrire IPS IPS IPS"}\n\n Rebel guarded/ar Marian Marian Marianrire/arrirerire"}\n\n/ar IPSCascade IPS"}\n\n/arrirerirerire IPS"}\n\nrire IPS"}\n\n Rebel guardedrire IPS"}\n\n Rebelrirerire Rebel IPS IPSCascaderire/ar Marian IPSCascade IPS IPSCascadeCascade IPSrire Rebel"}\n\n Rebelrire IPSCascade IPSCascaderire IPS"}\n\n Rebel IPSCascaderire IPS"}\n\n/ar IPS"}\n\nArgentinarire RebelCascaderirerire Rebel"}\n\n Rebel Marian Marianrirerirerirerirerire IPS IPS IPS IPS"}\n\n Rebelrire IPS"}\n\n Rebelrirerire/arrire Rebel IPSCascade"}\n\n Nguyen"}\n\n Marianrirerire/ar Rebel IPSCascaderire Rebel"}\n\n/ar Marian IPSCascade IPS"}\n\n/arCascaderire IPS IPSCascade IPSrire IPSCascade IPS"}\n\n/arrire/arCascade IPSrire IPS IPSrire IPS IPS IPSCascadeCascade IPSCascadeCascade"}\n\n Marian IPS IPS IPSCascaderirerire/ar guarded RebelCascade IPSCascade IPS"}\n\n/arCascaderire IPSCascade IPS"}\n\n Rebel IPSrire IPSrirerirerire Nguyen"}\n\n IPSrire IPSrirerire IPS IPS"}\n\n/ar IPSrirerirerire IPSrire IPS"}\n\n IPS IPSCascade IPSrire Nguyen"}\n\nrirerire IPS"}\n\n IPS IPS IPS"}\n\nrirerire IPS"}\n\n Rebel IPS"}\n\n/ar"}\n\n/arrirerire IPSrire'
+--------------------------------------------------
+Results saved to: results_243424.json
+[Rank 1/4] Loaded 1 prompts
+[Rank 3/4] Loaded 1 prompts
+Job finished at: Sat Mar 14 02:42:50 CET 2026
+Stopping GPU monitor...
+
+Job 243424 consumed 0.0 billing hours and 0.1 GPU hours from project nn9997k.
+
+Submitted 2026-03-14T02:41:56; waited 3.0 seconds in the queue after becoming eligible to run.
+
+Requested wallclock time: 15.0 minutes
+Elapsed wallclock time:   52.0 seconds
+
+Job exited normally.
+
+Task and CPU statistics:
+ID                             CPUs  Tasks  CPU util                Start  Elapsed  Exit status
+243424                            4            0.0 %  2026-03-14T02:41:59   52.0 s  0
+243424.batch                      4      1     1.1 %  2026-03-14T02:41:59   52.0 s  0
+243424..my_script_temp_243424     4      4     0.0 %  2026-03-14T02:42:00   50.0 s  0
+
+Used CPU time:   2.3 CPU seconds
+Unused CPU time: 3.4 CPU minutes
+
+Memory statistics, in GiB:
+ID                              Alloc   Usage
+243424                          480.0        
+243424.batch                    480.0     0.2
+243424..my_script_temp_243424   480.0    23.6
+
+Job 243424 completed at Sat Mar 14 02:42:52 CET 2026

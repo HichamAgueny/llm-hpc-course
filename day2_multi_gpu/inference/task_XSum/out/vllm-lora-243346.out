@@ -1,0 +1,87 @@
+Starting job 243346 on gpu-1-111 on Olivia at Sat Mar 14 00:55:07 CET 2026
+
+----------------------------------------
+Configuration:
+  Model: /cluster/projects/nn9997k/hicham/llm-hpc-course/shared/models/Llama-3.2-1B-Instruct
+  LoRA: /cluster/projects/nn9997k/hicham/llm-hpc-course/results/checkpoints_out/llama3_2_1B_lora_single_device/epoch_0
+  Prompt file: /cluster/projects/nn9997k/hicham/llm-hpc-course/day2_multi_gpu/inference/task_XSum/prompt_XSum.json
+  Quantization: None
+----------------------------------------
+Started GPU monitor (PID: 1628691) logging to /cluster/projects/nn9997k/hicham/llm-hpc-course/day2_multi_gpu/inference/logs/gpu_lora_utilization_243346.csv
+
+============================================================
+VLLM LoRA Inference (Official v0.11.0 Style)
+============================================================
+Model: /cluster/projects/nn9997k/hicham/llm-hpc-course/shared/models/Llama-3.2-1B-Instruct
+LoRA:  /cluster/projects/nn9997k/hicham/llm-hpc-course/results/checkpoints_out/llama3_2_1B_lora_single_device/epoch_0
+Prompts: /cluster/projects/nn9997k/hicham/llm-hpc-course/day2_multi_gpu/inference/task_XSum/prompt_XSum.json
+Quantization: None (FP16/BF16)
+============================================================
+
+Loaded 1 prompt(s) from /cluster/projects/nn9997k/hicham/llm-hpc-course/day2_multi_gpu/inference/task_XSum/prompt_XSum.json
+  [1] --Summarize this text: High-Performance Computing (HPC) refers to the use of sup...
+Initializing engine...
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+
+Processing 2 requests...
+----------------------------------------------------
+[Base] Prompt: --Summarize this text: High-Performance Computing (HPC) refers to the use of supercomputers and parallel processing techniques for solving complex computational problems at high speeds. These systems perform quadrillions of calculations per second, far surpassing the capabilities of standard desktop or server machines. HPC plays a critical role in both academic research and industrial applications, driving advancements in fields such as climate modeling, aerospace engineering, genomics, and financial modeling.
+
+At its core, HPC relies on the integration of thousands - or even millions - of processing cores working in parallel to perform highly demanding tasks. These systems typically consist of tightly coupled clusters of nodes, high-speed interconnects, and parallel file systems to manage enormous volumes of data efficiently. Software used in HPC is often optimized for scalability, enabling it to take full advantage of the available hardware resources.
+
+One of the most impactful uses of HPC is in scientific research. For instance, researchers use HPC to simulate the behavior of molecules at the atomic level, enabling breakthroughs in drug discovery and materials science. In climate science, HPC is used to model global weather patterns with high accuracy, which is essential for understanding climate change and developing mitigation strategies. In engineering, simulations of airflow over aircraft wings or stress analysis in bridges are performed using HPC to reduce the need for physical prototypes.
+
+Industries are also harnessing HPC for real-time data analytics, artificial intelligence (AI), and machine learning. These tasks require processing massive datasets, training complex models, and delivering insights quickly - something HPC systems are uniquely suited to handle. For example, the automotive industry uses HPC to develop autonomous driving algorithms and simulate crash tests in virtual environments.
+
+As demands for computational power continue to rise, the future of HPC is increasingly tied to innovations like quantum computing, energy-efficient processor architectures, and hybrid cloud infrastructure. Moreover, initiatives like exascale computing aim to push performance to new levels, enabling systems to execute a billion billion (10^18) operations per second.
+
+--Output:
+Output:  High-performance computing is a critical technology that has driven advancements in fields such as climate modeling, engineering, and AI. As demands for computational power continue to rise, the future of HPC is increasingly tied to innovations like quantum computing and hybrid cloud infrastructure.
+----------------------------------------------------
+[Base] Prompt: --Summarize this text: High-Performance Computing (HPC) refers to the use of supercomputers and parallel processing techniques for solving complex computational problems at high speeds. These systems perform quadrillions of calculations per second, far surpassing the capabilities of standard desktop or server machines. HPC plays a critical role in both academic research and industrial applications, driving advancements in fields such as climate modeling, aerospace engineering, genomics, and financial modeling.
+
+At its core, HPC relies on the integration of thousands - or even millions - of processing cores working in parallel to perform highly demanding tasks. These systems typically consist of tightly coupled clusters of nodes, high-speed interconnects, and parallel file systems to manage enormous volumes of data efficiently. Software used in HPC is often optimized for scalability, enabling it to take full advantage of the available hardware resources.
+
+One of the most impactful uses of HPC is in scientific research. For instance, researchers use HPC to simulate the behavior of molecules at the atomic level, enabling breakthroughs in drug discovery and materials science. In climate science, HPC is used to model global weather patterns with high accuracy, which is essential for understanding climate change and developing mitigation strategies. In engineering, simulations of airflow over aircraft wings or stress analysis in bridges are performed using HPC to reduce the need for physical prototypes.
+
+Industries are also harnessing HPC for real-time data analytics, artificial intelligence (AI), and machine learning. These tasks require processing massive datasets, training complex models, and delivering insights quickly - something HPC systems are uniquely suited to handle. For example, the automotive industry uses HPC to develop autonomous driving algorithms and simulate crash tests in virtual environments.
+
+As demands for computational power continue to rise, the future of HPC is increasingly tied to innovations like quantum computing, energy-efficient processor architectures, and hybrid cloud infrastructure. Moreover, initiatives like exascale computing aim to push performance to new levels, enabling systems to execute a billion billion (10^18) operations per second.
+
+--Output:
+Output:  High-Performance Computing (HPC) is a critical technology that enables the solution of complex computational problems at high speeds. It plays a vital role in both academic research and industrial applications, driving advancements in fields such as climate modeling, aerospace engineering, genomics, and financial modeling. HPC relies on the integration of thousands - or even millions - of processing cores working in parallel to perform demanding tasks. It is used in scientific research, climate science, engineering, and industries such as automotive and AI. The future of HPC is tied to innovations like quantum computing, energy-efficient processor architectures, and hybrid cloud infrastructure.
+
+~~~~~~~~~~~~~~~~ ALL INFERENCE COMPLETED SUCCESSFULLY ~~~~~~~~~~~~~~~~
+Job finished at: Sat Mar 14 00:55:39 CET 2026
+Stopping GPU monitor...
+
+Job 243346 consumed 0.0 billing hours and 0.0 GPU hours from project nn9997k.
+
+Submitted 2026-03-14T00:54:43; waited 24.0 seconds in the queue after becoming eligible to run.
+
+Requested wallclock time: 15.0 minutes
+Elapsed wallclock time:   33.0 seconds
+
+Job exited normally.
+
+Task and CPU statistics:
+ID              CPUs  Tasks  CPU util                Start  Elapsed  Exit status
+243346             1            0.0 %  2026-03-14T00:55:07   33.0 s  0
+243346.batch       1      1     0.8 %  2026-03-14T00:55:07   33.0 s  0
+243346.python3     1      1     0.0 %  2026-03-14T00:55:08   31.0 s  0
+
+Used CPU time:   0.3 CPU seconds
+Unused CPU time: 32.7 CPU seconds
+
+Memory statistics, in GiB:
+ID               Alloc   Usage
+243346            80.0        
+243346.batch      80.0     0.1
+243346.python3    80.0     6.5
+
+Job 243346 completed at Sat Mar 14 00:55:40 CET 2026

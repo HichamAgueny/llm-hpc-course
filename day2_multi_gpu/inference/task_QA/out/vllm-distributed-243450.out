@@ -1,0 +1,46 @@
+Starting job 243450 on gpu-1-16 on Olivia at Sat Mar 14 04:04:25 CET 2026
+
+----------------------------------------
+Configuration:
+  Model: /cluster/projects/nn9997k/hicham/llm-hpc-course/shared/models/Llama-3.1-8B-Instruct
+  LoRA: /cluster/projects/nn9997k/hicham/llm-hpc-course/results/checkpoints_out/llama3_1_8B_lora_multi_device/epoch_0
+  Prompt file: /cluster/projects/nn9997k/hicham/llm-hpc-course/day2_multi_gpu/inference/task_QA/prompt_QA.json
+  Quantization: None
+----------------------------------------
+Started GPU monitor (PID: 573451) logging to /cluster/projects/nn9997k/hicham/llm-hpc-course/day2_multi_gpu/inference/logs/multi_gpu_utilization_243450.csv
+Task 1: RANK=0, LOCAL_RANK=0, WORLD_SIZE = 4, LOCAL_WORLD_SIZE = 
+LOCAL_RANK: 1, CUDA_VISIBLE_DEVICES: 0,1,2,3
+Task 0: RANK=0, LOCAL_RANK=0, WORLD_SIZE = 4, LOCAL_WORLD_SIZE = 
+LOCAL_RANK: 0, CUDA_VISIBLE_DEVICES: 0,1,2,3
+Task 2: RANK=0, LOCAL_RANK=0, WORLD_SIZE = 4, LOCAL_WORLD_SIZE = 
+LOCAL_RANK: 2, CUDA_VISIBLE_DEVICES: 0,1,2,3
+Task 3: RANK=0, LOCAL_RANK=0, WORLD_SIZE = 4, LOCAL_WORLD_SIZE = 
+LOCAL_RANK: 3, CUDA_VISIBLE_DEVICES: 0,1,2,3
+Job finished at: Sat Mar 14 04:04:27 CET 2026
+Stopping GPU monitor...
+
+Job 243450 consumed 0.0 billing hours and 0.0 GPU hours from project nn9997k.
+
+Submitted 2026-03-14T04:04:20; waited 5.0 seconds in the queue after becoming eligible to run.
+
+Requested wallclock time: 15.0 minutes
+Elapsed wallclock time:   2.0 seconds
+
+Job exited normally.
+
+Task and CPU statistics:
+ID                             CPUs  Tasks  CPU util                Start  Elapsed  Exit status
+243450                            4            0.0 %  2026-03-14T04:04:25    2.0 s  0
+243450.batch                      4      1     3.6 %  2026-03-14T04:04:25    2.0 s  0
+243450..my_script_temp_243450     4      4     0.0 %  2026-03-14T04:04:26    1.0 s  0
+
+Used CPU time:   0.3 CPU seconds
+Unused CPU time: 7.7 CPU seconds
+
+Memory statistics, in GiB:
+ID                              Alloc   Usage
+243450                          480.0        
+243450.batch                    480.0     0.2
+243450..my_script_temp_243450   480.0     0.1
+
+Job 243450 completed at Sat Mar 14 04:04:27 CET 2026

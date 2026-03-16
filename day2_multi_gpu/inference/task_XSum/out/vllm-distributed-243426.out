@@ -1,0 +1,230 @@
+Starting job 243426 on gpu-1-16 on Olivia at Sat Mar 14 03:03:25 CET 2026
+
+----------------------------------------
+Configuration:
+  Model: /cluster/projects/nn9997k/hicham/llm-hpc-course/shared/models/Llama-3.2-1B-Instruct
+  LoRA: /cluster/projects/nn9997k/hicham/llm-hpc-course/results/checkpoints_out/llama3_2_1B_lora_single_device/epoch_0
+  Prompt file: /cluster/projects/nn9997k/hicham/llm-hpc-course/day2_multi_gpu/inference/task_XSum/prompt_XSum.json
+  Quantization: None
+  Tensor Parallel: 4
+  Pipeline Parallel: 1
+  GPUs: 4
+----------------------------------------
+Started GPU monitor (PID: 558859) logging to /cluster/projects/nn9997k/hicham/llm-hpc-course/day2_multi_gpu/inference/logs/multi_gpu_utilization_243426.csv
+Launching torchrun with 4 processes...
+Task 0: RANK=0, LOCAL_RANK=0, WORLD_SIZE = 4, LOCAL_WORLD_SIZE = 
+LOCAL_RANK: 0, CUDA_VISIBLE_DEVICES: 0,1,2,3
+Task 1: RANK=0, LOCAL_RANK=0, WORLD_SIZE = 4, LOCAL_WORLD_SIZE = 
+LOCAL_RANK: 1, CUDA_VISIBLE_DEVICES: 0,1,2,3
+Task 3: RANK=0, LOCAL_RANK=0, WORLD_SIZE = 4, LOCAL_WORLD_SIZE = 
+LOCAL_RANK: 3, CUDA_VISIBLE_DEVICES: 0,1,2,3
+Task 2: RANK=0, LOCAL_RANK=0, WORLD_SIZE = 4, LOCAL_WORLD_SIZE = 
+LOCAL_RANK: 2, CUDA_VISIBLE_DEVICES: 0,1,2,3
+[Rank 2/3] Starting distributed inference...
+[Rank 2] Loaded 1 prompt(s)
+[Rank 2] Initializing LLM engine...
+[Rank 1/3] Starting distributed inference...
+[Rank 1] Loaded 1 prompt(s)
+[Rank 1] Initializing LLM engine...
+[Rank 3/3] Starting distributed inference...
+[Rank 3] Loaded 1 prompt(s)
+[Rank 3] Initializing LLM engine...
+[Rank 0/3] Starting distributed inference...
+============================================================
+VLLM Distributed Inference with LoRA
+============================================================
+Model:         /cluster/projects/nn9997k/hicham/llm-hpc-course/shared/models/Llama-3.2-1B-Instruct
+LoRA Path:     /cluster/projects/nn9997k/hicham/llm-hpc-course/results/checkpoints_out/llama3_2_1B_lora_single_device/epoch_0
+Prompts File:  /cluster/projects/nn9997k/hicham/llm-hpc-course/day2_multi_gpu/inference/task_XSum/prompt_XSum.json
+Quantization:  None
+TP Size:       4
+PP Size:       1
+============================================================
+[Rank 0] Loaded 1 prompt(s)
+[Rank 0] Initializing LLM engine...
+ERROR 03-14 03:04:21 [multiproc_executor.py:628] WorkerProc failed to start.
+ERROR 03-14 03:04:21 [multiproc_executor.py:628] Traceback (most recent call last):
+ERROR 03-14 03:04:21 [multiproc_executor.py:628]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/multiproc_executor.py", line 602, in worker_main
+ERROR 03-14 03:04:21 [multiproc_executor.py:628]     worker = WorkerProc(*args, **kwargs)
+ERROR 03-14 03:04:21 [multiproc_executor.py:628]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ERROR 03-14 03:04:21 [multiproc_executor.py:628]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/multiproc_executor.py", line 449, in __init__
+ERROR 03-14 03:04:21 [multiproc_executor.py:628]     self.worker.init_device()
+ERROR 03-14 03:04:21 [multiproc_executor.py:628]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/worker/worker_base.py", line 332, in init_device
+ERROR 03-14 03:04:21 [multiproc_executor.py:628]     self.worker.init_device()  # type: ignore
+ERROR 03-14 03:04:21 [multiproc_executor.py:628]     ^^^^^^^^^^^^^^^^^^^^^^^^^
+ERROR 03-14 03:04:21 [multiproc_executor.py:628]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/worker/gpu_worker.py", line 172, in init_device
+ERROR 03-14 03:04:21 [multiproc_executor.py:628]     current_platform.set_device(self.device)
+ERROR 03-14 03:04:21 [multiproc_executor.py:628]   File "/usr/local/lib/python3.12/dist-packages/vllm/platforms/cuda.py", line 79, in set_device
+ERROR 03-14 03:04:21 [multiproc_executor.py:628]     torch.cuda.set_device(device)
+ERROR 03-14 03:04:21 [multiproc_executor.py:628]   File "/usr/local/lib/python3.12/dist-packages/torch/cuda/__init__.py", line 567, in set_device
+ERROR 03-14 03:04:21 [multiproc_executor.py:628]     torch._C._cuda_setDevice(device)
+ERROR 03-14 03:04:21 [multiproc_executor.py:628] torch.AcceleratorError: CUDA error: CUDA-capable device(s) is/are busy or unavailable
+ERROR 03-14 03:04:21 [multiproc_executor.py:628] Search for `cudaErrorDevicesUnavailable' in https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__TYPES.html for more information.
+ERROR 03-14 03:04:21 [multiproc_executor.py:628] CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+ERROR 03-14 03:04:21 [multiproc_executor.py:628] For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+ERROR 03-14 03:04:21 [multiproc_executor.py:628] Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+ERROR 03-14 03:04:21 [multiproc_executor.py:628] 
+ERROR 03-14 03:04:22 [multiproc_executor.py:628] WorkerProc failed to start.
+ERROR 03-14 03:04:22 [multiproc_executor.py:628] Traceback (most recent call last):
+ERROR 03-14 03:04:22 [multiproc_executor.py:628]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/multiproc_executor.py", line 602, in worker_main
+ERROR 03-14 03:04:22 [multiproc_executor.py:628]     worker = WorkerProc(*args, **kwargs)
+ERROR 03-14 03:04:22 [multiproc_executor.py:628]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ERROR 03-14 03:04:22 [multiproc_executor.py:628]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/multiproc_executor.py", line 449, in __init__
+ERROR 03-14 03:04:22 [multiproc_executor.py:628]     self.worker.init_device()
+ERROR 03-14 03:04:22 [multiproc_executor.py:628]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/worker/worker_base.py", line 332, in init_device
+ERROR 03-14 03:04:22 [multiproc_executor.py:628]     self.worker.init_device()  # type: ignore
+ERROR 03-14 03:04:22 [multiproc_executor.py:628]     ^^^^^^^^^^^^^^^^^^^^^^^^^
+ERROR 03-14 03:04:22 [multiproc_executor.py:628]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/worker/gpu_worker.py", line 172, in init_device
+ERROR 03-14 03:04:22 [multiproc_executor.py:628]     current_platform.set_device(self.device)
+ERROR 03-14 03:04:22 [multiproc_executor.py:628]   File "/usr/local/lib/python3.12/dist-packages/vllm/platforms/cuda.py", line 79, in set_device
+ERROR 03-14 03:04:22 [multiproc_executor.py:628]     torch.cuda.set_device(device)
+ERROR 03-14 03:04:22 [multiproc_executor.py:628]   File "/usr/local/lib/python3.12/dist-packages/torch/cuda/__init__.py", line 567, in set_device
+ERROR 03-14 03:04:22 [multiproc_executor.py:628]     torch._C._cuda_setDevice(device)
+ERROR 03-14 03:04:22 [multiproc_executor.py:628] torch.AcceleratorError: CUDA error: CUDA-capable device(s) is/are busy or unavailable
+ERROR 03-14 03:04:22 [multiproc_executor.py:628] Search for `cudaErrorDevicesUnavailable' in https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__TYPES.html for more information.
+ERROR 03-14 03:04:22 [multiproc_executor.py:628] CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+ERROR 03-14 03:04:22 [multiproc_executor.py:628] For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+ERROR 03-14 03:04:22 [multiproc_executor.py:628] Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+ERROR 03-14 03:04:22 [multiproc_executor.py:628] 
+ERROR 03-14 03:04:22 [multiproc_executor.py:628] WorkerProc failed to start.
+ERROR 03-14 03:04:22 [multiproc_executor.py:628] Traceback (most recent call last):
+ERROR 03-14 03:04:22 [multiproc_executor.py:628]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/multiproc_executor.py", line 602, in worker_main
+ERROR 03-14 03:04:22 [multiproc_executor.py:628]     worker = WorkerProc(*args, **kwargs)
+ERROR 03-14 03:04:22 [multiproc_executor.py:628]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ERROR 03-14 03:04:22 [multiproc_executor.py:628]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/multiproc_executor.py", line 449, in __init__
+ERROR 03-14 03:04:22 [multiproc_executor.py:628]     self.worker.init_device()
+ERROR 03-14 03:04:22 [multiproc_executor.py:628]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/worker/worker_base.py", line 332, in init_device
+ERROR 03-14 03:04:22 [multiproc_executor.py:628]     self.worker.init_device()  # type: ignore
+ERROR 03-14 03:04:22 [multiproc_executor.py:628]     ^^^^^^^^^^^^^^^^^^^^^^^^^
+ERROR 03-14 03:04:22 [multiproc_executor.py:628]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/worker/gpu_worker.py", line 172, in init_device
+ERROR 03-14 03:04:22 [multiproc_executor.py:628]     current_platform.set_device(self.device)
+ERROR 03-14 03:04:22 [multiproc_executor.py:628]   File "/usr/local/lib/python3.12/dist-packages/vllm/platforms/cuda.py", line 79, in set_device
+ERROR 03-14 03:04:22 [multiproc_executor.py:628]     torch.cuda.set_device(device)
+ERROR 03-14 03:04:22 [multiproc_executor.py:628]   File "/usr/local/lib/python3.12/dist-packages/torch/cuda/__init__.py", line 567, in set_device
+ERROR 03-14 03:04:22 [multiproc_executor.py:628]     torch._C._cuda_setDevice(device)
+ERROR 03-14 03:04:22 [multiproc_executor.py:628] torch.AcceleratorError: CUDA error: CUDA-capable device(s) is/are busy or unavailable
+ERROR 03-14 03:04:22 [multiproc_executor.py:628] Search for `cudaErrorDevicesUnavailable' in https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__TYPES.html for more information.
+ERROR 03-14 03:04:22 [multiproc_executor.py:628] CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+ERROR 03-14 03:04:22 [multiproc_executor.py:628] For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+ERROR 03-14 03:04:22 [multiproc_executor.py:628] Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+ERROR 03-14 03:04:22 [multiproc_executor.py:628] 
+ERROR 03-14 03:04:22 [multiproc_executor.py:628] WorkerProc failed to start.
+ERROR 03-14 03:04:22 [multiproc_executor.py:628] Traceback (most recent call last):
+ERROR 03-14 03:04:22 [multiproc_executor.py:628]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/multiproc_executor.py", line 602, in worker_main
+ERROR 03-14 03:04:22 [multiproc_executor.py:628]     worker = WorkerProc(*args, **kwargs)
+ERROR 03-14 03:04:22 [multiproc_executor.py:628]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ERROR 03-14 03:04:22 [multiproc_executor.py:628]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/multiproc_executor.py", line 449, in __init__
+ERROR 03-14 03:04:22 [multiproc_executor.py:628]     self.worker.init_device()
+ERROR 03-14 03:04:22 [multiproc_executor.py:628]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/worker/worker_base.py", line 332, in init_device
+ERROR 03-14 03:04:22 [multiproc_executor.py:628]     self.worker.init_device()  # type: ignore
+ERROR 03-14 03:04:22 [multiproc_executor.py:628]     ^^^^^^^^^^^^^^^^^^^^^^^^^
+ERROR 03-14 03:04:22 [multiproc_executor.py:628]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/worker/gpu_worker.py", line 172, in init_device
+ERROR 03-14 03:04:22 [multiproc_executor.py:628]     current_platform.set_device(self.device)
+ERROR 03-14 03:04:22 [multiproc_executor.py:628]   File "/usr/local/lib/python3.12/dist-packages/vllm/platforms/cuda.py", line 79, in set_device
+ERROR 03-14 03:04:22 [multiproc_executor.py:628]     torch.cuda.set_device(device)
+ERROR 03-14 03:04:22 [multiproc_executor.py:628]   File "/usr/local/lib/python3.12/dist-packages/torch/cuda/__init__.py", line 567, in set_device
+ERROR 03-14 03:04:22 [multiproc_executor.py:628]     torch._C._cuda_setDevice(device)
+ERROR 03-14 03:04:22 [multiproc_executor.py:628] torch.AcceleratorError: CUDA error: CUDA-capable device(s) is/are busy or unavailable
+ERROR 03-14 03:04:22 [multiproc_executor.py:628] Search for `cudaErrorDevicesUnavailable' in https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__TYPES.html for more information.
+ERROR 03-14 03:04:22 [multiproc_executor.py:628] CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+ERROR 03-14 03:04:22 [multiproc_executor.py:628] For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+ERROR 03-14 03:04:22 [multiproc_executor.py:628] Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+ERROR 03-14 03:04:22 [multiproc_executor.py:628] 
+[1;36m(EngineCore_DP0 pid=559942)[0;0m ERROR 03-14 03:04:25 [core.py:793] EngineCore failed to start.
+[1;36m(EngineCore_DP0 pid=559942)[0;0m ERROR 03-14 03:04:25 [core.py:793] Traceback (most recent call last):
+[1;36m(EngineCore_DP0 pid=559942)[0;0m ERROR 03-14 03:04:25 [core.py:793]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 784, in run_engine_core
+[1;36m(EngineCore_DP0 pid=559942)[0;0m ERROR 03-14 03:04:25 [core.py:793]     engine_core = EngineCoreProc(*args, **kwargs)
+[1;36m(EngineCore_DP0 pid=559942)[0;0m ERROR 03-14 03:04:25 [core.py:793]                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[1;36m(EngineCore_DP0 pid=559942)[0;0m ERROR 03-14 03:04:25 [core.py:793]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 552, in __init__
+[1;36m(EngineCore_DP0 pid=559942)[0;0m ERROR 03-14 03:04:25 [core.py:793]     super().__init__(
+[1;36m(EngineCore_DP0 pid=559942)[0;0m ERROR 03-14 03:04:25 [core.py:793]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 106, in __init__
+[1;36m(EngineCore_DP0 pid=559942)[0;0m ERROR 03-14 03:04:25 [core.py:793]     self.model_executor = executor_class(vllm_config)
+[1;36m(EngineCore_DP0 pid=559942)[0;0m ERROR 03-14 03:04:25 [core.py:793]                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[1;36m(EngineCore_DP0 pid=559942)[0;0m ERROR 03-14 03:04:25 [core.py:793]   File "/usr/local/lib/python3.12/dist-packages/vllm/executor/executor_base.py", line 54, in __init__
+[1;36m(EngineCore_DP0 pid=559942)[0;0m ERROR 03-14 03:04:25 [core.py:793]     self._init_executor()
+[1;36m(EngineCore_DP0 pid=559942)[0;0m ERROR 03-14 03:04:25 [core.py:793]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/multiproc_executor.py", line 114, in _init_executor
+[1;36m(EngineCore_DP0 pid=559942)[0;0m ERROR 03-14 03:04:25 [core.py:793]     self.workers = WorkerProc.wait_for_ready(unready_workers)
+[1;36m(EngineCore_DP0 pid=559942)[0;0m ERROR 03-14 03:04:25 [core.py:793]                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[1;36m(EngineCore_DP0 pid=559942)[0;0m ERROR 03-14 03:04:25 [core.py:793]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/multiproc_executor.py", line 540, in wait_for_ready
+[1;36m(EngineCore_DP0 pid=559942)[0;0m ERROR 03-14 03:04:25 [core.py:793]     raise e from None
+[1;36m(EngineCore_DP0 pid=559942)[0;0m ERROR 03-14 03:04:25 [core.py:793] Exception: WorkerProc initialization failed due to an exception in a background process. See stack trace for root cause.
+[1;36m(EngineCore_DP0 pid=559945)[0;0m ERROR 03-14 03:04:26 [core.py:793] EngineCore failed to start.
+[1;36m(EngineCore_DP0 pid=559945)[0;0m ERROR 03-14 03:04:26 [core.py:793] Traceback (most recent call last):
+[1;36m(EngineCore_DP0 pid=559945)[0;0m ERROR 03-14 03:04:26 [core.py:793]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 784, in run_engine_core
+[1;36m(EngineCore_DP0 pid=559945)[0;0m ERROR 03-14 03:04:26 [core.py:793]     engine_core = EngineCoreProc(*args, **kwargs)
+[1;36m(EngineCore_DP0 pid=559945)[0;0m ERROR 03-14 03:04:26 [core.py:793]                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[1;36m(EngineCore_DP0 pid=559945)[0;0m ERROR 03-14 03:04:26 [core.py:793]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 552, in __init__
+[1;36m(EngineCore_DP0 pid=559945)[0;0m ERROR 03-14 03:04:26 [core.py:793]     super().__init__(
+[1;36m(EngineCore_DP0 pid=559945)[0;0m ERROR 03-14 03:04:26 [core.py:793]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 106, in __init__
+[1;36m(EngineCore_DP0 pid=559945)[0;0m ERROR 03-14 03:04:26 [core.py:793]     self.model_executor = executor_class(vllm_config)
+[1;36m(EngineCore_DP0 pid=559945)[0;0m ERROR 03-14 03:04:26 [core.py:793]                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[1;36m(EngineCore_DP0 pid=559945)[0;0m ERROR 03-14 03:04:26 [core.py:793]   File "/usr/local/lib/python3.12/dist-packages/vllm/executor/executor_base.py", line 54, in __init__
+[1;36m(EngineCore_DP0 pid=559945)[0;0m ERROR 03-14 03:04:26 [core.py:793]     self._init_executor()
+[1;36m(EngineCore_DP0 pid=559945)[0;0m ERROR 03-14 03:04:26 [core.py:793]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/multiproc_executor.py", line 114, in _init_executor
+[1;36m(EngineCore_DP0 pid=559945)[0;0m ERROR 03-14 03:04:26 [core.py:793]     self.workers = WorkerProc.wait_for_ready(unready_workers)
+[1;36m(EngineCore_DP0 pid=559945)[0;0m ERROR 03-14 03:04:26 [core.py:793]                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[1;36m(EngineCore_DP0 pid=559945)[0;0m ERROR 03-14 03:04:26 [core.py:793]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/multiproc_executor.py", line 540, in wait_for_ready
+[1;36m(EngineCore_DP0 pid=559945)[0;0m ERROR 03-14 03:04:26 [core.py:793]     raise e from None
+[1;36m(EngineCore_DP0 pid=559945)[0;0m ERROR 03-14 03:04:26 [core.py:793] Exception: WorkerProc initialization failed due to an exception in a background process. See stack trace for root cause.
+[1;36m(EngineCore_DP0 pid=559941)[0;0m ERROR 03-14 03:04:26 [core.py:793] EngineCore failed to start.
+[1;36m(EngineCore_DP0 pid=559941)[0;0m ERROR 03-14 03:04:26 [core.py:793] Traceback (most recent call last):
+[1;36m(EngineCore_DP0 pid=559941)[0;0m ERROR 03-14 03:04:26 [core.py:793]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 784, in run_engine_core
+[1;36m(EngineCore_DP0 pid=559941)[0;0m ERROR 03-14 03:04:26 [core.py:793]     engine_core = EngineCoreProc(*args, **kwargs)
+[1;36m(EngineCore_DP0 pid=559941)[0;0m ERROR 03-14 03:04:26 [core.py:793]                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[1;36m(EngineCore_DP0 pid=559941)[0;0m ERROR 03-14 03:04:26 [core.py:793]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 552, in __init__
+[1;36m(EngineCore_DP0 pid=559941)[0;0m ERROR 03-14 03:04:26 [core.py:793]     super().__init__(
+[1;36m(EngineCore_DP0 pid=559941)[0;0m ERROR 03-14 03:04:26 [core.py:793]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 106, in __init__
+[1;36m(EngineCore_DP0 pid=559941)[0;0m ERROR 03-14 03:04:26 [core.py:793]     self.model_executor = executor_class(vllm_config)
+[1;36m(EngineCore_DP0 pid=559941)[0;0m ERROR 03-14 03:04:26 [core.py:793]                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[1;36m(EngineCore_DP0 pid=559941)[0;0m ERROR 03-14 03:04:26 [core.py:793]   File "/usr/local/lib/python3.12/dist-packages/vllm/executor/executor_base.py", line 54, in __init__
+[1;36m(EngineCore_DP0 pid=559941)[0;0m ERROR 03-14 03:04:26 [core.py:793]     self._init_executor()
+[1;36m(EngineCore_DP0 pid=559941)[0;0m ERROR 03-14 03:04:26 [core.py:793]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/multiproc_executor.py", line 114, in _init_executor
+[1;36m(EngineCore_DP0 pid=559941)[0;0m ERROR 03-14 03:04:26 [core.py:793]     self.workers = WorkerProc.wait_for_ready(unready_workers)
+[1;36m(EngineCore_DP0 pid=559941)[0;0m ERROR 03-14 03:04:26 [core.py:793]                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[1;36m(EngineCore_DP0 pid=559941)[0;0m ERROR 03-14 03:04:26 [core.py:793]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/multiproc_executor.py", line 540, in wait_for_ready
+[1;36m(EngineCore_DP0 pid=559941)[0;0m ERROR 03-14 03:04:26 [core.py:793]     raise e from None
+[1;36m(EngineCore_DP0 pid=559941)[0;0m ERROR 03-14 03:04:26 [core.py:793] Exception: WorkerProc initialization failed due to an exception in a background process. See stack trace for root cause.
+[1;36m(EngineCore_DP0 pid=559940)[0;0m ERROR 03-14 03:04:26 [core.py:793] EngineCore failed to start.
+[1;36m(EngineCore_DP0 pid=559940)[0;0m ERROR 03-14 03:04:26 [core.py:793] Traceback (most recent call last):
+[1;36m(EngineCore_DP0 pid=559940)[0;0m ERROR 03-14 03:04:26 [core.py:793]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 784, in run_engine_core
+[1;36m(EngineCore_DP0 pid=559940)[0;0m ERROR 03-14 03:04:26 [core.py:793]     engine_core = EngineCoreProc(*args, **kwargs)
+[1;36m(EngineCore_DP0 pid=559940)[0;0m ERROR 03-14 03:04:26 [core.py:793]                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[1;36m(EngineCore_DP0 pid=559940)[0;0m ERROR 03-14 03:04:26 [core.py:793]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 552, in __init__
+[1;36m(EngineCore_DP0 pid=559940)[0;0m ERROR 03-14 03:04:26 [core.py:793]     super().__init__(
+[1;36m(EngineCore_DP0 pid=559940)[0;0m ERROR 03-14 03:04:26 [core.py:793]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 106, in __init__
+[1;36m(EngineCore_DP0 pid=559940)[0;0m ERROR 03-14 03:04:26 [core.py:793]     self.model_executor = executor_class(vllm_config)
+[1;36m(EngineCore_DP0 pid=559940)[0;0m ERROR 03-14 03:04:26 [core.py:793]                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[1;36m(EngineCore_DP0 pid=559940)[0;0m ERROR 03-14 03:04:26 [core.py:793]   File "/usr/local/lib/python3.12/dist-packages/vllm/executor/executor_base.py", line 54, in __init__
+[1;36m(EngineCore_DP0 pid=559940)[0;0m ERROR 03-14 03:04:26 [core.py:793]     self._init_executor()
+[1;36m(EngineCore_DP0 pid=559940)[0;0m ERROR 03-14 03:04:26 [core.py:793]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/multiproc_executor.py", line 114, in _init_executor
+[1;36m(EngineCore_DP0 pid=559940)[0;0m ERROR 03-14 03:04:26 [core.py:793]     self.workers = WorkerProc.wait_for_ready(unready_workers)
+[1;36m(EngineCore_DP0 pid=559940)[0;0m ERROR 03-14 03:04:26 [core.py:793]                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[1;36m(EngineCore_DP0 pid=559940)[0;0m ERROR 03-14 03:04:26 [core.py:793]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/multiproc_executor.py", line 540, in wait_for_ready
+[1;36m(EngineCore_DP0 pid=559940)[0;0m ERROR 03-14 03:04:26 [core.py:793]     raise e from None
+[1;36m(EngineCore_DP0 pid=559940)[0;0m ERROR 03-14 03:04:26 [core.py:793] Exception: WorkerProc initialization failed due to an exception in a background process. See stack trace for root cause.
+
+Job 243426 consumed 0.0 billing hours and 0.1 GPU hours from project nn9997k.
+
+Submitted 2026-03-14T03:03:08; waited 17.0 seconds in the queue after becoming eligible to run.
+
+Requested wallclock time: 15.0 minutes
+Elapsed wallclock time:   1.1 minutes
+
+Job failed.
+
+Task and CPU statistics:
+ID                             CPUs  Tasks  CPU util                Start  Elapsed  Exit status
+243426                            4            0.0 %  2026-03-14T03:03:25   64.0 s  143 (command killed by signal 15)
+243426.batch                      4      1     1.3 %  2026-03-14T03:03:25   64.0 s  143 (command killed by signal 15)
+243426..my_script_temp_243426     4      4     0.0 %  2026-03-14T03:03:26   62.0 s  Signal 15
+
+Used CPU time:   3.3 CPU seconds
+Unused CPU time: 4.2 CPU minutes
+
+Memory statistics, in GiB:
+ID                              Alloc   Usage
+243426                          480.0        
+243426.batch                    480.0     0.2
+243426..my_script_temp_243426   480.0    20.2
+
+Job 243426 completed at Sat Mar 14 03:04:30 CET 2026

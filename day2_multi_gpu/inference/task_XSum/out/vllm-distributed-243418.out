@@ -1,0 +1,38 @@
+Starting job 243418 on gpu-1-16 on Olivia at Sat Mar 14 01:52:58 CET 2026
+
+----------------------------------------
+Configuration:
+  Model: /cluster/projects/nn9997k/hicham/llm-hpc-course/shared/models/Llama-3.2-1B-Instruct
+  LoRA: /cluster/projects/nn9997k/hicham/llm-hpc-course/results/checkpoints_out/llama3_2_1B_lora_single_device/epoch_0
+  Prompt file: /cluster/projects/nn9997k/hicham/llm-hpc-course/day2_multi_gpu/inference/task_XSum/prompt_XSum.json
+  Quantization: None
+  Tensor Parallel: 4
+  Pipeline Parallel: 1
+  GPUs: 4
+----------------------------------------
+Started GPU monitor (PID: 536057) logging to /cluster/projects/nn9997k/hicham/llm-hpc-course/day2_multi_gpu/inference/logs/multi_gpu_utilization_243418.csv
+Launching torchrun with 4 processes...
+
+Job 243418 consumed 0.0 billing hours and 0.0 GPU hours from project nn9997k.
+
+Submitted 2026-03-14T01:52:45; waited 13.0 seconds in the queue after becoming eligible to run.
+
+Requested wallclock time: 15.0 minutes
+Elapsed wallclock time:   24.0 seconds
+
+Job failed.
+
+Task and CPU statistics:
+ID            CPUs  Tasks  CPU util                Start  Elapsed  Exit status
+243418           4            0.0 %  2026-03-14T01:52:58   24.0 s  1
+243418.batch     4      1    51.8 %  2026-03-14T01:52:58   24.0 s  1
+
+Used CPU time:   49.7 CPU seconds
+Unused CPU time: 46.3 CPU seconds
+
+Memory statistics, in GiB:
+ID             Alloc   Usage
+243418         480.0        
+243418.batch   480.0     4.4
+
+Job 243418 completed at Sat Mar 14 01:53:23 CET 2026
