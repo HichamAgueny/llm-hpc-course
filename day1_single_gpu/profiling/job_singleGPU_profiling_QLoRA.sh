@@ -93,7 +93,7 @@ echo "--- Launching the application inside Apptainer ---"
 # --- Execute with Apptainer ---
 # Bind host project directory to /workspace inside container
 # --nv enables NVIDIA GPU support
-time srun apptainer exec --nv 
+time srun apptainer exec --nv\ 
       -B "${MyWD}:/workspace" \
        -B $PROJECT_DIR \
       "${APPTAINER_SIF}" \
