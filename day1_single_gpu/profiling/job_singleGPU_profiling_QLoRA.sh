@@ -74,10 +74,10 @@ fi
 
 # Run the fine-tuning script
 # To override output dirs (optional):
-# python "${PYTHON_FILE}" --config "${CONFIG_FILE}" checkpointer.output_dir="${OUTPUT_DIR}" output_dir="${LOGGING_DIR}" epochs=1
+python "${PYTHON_FILE}" --config "${CONFIG_FILE}" checkpointer.output_dir="${OUTPUT_DIR}" output_dir="${LOGGING_DIR}" epochs=1
 
 # Default execution
-python "${PYTHON_FILE}" --config "${CONFIG_FILE}"
+#python "${PYTHON_FILE}" --config "${CONFIG_FILE}"
 EOF
 
 chmod +x "${INNER_SCRIPT_TEMP}"
