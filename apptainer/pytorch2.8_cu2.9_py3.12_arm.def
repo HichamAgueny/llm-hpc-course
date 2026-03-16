@@ -1,0 +1,22 @@
+Bootstrap: localimage
+
+# Base container image to build from.
+# This specifies the local Singularity Image Format (.sif) file to use as the base.
+From: /cluster/projects/nn9997k/hicham/llm-hpc-course/apptainer/pytorch_25.05_cuda12.9_base_arm.sif
+
+%post
+# This section runs commands inside the container after it is been created.
+
+# Create symlinks to Python executables.
+# This step ensures that various scripts and tools can find the correct Python version
+# regardless of how it is referenced (e.g., python3.12, python3, or python).
+mkdir -p /opt/python
+ln -s /usr/bin/python3.12 /opt/python/python3.12
+ln -s /usr/bin/python3 /opt/python/python3
+ln -s /usr/bin/python /opt/python/python
+
+# Add extra packages to the container is Python environment.
+# These packages are necessary for the specific deep learning and model finetuning tasks.
+python -m pip install torchtune==0.6.0
+python -m pip install torchao==0.10.0
+#python -m pip install peft==0.15.2
