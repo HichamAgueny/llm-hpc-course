@@ -17,7 +17,7 @@ echo
 # --- Variables and Paths (HOST-SIDE) ---
 PROJECT_DIR="/cluster/projects/nn9997k"
 MyWD="$PROJECT_DIR/$USER/llm-hpc-course"
-CONTAINER_DIR="${MyWD}/setup/apptainer"
+CONTAINER_DIR="${MyWD}/apptainer"
 APPTAINER_SIF="${CONTAINER_DIR}/pytorch_25.05_cuda12.9_arm_custom.sif"
 
 # Configs and python files for fine-tuning
@@ -25,7 +25,7 @@ CONFIG_FILE="${MyWD}/configs/qlora/llama3_1_8B_qlora_multi_device_alpaca_gpt4.ya
 PYTHON_FILE="${MyWD}/recipes/distributed/lora_finetune_distributed.py"
 
 # Host-side directories for output/logging
-OUTPUT_DIR="${MyWD}/results/checkpoints_out/Xllama3_1_8B_qlora_multi_device"
+OUTPUT_DIR="${MyWD}/results/checkpoints_out/llama3_1_8B_qlora_multi_device"
 
 # Create directories on the host filesystem (persisted via bind mount)
 if [ ! -d "$OUTPUT_DIR" ]; then
@@ -88,10 +88,10 @@ echo "LOCAL_RANK: \${LOCAL_RANK}, CUDA_VISIBLE_DEVICES: \${CUDA_VISIBLE_DEVICES}
 
 # Run the fine-tuning script
 # To override output dirs (optional):
-python "${PYTHON_FILE}" --config "${CONFIG_FILE}" checkpointer.checkpoint_dir="${OUTPUT_DIR}"
+#python "${PYTHON_FILE}" --config "${CONFIG_FILE}" checkpointer.checkpoint_dir="${OUTPUT_DIR}"
 
 # Default execution
-#python "${PYTHON_FILE}" --config "${CONFIG_FILE}" 
+python "${PYTHON_FILE}" --config "${CONFIG_FILE}" 
 
 # Syntax of "tune run" command
 #the flag --standalone is Useful when launching single-node, multi-worker job
