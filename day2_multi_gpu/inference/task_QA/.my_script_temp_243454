@@ -1,0 +1,19 @@
+#!/bin/bash -e
+
+# Set up variables to control distributed PyTorch training
+export RANK=$SLURM_PROCID
+export LOCAL_RANK=$SLURM_LOCALID
+
+echo "Task ${SLURM_PROCID}: RANK=0, LOCAL_RANK=0, WORLD_SIZE = 4, LOCAL_WORLD_SIZE = "
+echo "LOCAL_RANK: ${LOCAL_RANK}, CUDA_VISIBLE_DEVICES: ${CUDA_VISIBLE_DEVICES}"
+
+# Run the inference script
+#torchrun --standalone "/cluster/projects/nn9997k/hicham/llm-hpc-course/recipes/inference/vllm_distributed_gemini.py"
+
+python "/cluster/projects/nn9997k/hicham/llm-hpc-course/recipes/inference/vllm_distributed_gemini.py"         --tensor-parallel-size 4     --model "/cluster/projects/nn9997k/hicham/llm-hpc-course/shared/models/Llama-3.1-8B-Instruct"     --lora-path "/cluster/projects/nn9997k/hicham/llm-hpc-course/results/checkpoints_out/llama3_1_8B_lora_multi_device/epoch_0"     --prompt-file "/cluster/projects/nn9997k/hicham/llm-hpc-course/day2_multi_gpu/inference/task_QA/prompt_QA.json"
+#
+# Syntax of "tune run" command
+#the flag --standalone is Useful when launching single-node, multi-worker job
+#If --standalone specified then the options --rdzv-backend, --rdzv-endpoint, --rdzv-id are auto-assigned and any explicitly set values are ignored.
+
+#tune run --nnodes  --nproc_per_node  --standalone lora_finetune_distributed --config "" checkpointer.output_dir="" output_dir="" epochs=1

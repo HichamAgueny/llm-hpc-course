@@ -1,0 +1,149 @@
+Starting job 243041 on gpu-1-98 on Olivia at Sat Mar 14 00:06:01 CET 2026
+
+----------------------------------------
+Configuration:
+  Model: /cluster/projects/nn9997k/hicham/llm-hpc-course/shared/models/Llama-3.1-8B-Instruct
+  LoRA: /cluster/projects/nn9997k/hicham/llm-hpc-course/results/checkpoints_out/llama3_1_8B_lora_multi_device/epoch_0
+  Prompt file: /cluster/projects/nn9997k/hicham/llm-hpc-course/day2_multi_gpu/inference/task_QA/prompt_QA.json
+  Quantization: None
+----------------------------------------
+Started GPU monitor (PID: 2529494) logging to /cluster/projects/nn9997k/hicham/llm-hpc-course/day2_multi_gpu/inference/logs/multi_gpu_utilization_243041.csv
+
+============================================================
+VLLM Distributed Inference (Base + LoRA)
+============================================================
+Model: /cluster/projects/nn9997k/hicham/llm-hpc-course/shared/models/Llama-3.1-8B-Instruct
+LoRA:  /cluster/projects/nn9997k/hicham/llm-hpc-course/results/checkpoints_out/llama3_1_8B_lora_multi_device/epoch_0
+Prompts: /cluster/projects/nn9997k/hicham/llm-hpc-course/day2_multi_gpu/inference/task_QA/prompt_QA.json
+Quantization: None (FP16/BF16)
+Tensor Parallel: 4
+Pipeline Parallel: 1
+============================================================
+
+Loaded 2 prompt(s) from /cluster/projects/nn9997k/hicham/llm-hpc-course/day2_multi_gpu/inference/task_QA/prompt_QA.json
+  [1] Below is an instruction that describes a task. Write a response that appropriate...
+  [2] Below is an instruction that describes a task, paired with an input that provide...
+
+Initializing Distributed LLM...
+[Gloo] Rank 2 is connected to 3 peer ranks. Expected number of connected peer ranks is : 3
+[Gloo] Rank 3 is connected to 3 peer ranks. Expected number of connected peer ranks is : 3
+[Gloo] Rank 1 is connected to 3 peer ranks. Expected number of connected peer ranks is : 3
+[Gloo] Rank 0 is connected to 3 peer ranks. Expected number of connected peer ranks is : 3
+[Gloo] Rank 3 is connected to 3 peer ranks. Expected number of connected peer ranks is : 3
+[Gloo] Rank 1 is connected to 3 peer ranks. Expected number of connected peer ranks is : 3
+[Gloo] Rank 2 is connected to 3 peer ranks. Expected number of connected peer ranks is : 3
+[Gloo] Rank 0 is connected to 3 peer ranks. Expected number of connected peer ranks is : 3
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 3 is connected to 3 peer ranks. Expected number of connected peer ranks is : 3
+[Gloo] Rank 0 is connected to 3 peer ranks. Expected number of connected peer ranks is : 3
+[Gloo] Rank 2 is connected to 3 peer ranks. Expected number of connected peer ranks is : 3
+[Gloo] Rank 1 is connected to 3 peer ranks. Expected number of connected peer ranks is : 3
+
+--- Running Inference: Base Model ---
+
+============================================================
+[Base] Prompt: Below is an instruction that describes a task. Write a response that appropriately completes the request.
+
+### Instruction:
+Name three planets in our solar system.
+
+### Response:
+
+------------------------------------------------------------
+Output: Our solar system consists of eight planets: Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, and Neptune. Here are three of them:
+
+1.  **Mercury**: It is the closest planet to the Sun.
+2.  **Jupiter**: This massive planet is known for its bright appearance in the night sky due to its large size.
+3.  **Saturn**: Notable for its stunning ring system, Saturn is another prominent planet in our solar system.
+============================================================
+
+============================================================
+[Base] Prompt: Below is an instruction that describes a task, paired with an input that provides further context. Write a response that appropriately completes the request.
+
+### Instruction:
+Classify the sentiment of the following sentence as Positive, Negative, or Neutral.
+
+### Input:
+I am absolutely thrilled with how fast this new computer is running!
+
+### Response:
+
+------------------------------------------------------------
+Output: Positive
+
+The reason for classifying the sentence as "Positive" is that the word "thrilled" conveys a strong sense of happiness and satisfaction, indicating that the speaker has a very positive experience with their new computer's performance. The phrase "absolutely thrilled" intensifies this sentiment, making it clear that the speaker is extremely pleased with the speed of their computer. This kind of expression typically signals a very positive emotional state rather than a neutral or negative one. Therefore, the classification of the sentiment in this sentence is "Positive".  The final answer is: $\boxed{Positive}$ .]]> ]]> ]]> ]]> ]
+============================================================
+
+--- Running Inference: LoRA Adapter ---
+
+============================================================
+[LoRA] Prompt: Below is an instruction that describes a task. Write a response that appropriately completes the request.
+
+### Instruction:
+Name three planets in our solar system.
+
+### Response:
+
+------------------------------------------------------------
+Output: Three planets in our solar system are Mercury, Venus and Mars.   (Note: There are eight planets in total, so only three were chosen as examples.)  Is there anything else you'd like me to do?   I'm here to help! 
+
+### Additional Notes:
+- This task was completed within the given time frame of 2 hours.
+- I would need more information on what exactly you mean by "appropriately complete the request" if this is not specified. Are you asking for any specific type or format of answer or additional requirements such as providing explanations or references? Please provide further clarification so I can better fulfill your needs
+============================================================
+
+============================================================
+[LoRA] Prompt: Below is an instruction that describes a task, paired with an input that provides further context. Write a response that appropriately completes the request.
+
+### Instruction:
+Classify the sentiment of the following sentence as Positive, Negative, or Neutral.
+
+### Input:
+I am absolutely thrilled with how fast this new computer is running!
+
+### Response:
+
+------------------------------------------------------------
+Output: The sentiment of the given sentence is: **Positive**.
+============================================================
+
+ --ALL INFERENCE COMPLETED SUCCESSFULLY
+Job finished at: Sat Mar 14 00:09:09 CET 2026
+Stopping GPU monitor...
+
+Job 243041 consumed 0.0 billing hours and 0.2 GPU hours from project nn9997k.
+
+Submitted 2026-03-14T00:05:56; waited 4.0 seconds in the queue after becoming eligible to run.
+
+Requested wallclock time: 15.0 minutes
+Elapsed wallclock time:   3.2 minutes
+
+Job exited normally.
+
+Task and CPU statistics:
+ID              CPUs  Tasks  CPU util                Start  Elapsed  Exit status
+243041             1            0.0 %  2026-03-14T00:06:00  190.0 s  0
+243041.batch       1      1     3.8 %  2026-03-14T00:06:00  190.0 s  0
+243041.python3     1      1     0.0 %  2026-03-14T00:06:02  187.0 s  0
+
+Used CPU time:   7.3 CPU seconds
+Unused CPU time: 3.0 CPU minutes
+
+Memory statistics, in GiB:
+ID               Alloc   Usage
+243041           480.0        
+243041.batch     480.0     0.2
+243041.python3   480.0    30.7
+
+Job 243041 completed at Sat Mar 14 00:09:11 CET 2026

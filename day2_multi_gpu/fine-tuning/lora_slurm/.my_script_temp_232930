@@ -1,0 +1,24 @@
+#!/bin/bash -e
+
+# Flash Attention for efficiency
+export USE_FLASH_ATTENTION=1
+
+# Avoid CUDA memory fragmentation
+export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
+
+# Set up variables to control distributed PyTorch training
+export RANK=\$SLURM_PROCID
+export LOCAL_RANK=\$SLURM_LOCALID
+
+# Run the fine-tuning script
+# To override output dirs (optional):
+# python "${PYTHON_FILE}" --config "${CONFIG_FILE}" checkpointer.output_dir="${OUTPUT_DIR}" output_dir="${LOGGING_DIR}" epochs=1
+
+# Default execution
+python "${PYTHON_FILE}" --config "${CONFIG_FILE}"
+
+# Syntax of "tune run" command
+#the flag --standalone is Useful when launching single-node, multi-worker job
+#If --standalone specified then the options --rdzv-backend, --rdzv-endpoint, --rdzv-id are auto-assigned and any explicitly set values are ignored.
+
+#tune run --nnodes $N --nproc_per_node $nproc_perN --standalone lora_finetune_distributed --config "${CONFIG_FILE}" checkpointer.output_dir="${OUTPUT_DIR}" output_dir="${LOGGING_DIR}" epochs=1

@@ -1,0 +1,38 @@
+Starting job 243428 on gpu-1-98 on Olivia at Sat Mar 14 03:22:03 CET 2026
+
+----------------------------------------
+Configuration:
+  Model: /cluster/projects/nn9997k/hicham/llm-hpc-course/shared/models/Llama-3.1-8B-Instruct
+  LoRA: /cluster/projects/nn9997k/hicham/llm-hpc-course/results/checkpoints_out/llama3_1_8B_lora_multi_device/epoch_0
+  Prompt file: /cluster/projects/nn9997k/hicham/llm-hpc-course/day2_multi_gpu/inference/task_QA/prompt_QA.json
+  Quantization: None
+----------------------------------------
+Started GPU monitor (PID: 2559957) logging to /cluster/projects/nn9997k/hicham/llm-hpc-course/day2_multi_gpu/inference/logs/multi_gpu_utilization_243428.csv
+Task 0: RANK=0, LOCAL_RANK=0, WORLD_SIZE = 1, LOCAL_WORLD_SIZE = 
+LOCAL_RANK: 0, CUDA_VISIBLE_DEVICES: 0,1,2,3
+
+Job 243428 consumed 0.0 billing hours and 0.0 GPU hours from project nn9997k.
+
+Submitted 2026-03-14T03:21:49; waited 14.0 seconds in the queue after becoming eligible to run.
+
+Requested wallclock time: 15.0 minutes
+Elapsed wallclock time:   14.0 seconds
+
+Job failed.
+
+Task and CPU statistics:
+ID                             CPUs  Tasks  CPU util                Start  Elapsed  Exit status
+243428                            1            0.0 %  2026-03-14T03:22:03   14.0 s  2 (shell builtin error)
+243428.batch                      1      1     9.0 %  2026-03-14T03:22:03   14.0 s  2 (shell builtin error)
+243428..my_script_temp_243428     1      1     0.0 %  2026-03-14T03:22:04   12.0 s  2 (shell builtin error)
+
+Used CPU time:   1.3 CPU seconds
+Unused CPU time: 12.7 CPU seconds
+
+Memory statistics, in GiB:
+ID                              Alloc   Usage
+243428                          480.0        
+243428.batch                    480.0     0.2
+243428..my_script_temp_243428   480.0     2.4
+
+Job 243428 completed at Sat Mar 14 03:22:18 CET 2026

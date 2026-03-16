@@ -1,0 +1,38 @@
+Starting job 243434 on gpu-1-111 on Olivia at Sat Mar 14 03:39:05 CET 2026
+
+----------------------------------------
+Configuration:
+  Model: /cluster/projects/nn9997k/hicham/llm-hpc-course/shared/models/Llama-3.1-8B-Instruct
+  LoRA: /cluster/projects/nn9997k/hicham/llm-hpc-course/results/checkpoints_out/llama3_1_8B_lora_multi_device/epoch_0
+  Prompt file: /cluster/projects/nn9997k/hicham/llm-hpc-course/day2_multi_gpu/inference/task_QA/prompt_QA.json
+  Quantization: None
+----------------------------------------
+Started GPU monitor (PID: 2043787) logging to /cluster/projects/nn9997k/hicham/llm-hpc-course/day2_multi_gpu/inference/logs/multi_gpu_utilization_243434.csv
+Task 0: RANK=0, LOCAL_RANK=0, WORLD_SIZE = 1, LOCAL_WORLD_SIZE = 
+LOCAL_RANK: 0, CUDA_VISIBLE_DEVICES: 0,1,2,3
+
+Job 243434 consumed 0.0 billing hours and 0.2 GPU hours from project nn9997k.
+
+Submitted 2026-03-14T03:39:02; waited 3.0 seconds in the queue after becoming eligible to run.
+
+Requested wallclock time: 15.0 minutes
+Elapsed wallclock time:   3.6 minutes
+
+Job was cancelled.
+
+Task and CPU statistics:
+ID                             CPUs  Tasks  CPU util                Start  Elapsed  Exit status
+243434                            1            0.0 %  2026-03-14T03:39:05  217.0 s  0
+243434.batch                      1      1     5.6 %  2026-03-14T03:39:05  218.0 s  Signal 15
+243434..my_script_temp_243434     1      1     0.0 %  2026-03-14T03:39:06  219.0 s  Signal 15
+
+Used CPU time:   12.2 CPU seconds
+Unused CPU time: 3.4 CPU minutes
+
+Memory statistics, in GiB:
+ID                              Alloc   Usage
+243434                          480.0        
+243434.batch                    480.0     0.2
+243434..my_script_temp_243434   480.0     2.7
+
+Job 243434 completed at Sat Mar 14 03:42:47 CET 2026

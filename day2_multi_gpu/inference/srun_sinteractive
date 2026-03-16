@@ -1,0 +1,4 @@
+srun --mpi=pmix -A nn9997k -p accel --nodes=1 --gpus=1 --ntasks-per-node=1  --cpus-per-task 1 --mem-per-gpu=90G --time=06:30:00 --pty bash -i
+
+#--nodelist=gpu-1-50 
+

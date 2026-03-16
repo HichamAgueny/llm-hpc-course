@@ -1,0 +1,218 @@
+[1;36m(EngineCore_DP0 pid=559942)[0;0m Process EngineCore_DP0:
+[1;36m(EngineCore_DP0 pid=559942)[0;0m Traceback (most recent call last):
+[1;36m(EngineCore_DP0 pid=559942)[0;0m   File "/usr/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
+[1;36m(EngineCore_DP0 pid=559942)[0;0m     self.run()
+[1;36m(EngineCore_DP0 pid=559942)[0;0m   File "/usr/lib/python3.12/multiprocessing/process.py", line 108, in run
+[1;36m(EngineCore_DP0 pid=559942)[0;0m     self._target(*self._args, **self._kwargs)
+[1;36m(EngineCore_DP0 pid=559942)[0;0m   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 797, in run_engine_core
+[1;36m(EngineCore_DP0 pid=559942)[0;0m     raise e
+[1;36m(EngineCore_DP0 pid=559942)[0;0m   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 784, in run_engine_core
+[1;36m(EngineCore_DP0 pid=559942)[0;0m     engine_core = EngineCoreProc(*args, **kwargs)
+[1;36m(EngineCore_DP0 pid=559942)[0;0m                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[1;36m(EngineCore_DP0 pid=559942)[0;0m   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 552, in __init__
+[1;36m(EngineCore_DP0 pid=559942)[0;0m     super().__init__(
+[1;36m(EngineCore_DP0 pid=559942)[0;0m   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 106, in __init__
+[1;36m(EngineCore_DP0 pid=559942)[0;0m     self.model_executor = executor_class(vllm_config)
+[1;36m(EngineCore_DP0 pid=559942)[0;0m                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[1;36m(EngineCore_DP0 pid=559942)[0;0m   File "/usr/local/lib/python3.12/dist-packages/vllm/executor/executor_base.py", line 54, in __init__
+[1;36m(EngineCore_DP0 pid=559942)[0;0m     self._init_executor()
+[1;36m(EngineCore_DP0 pid=559942)[0;0m   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/multiproc_executor.py", line 114, in _init_executor
+[1;36m(EngineCore_DP0 pid=559942)[0;0m     self.workers = WorkerProc.wait_for_ready(unready_workers)
+[1;36m(EngineCore_DP0 pid=559942)[0;0m                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[1;36m(EngineCore_DP0 pid=559942)[0;0m   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/multiproc_executor.py", line 540, in wait_for_ready
+[1;36m(EngineCore_DP0 pid=559942)[0;0m     raise e from None
+[1;36m(EngineCore_DP0 pid=559942)[0;0m Exception: WorkerProc initialization failed due to an exception in a background process. See stack trace for root cause.
+[1;36m(EngineCore_DP0 pid=559945)[0;0m Process EngineCore_DP0:
+[1;36m(EngineCore_DP0 pid=559945)[0;0m Traceback (most recent call last):
+[1;36m(EngineCore_DP0 pid=559945)[0;0m   File "/usr/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
+[1;36m(EngineCore_DP0 pid=559945)[0;0m     self.run()
+[1;36m(EngineCore_DP0 pid=559945)[0;0m   File "/usr/lib/python3.12/multiprocessing/process.py", line 108, in run
+[1;36m(EngineCore_DP0 pid=559945)[0;0m     self._target(*self._args, **self._kwargs)
+[1;36m(EngineCore_DP0 pid=559945)[0;0m   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 797, in run_engine_core
+[1;36m(EngineCore_DP0 pid=559945)[0;0m     raise e
+[1;36m(EngineCore_DP0 pid=559945)[0;0m   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 784, in run_engine_core
+[1;36m(EngineCore_DP0 pid=559945)[0;0m     engine_core = EngineCoreProc(*args, **kwargs)
+[1;36m(EngineCore_DP0 pid=559945)[0;0m                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[1;36m(EngineCore_DP0 pid=559945)[0;0m   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 552, in __init__
+[1;36m(EngineCore_DP0 pid=559945)[0;0m     super().__init__(
+[1;36m(EngineCore_DP0 pid=559945)[0;0m   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 106, in __init__
+[1;36m(EngineCore_DP0 pid=559945)[0;0m     self.model_executor = executor_class(vllm_config)
+[1;36m(EngineCore_DP0 pid=559945)[0;0m                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[1;36m(EngineCore_DP0 pid=559945)[0;0m   File "/usr/local/lib/python3.12/dist-packages/vllm/executor/executor_base.py", line 54, in __init__
+[1;36m(EngineCore_DP0 pid=559945)[0;0m     self._init_executor()
+[1;36m(EngineCore_DP0 pid=559945)[0;0m   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/multiproc_executor.py", line 114, in _init_executor
+[1;36m(EngineCore_DP0 pid=559945)[0;0m     self.workers = WorkerProc.wait_for_ready(unready_workers)
+[1;36m(EngineCore_DP0 pid=559945)[0;0m                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[1;36m(EngineCore_DP0 pid=559945)[0;0m   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/multiproc_executor.py", line 540, in wait_for_ready
+[1;36m(EngineCore_DP0 pid=559945)[0;0m     raise e from None
+[1;36m(EngineCore_DP0 pid=559945)[0;0m Exception: WorkerProc initialization failed due to an exception in a background process. See stack trace for root cause.
+[1;36m(EngineCore_DP0 pid=559941)[0;0m Process EngineCore_DP0:
+[1;36m(EngineCore_DP0 pid=559941)[0;0m Traceback (most recent call last):
+[1;36m(EngineCore_DP0 pid=559941)[0;0m   File "/usr/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
+[1;36m(EngineCore_DP0 pid=559941)[0;0m     self.run()
+[1;36m(EngineCore_DP0 pid=559941)[0;0m   File "/usr/lib/python3.12/multiprocessing/process.py", line 108, in run
+[1;36m(EngineCore_DP0 pid=559941)[0;0m     self._target(*self._args, **self._kwargs)
+[1;36m(EngineCore_DP0 pid=559941)[0;0m   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 797, in run_engine_core
+[1;36m(EngineCore_DP0 pid=559941)[0;0m     raise e
+[1;36m(EngineCore_DP0 pid=559941)[0;0m   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 784, in run_engine_core
+[1;36m(EngineCore_DP0 pid=559941)[0;0m     engine_core = EngineCoreProc(*args, **kwargs)
+[1;36m(EngineCore_DP0 pid=559941)[0;0m                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[1;36m(EngineCore_DP0 pid=559941)[0;0m   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 552, in __init__
+[1;36m(EngineCore_DP0 pid=559941)[0;0m     super().__init__(
+[1;36m(EngineCore_DP0 pid=559941)[0;0m   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 106, in __init__
+[1;36m(EngineCore_DP0 pid=559941)[0;0m     self.model_executor = executor_class(vllm_config)
+[1;36m(EngineCore_DP0 pid=559941)[0;0m                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[1;36m(EngineCore_DP0 pid=559941)[0;0m   File "/usr/local/lib/python3.12/dist-packages/vllm/executor/executor_base.py", line 54, in __init__
+[1;36m(EngineCore_DP0 pid=559941)[0;0m     self._init_executor()
+[1;36m(EngineCore_DP0 pid=559941)[0;0m   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/multiproc_executor.py", line 114, in _init_executor
+[1;36m(EngineCore_DP0 pid=559941)[0;0m     self.workers = WorkerProc.wait_for_ready(unready_workers)
+[1;36m(EngineCore_DP0 pid=559941)[0;0m                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[1;36m(EngineCore_DP0 pid=559941)[0;0m   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/multiproc_executor.py", line 540, in wait_for_ready
+[1;36m(EngineCore_DP0 pid=559941)[0;0m     raise e from None
+[1;36m(EngineCore_DP0 pid=559941)[0;0m Exception: WorkerProc initialization failed due to an exception in a background process. See stack trace for root cause.
+[1;36m(EngineCore_DP0 pid=559940)[0;0m Process EngineCore_DP0:
+[1;36m(EngineCore_DP0 pid=559940)[0;0m Traceback (most recent call last):
+[1;36m(EngineCore_DP0 pid=559940)[0;0m   File "/usr/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
+[1;36m(EngineCore_DP0 pid=559940)[0;0m     self.run()
+[1;36m(EngineCore_DP0 pid=559940)[0;0m   File "/usr/lib/python3.12/multiprocessing/process.py", line 108, in run
+[1;36m(EngineCore_DP0 pid=559940)[0;0m     self._target(*self._args, **self._kwargs)
+[1;36m(EngineCore_DP0 pid=559940)[0;0m   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 797, in run_engine_core
+[1;36m(EngineCore_DP0 pid=559940)[0;0m     raise e
+[1;36m(EngineCore_DP0 pid=559940)[0;0m   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 784, in run_engine_core
+[1;36m(EngineCore_DP0 pid=559940)[0;0m     engine_core = EngineCoreProc(*args, **kwargs)
+[1;36m(EngineCore_DP0 pid=559940)[0;0m                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[1;36m(EngineCore_DP0 pid=559940)[0;0m   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 552, in __init__
+[1;36m(EngineCore_DP0 pid=559940)[0;0m     super().__init__(
+[1;36m(EngineCore_DP0 pid=559940)[0;0m   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 106, in __init__
+[1;36m(EngineCore_DP0 pid=559940)[0;0m     self.model_executor = executor_class(vllm_config)
+[1;36m(EngineCore_DP0 pid=559940)[0;0m                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[1;36m(EngineCore_DP0 pid=559940)[0;0m   File "/usr/local/lib/python3.12/dist-packages/vllm/executor/executor_base.py", line 54, in __init__
+[1;36m(EngineCore_DP0 pid=559940)[0;0m     self._init_executor()
+[1;36m(EngineCore_DP0 pid=559940)[0;0m   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/multiproc_executor.py", line 114, in _init_executor
+[1;36m(EngineCore_DP0 pid=559940)[0;0m     self.workers = WorkerProc.wait_for_ready(unready_workers)
+[1;36m(EngineCore_DP0 pid=559940)[0;0m                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[1;36m(EngineCore_DP0 pid=559940)[0;0m   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/multiproc_executor.py", line 540, in wait_for_ready
+[1;36m(EngineCore_DP0 pid=559940)[0;0m     raise e from None
+[1;36m(EngineCore_DP0 pid=559940)[0;0m Exception: WorkerProc initialization failed due to an exception in a background process. See stack trace for root cause.
+[rank2]: Traceback (most recent call last):
+[rank2]:   File "/cluster/projects/nn9997k/hicham/llm-hpc-course/recipes/inference/vllm_distributed_qwen.py", line 186, in <module>
+[rank2]:     main()
+[rank2]:   File "/cluster/projects/nn9997k/hicham/llm-hpc-course/recipes/inference/vllm_distributed_qwen.py", line 158, in main
+[rank2]:     llm = LLM(
+[rank2]:           ^^^^
+[rank2]:   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/llm.py", line 324, in __init__
+[rank2]:     self.llm_engine = LLMEngine.from_engine_args(
+[rank2]:                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank2]:   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/llm_engine.py", line 188, in from_engine_args
+[rank2]:     return cls(
+[rank2]:            ^^^^
+[rank2]:   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/llm_engine.py", line 122, in __init__
+[rank2]:     self.engine_core = EngineCoreClient.make_client(
+[rank2]:                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank2]:   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core_client.py", line 93, in make_client
+[rank2]:     return SyncMPClient(vllm_config, executor_class, log_stats)
+[rank2]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank2]:   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core_client.py", line 639, in __init__
+[rank2]:     super().__init__(
+[rank2]:   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core_client.py", line 468, in __init__
+[rank2]:     with launch_core_engines(vllm_config, executor_class, log_stats) as (
+[rank2]:   File "/usr/lib/python3.12/contextlib.py", line 144, in __exit__
+[rank2]:     next(self.gen)
+[rank2]:   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/utils.py", line 816, in launch_core_engines
+[rank2]:     wait_for_engine_startup(
+[rank2]:   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/utils.py", line 873, in wait_for_engine_startup
+[rank2]:     raise RuntimeError(
+[rank2]: RuntimeError: Engine core initialization failed. See root cause above. Failed core proc(s): {}
+[rank0]: Traceback (most recent call last):
+[rank0]:   File "/cluster/projects/nn9997k/hicham/llm-hpc-course/recipes/inference/vllm_distributed_qwen.py", line 186, in <module>
+[rank0]:     main()
+[rank0]:   File "/cluster/projects/nn9997k/hicham/llm-hpc-course/recipes/inference/vllm_distributed_qwen.py", line 158, in main
+[rank0]:     llm = LLM(
+[rank0]:           ^^^^
+[rank0]:   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/llm.py", line 324, in __init__
+[rank0]:     self.llm_engine = LLMEngine.from_engine_args(
+[rank0]:                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/llm_engine.py", line 188, in from_engine_args
+[rank0]:     return cls(
+[rank0]:            ^^^^
+[rank0]:   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/llm_engine.py", line 122, in __init__
+[rank0]:     self.engine_core = EngineCoreClient.make_client(
+[rank0]:                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core_client.py", line 93, in make_client
+[rank0]:     return SyncMPClient(vllm_config, executor_class, log_stats)
+[rank0]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core_client.py", line 639, in __init__
+[rank0]:     super().__init__(
+[rank0]:   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core_client.py", line 468, in __init__
+[rank0]:     with launch_core_engines(vllm_config, executor_class, log_stats) as (
+[rank0]:   File "/usr/lib/python3.12/contextlib.py", line 144, in __exit__
+[rank0]:     next(self.gen)
+[rank0]:   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/utils.py", line 816, in launch_core_engines
+[rank0]:     wait_for_engine_startup(
+[rank0]:   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/utils.py", line 873, in wait_for_engine_startup
+[rank0]:     raise RuntimeError(
+[rank0]: RuntimeError: Engine core initialization failed. See root cause above. Failed core proc(s): {}
+[rank3]: Traceback (most recent call last):
+[rank3]:   File "/cluster/projects/nn9997k/hicham/llm-hpc-course/recipes/inference/vllm_distributed_qwen.py", line 186, in <module>
+[rank3]:     main()
+[rank3]:   File "/cluster/projects/nn9997k/hicham/llm-hpc-course/recipes/inference/vllm_distributed_qwen.py", line 158, in main
+[rank3]:     llm = LLM(
+[rank3]:           ^^^^
+[rank3]:   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/llm.py", line 324, in __init__
+[rank3]:     self.llm_engine = LLMEngine.from_engine_args(
+[rank3]:                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank3]:   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/llm_engine.py", line 188, in from_engine_args
+[rank3]:     return cls(
+[rank3]:            ^^^^
+[rank3]:   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/llm_engine.py", line 122, in __init__
+[rank3]:     self.engine_core = EngineCoreClient.make_client(
+[rank3]:                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank3]:   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core_client.py", line 93, in make_client
+[rank3]:     return SyncMPClient(vllm_config, executor_class, log_stats)
+[rank3]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank3]:   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core_client.py", line 639, in __init__
+[rank3]:     super().__init__(
+[rank3]:   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core_client.py", line 468, in __init__
+[rank3]:     with launch_core_engines(vllm_config, executor_class, log_stats) as (
+[rank3]:   File "/usr/lib/python3.12/contextlib.py", line 144, in __exit__
+[rank3]:     next(self.gen)
+[rank3]:   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/utils.py", line 816, in launch_core_engines
+[rank3]:     wait_for_engine_startup(
+[rank3]:   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/utils.py", line 873, in wait_for_engine_startup
+[rank3]:     raise RuntimeError(
+[rank3]: RuntimeError: Engine core initialization failed. See root cause above. Failed core proc(s): {}
+[rank1]: Traceback (most recent call last):
+[rank1]:   File "/cluster/projects/nn9997k/hicham/llm-hpc-course/recipes/inference/vllm_distributed_qwen.py", line 186, in <module>
+[rank1]:     main()
+[rank1]:   File "/cluster/projects/nn9997k/hicham/llm-hpc-course/recipes/inference/vllm_distributed_qwen.py", line 158, in main
+[rank1]:     llm = LLM(
+[rank1]:           ^^^^
+[rank1]:   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/llm.py", line 324, in __init__
+[rank1]:     self.llm_engine = LLMEngine.from_engine_args(
+[rank1]:                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank1]:   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/llm_engine.py", line 188, in from_engine_args
+[rank1]:     return cls(
+[rank1]:            ^^^^
+[rank1]:   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/llm_engine.py", line 122, in __init__
+[rank1]:     self.engine_core = EngineCoreClient.make_client(
+[rank1]:                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank1]:   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core_client.py", line 93, in make_client
+[rank1]:     return SyncMPClient(vllm_config, executor_class, log_stats)
+[rank1]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank1]:   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core_client.py", line 639, in __init__
+[rank1]:     super().__init__(
+[rank1]:   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core_client.py", line 468, in __init__
+[rank1]:     with launch_core_engines(vllm_config, executor_class, log_stats) as (
+[rank1]:   File "/usr/lib/python3.12/contextlib.py", line 144, in __exit__
+[rank1]:     next(self.gen)
+[rank1]:   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/utils.py", line 816, in launch_core_engines
+[rank1]:     wait_for_engine_startup(
+[rank1]:   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/utils.py", line 873, in wait_for_engine_startup
+[rank1]:     raise RuntimeError(
+[rank1]: RuntimeError: Engine core initialization failed. See root cause above. Failed core proc(s): {}
+[rank0]:[W314 03:04:27.082427793 ProcessGroupNCCL.cpp:1524] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+srun: error: gpu-1-16: task 2: Exited with exit code 1
+srun: Terminating StepId=243426.0
+[2026-03-14T03:04:27.845] error: *** STEP 243426.0 ON gpu-1-16 CANCELLED AT 2026-03-14T03:04:27 DUE TO TASK FAILURE ***
+srun: error: gpu-1-16: tasks 0-1,3: Terminated
+srun: Force Terminated StepId=243426.0
