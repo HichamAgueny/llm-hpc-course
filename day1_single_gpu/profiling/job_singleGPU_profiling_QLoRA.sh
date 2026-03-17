@@ -21,7 +21,7 @@ CONTAINER_DIR="${MyWD}/apptainer"
 APPTAINER_SIF="${CONTAINER_DIR}/pytorch_25.05_cuda12.9_arm_custom.sif"
 
 # Configs and python files for fine-tuning
-CONFIG_FILE="${MyWD}/configs/lora/llama3_2_1B_qlora_single_device_profiling.yaml"
+CONFIG_FILE="${MyWD}/configs/qlora/llama3_2_1B_qlora_single_device_profiling.yaml"
 PYTHON_FILE="${MyWD}/recipes/single_device/lora_finetune_single_device.py"
 
 # Host-side directories for output/logging
