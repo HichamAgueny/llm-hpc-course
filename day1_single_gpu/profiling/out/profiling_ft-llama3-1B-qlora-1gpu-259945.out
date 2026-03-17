@@ -1,0 +1,165 @@
+Starting job 259945 on gpu-1-109 on Olivia at Tue Mar 17 13:08:07 CET 2026
+
+--Node: gpu-1-109
+
+--- My Main Directory (host): /cluster/work/projects/nn9997k/hicham/llm-hpc-course
+--- Bind-mounted inside container as: /workspace
+
+=== Running inside Apptainer ===
+CONFIG_FILE: /cluster/work/projects/nn9997k/hicham/llm-hpc-course/configs/qlora/llama3_2_1B_qlora_single_device_profiling.yaml
+PYTHON_FILE: /cluster/work/projects/nn9997k/hicham/llm-hpc-course/recipes/single_device/lora_finetune_single_device.py
+OUTPUT_DIR: /cluster/work/projects/nn9997k/hicham/llm-hpc-course/results/profiles/llama3_2_1B_qlora_single_device
+LOGGING_DIR: /cluster/work/projects/nn9997k/hicham/llm-hpc-course/results/profiles/logs/qlora_finetune_1B_output
+
+--- Launching the application inside Apptainer ---
+INFO:    gocryptfs not found, will not be able to use gocryptfs
+/usr/bin/rm: cannot remove '/usr/local/cuda/compat/lib': Read-only file system
+rm: cannot remove '/usr/local/cuda/compat/lib': Read-only file system
+rm: cannot remove '/usr/local/cuda/compat/lib': Read-only file system
+INFO:torchtune.utils._logging:Running LoRAFinetuneRecipeSingleDevice with resolved config:
+
+batch_size: 4
+checkpoint_dir: /workspace/shared/models/Llama-3.2-1B-Instruct
+checkpointer:
+  _component_: torchtune.training.FullModelHFCheckpointer
+  checkpoint_dir: /workspace/shared/models/Llama-3.2-1B-Instruct
+  checkpoint_files:
+  - model.safetensors
+  model_type: LLAMA3_2
+  output_dir: /cluster/work/projects/nn9997k/hicham/llm-hpc-course/results/profiles/llama3_2_1B_qlora_single_device
+  recipe_checkpoint: null
+clip_grad_norm: null
+compile: false
+dataset:
+  _component_: torchtune.datasets.instruct_dataset
+  column_map:
+    input: document
+    output: summary
+  data_files: /workspace/shared/datasets/XSum/xsum.json
+  source: json
+  split: train[:2000]
+  train_on_input: false
+dataset_dir: /workspace/shared/datasets/XSum/xsum.json
+device: cuda
+dtype: bf16
+enable_activation_checkpointing: false
+enable_activation_offloading: false
+epochs: 1
+gradient_accumulation_steps: 1
+log_dir: /workspace/results/logs/qlora_finetune_1B_output
+log_every_n_steps: 10
+log_peak_memory_stats: true
+loss:
+  _component_: torchtune.modules.loss.CEWithChunkedOutputLoss
+lr_scheduler:
+  _component_: torchtune.training.lr_schedulers.get_cosine_schedule_with_warmup
+  num_warmup_steps: 10
+max_steps_per_epoch: 20
+metric_logger:
+  _component_: torchtune.training.metric_logging.DiskLogger
+  log_dir: /workspace/results/logs/qlora_finetune_1B_output
+model:
+  _component_: torchtune.models.llama3_2.qlora_llama3_2_1b
+  apply_lora_to_mlp: true
+  lora_alpha: 128
+  lora_attn_modules:
+  - q_proj
+  - v_proj
+  - output_proj
+  lora_dropout: 0.0
+  lora_rank: 64
+optimizer:
+  _component_: torch.optim.AdamW
+  fused: true
+  lr: 0.0003
+  weight_decay: 0.01
+output_dir: /cluster/work/projects/nn9997k/hicham/llm-hpc-course/results/profiles/logs/qlora_finetune_1B_output
+profiler:
+  _component_: torchtune.training.setup_torch_profiler
+  active_steps: 2
+  cpu: true
+  cuda: true
+  enabled: true
+  num_cycles: 1
+  output_dir: /workspace/results/profiles/profiling_outputs/qlora
+  profile_memory: true
+  record_shapes: true
+  wait_steps: 5
+  warmup_steps: 3
+  with_flops: true
+  with_stack: true
+profiling_dir: /workspace/results/profiles/profiling_outputs/qlora
+project_dir: /workspace
+result_dir: /workspace/results
+resume_from_checkpoint: false
+save_adapter_weights_only: true
+seed: null
+shared_dir: /workspace/shared
+shuffle: true
+template:
+  _component_: torchtune.data.SummarizeTemplate
+tokenizer:
+  _component_: torchtune.models.llama3.llama3_tokenizer
+  max_seq_len: null
+  path: /workspace/shared/models/Llama-3.2-1B-Instruct/original/tokenizer.model
+
+DEBUG:torchtune.utils._logging:Setting manual seed to local seed 633278498. Local seed is seed + rank = 633278498 + 0
+INFO:torchtune.utils._logging:Model is initialized with precision torch.bfloat16.
+INFO:torchtune.utils._logging:Memory stats after model init:
+	GPU peak memory allocation: 1.21 GiB
+	GPU peak memory reserved: 1.25 GiB
+	GPU peak memory active: 1.21 GiB
+INFO:torchtune.utils._logging:Tokenizer is initialized from file.
+INFO:torchtune.utils._logging:Optimizer and loss are initialized.
+INFO:torchtune.utils._logging:Loss is initialized.
+INFO:torchtune.utils._logging:Learning rate scheduler is initialized.
+WARNING:torchtune.utils._logging:`profile_memory` requires `with_stack` and `record_shapes`, these will be enabled since `profile_memory` is True
+INFO:torchtune.utils._logging: Profiler config after instantiation: {'enabled': True, 'output_dir': '/workspace/results/profiles/profiling_outputs/qlora', 'cpu': True, 'cuda': True, 'xpu': True, 'profile_memory': True, 'with_stack': True, 'record_shapes': True, 'with_flops': True, 'wait_steps': 5, 'warmup_steps': 3, 'active_steps': 2, 'num_cycles': 1}
+Writing logs to /workspace/results/logs/qlora_finetune_1B_output/log_1773749295.txt
+  0%|          | 0/20 [00:00<?, ?it/s]/cluster/work/projects/nn9997k/hicham/llm-hpc-course/recipes/single_device/lora_finetune_single_device.py:722: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /opt/pytorch/pytorch/aten/src/ATen/native/Scalar.cpp:22.)
+  loss_to_log = running_loss.item() / num_tokens
+  5%|▌         | 1/20 [00:01<00:21,  1.14s/it]1|1|Loss: 2.2805943489074707:   5%|▌         | 1/20 [00:01<00:21,  1.14s/it]1|1|Loss: 2.2805943489074707:  10%|█         | 2/20 [00:01<00:13,  1.36it/s]1|2|Loss: 2.6653292179107666:  10%|█         | 2/20 [00:01<00:13,  1.36it/s]1|2|Loss: 2.6653292179107666:  15%|█▌        | 3/20 [00:01<00:08,  2.09it/s]1|3|Loss: 2.198124885559082:  15%|█▌        | 3/20 [00:01<00:08,  2.09it/s] 1|3|Loss: 2.198124885559082:  20%|██        | 4/20 [00:01<00:05,  2.78it/s]1|4|Loss: 2.022376537322998:  20%|██        | 4/20 [00:01<00:05,  2.78it/s]1|4|Loss: 2.022376537322998:  25%|██▌       | 5/20 [00:02<00:04,  3.42it/s]1|5|Loss: 1.7568567991256714:  25%|██▌       | 5/20 [00:02<00:04,  3.42it/s]1|5|Loss: 1.7568567991256714:  30%|███       | 6/20 [00:02<00:04,  3.16it/s]1|6|Loss: 2.038280725479126:  30%|███       | 6/20 [00:02<00:04,  3.16it/s] 1|6|Loss: 2.038280725479126:  35%|███▌      | 7/20 [00:02<00:03,  3.47it/s]1|7|Loss: 1.6799163818359375:  35%|███▌      | 7/20 [00:02<00:03,  3.47it/s]1|7|Loss: 1.6799163818359375:  40%|████      | 8/20 [00:02<00:03,  3.71it/s]1|8|Loss: 1.878912329673767:  40%|████      | 8/20 [00:02<00:03,  3.71it/s] [W317 13:08:20.014319464 unwind.cpp:10] Warning: record_context_cpp is not support on non-linux non-x86_64 platforms (function operator())
+1|8|Loss: 1.878912329673767:  45%|████▌     | 9/20 [00:03<00:03,  3.24it/s]1|9|Loss: 1.9372682571411133:  45%|████▌     | 9/20 [00:03<00:03,  3.24it/s]1|9|Loss: 1.9372682571411133:  50%|█████     | 10/20 [00:03<00:03,  2.95it/s]1|10|Loss: 2.09097957611084:  50%|█████     | 10/20 [00:03<00:03,  2.95it/s] INFO:torchtune.utils._logging:Dumping traces at step 10
+INFO:torchtune.utils._logging:Finished dumping traces in 3.09 seconds
+INFO:torchtune.utils._logging:Saving profiling results to /workspace/results/profiles/profiling_outputs/qlora/iteration_10
+1|10|Loss: 2.09097957611084:  55%|█████▌    | 11/20 [00:31<01:18,  8.77s/it]1|11|Loss: 1.9473412036895752:  55%|█████▌    | 11/20 [00:31<01:18,  8.77s/it]1|11|Loss: 1.9473412036895752:  60%|██████    | 12/20 [00:31<00:49,  6.20s/it]1|12|Loss: 1.8177270889282227:  60%|██████    | 12/20 [00:31<00:49,  6.20s/it]1|12|Loss: 1.8177270889282227:  65%|██████▌   | 13/20 [00:32<00:30,  4.39s/it]1|13|Loss: 1.8735172748565674:  65%|██████▌   | 13/20 [00:32<00:30,  4.39s/it]1|13|Loss: 1.8735172748565674:  70%|███████   | 14/20 [00:32<00:18,  3.16s/it]1|14|Loss: 1.8797521591186523:  70%|███████   | 14/20 [00:32<00:18,  3.16s/it]1|14|Loss: 1.8797521591186523:  75%|███████▌  | 15/20 [00:32<00:11,  2.27s/it]1|15|Loss: 1.6759189367294312:  75%|███████▌  | 15/20 [00:32<00:11,  2.27s/it]1|15|Loss: 1.6759189367294312:  80%|████████  | 16/20 [00:32<00:06,  1.65s/it]1|16|Loss: 2.229595184326172:  80%|████████  | 16/20 [00:32<00:06,  1.65s/it] 1|16|Loss: 2.229595184326172:  85%|████████▌ | 17/20 [00:33<00:03,  1.22s/it]1|17|Loss: 1.9620686769485474:  85%|████████▌ | 17/20 [00:33<00:03,  1.22s/it]1|17|Loss: 1.9620686769485474:  90%|█████████ | 18/20 [00:33<00:01,  1.10it/s]1|18|Loss: 1.9347114562988281:  90%|█████████ | 18/20 [00:33<00:01,  1.10it/s]1|18|Loss: 1.9347114562988281:  95%|█████████▌| 19/20 [00:33<00:00,  1.42it/s]1|19|Loss: 1.7375410795211792:  95%|█████████▌| 19/20 [00:33<00:00,  1.42it/s]1|19|Loss: 1.7375410795211792: 100%|██████████| 20/20 [00:33<00:00,  1.81it/s]1|20|Loss: 1.8009910583496094: 100%|██████████| 20/20 [00:33<00:00,  1.81it/s]INFO:torchtune.utils._logging:Starting checkpoint save...
+INFO:torchtune.utils._logging:Adapter checkpoint of size 0.08 GiB saved to /cluster/work/projects/nn9997k/hicham/llm-hpc-course/results/profiles/llama3_2_1B_qlora_single_device/epoch_0/adapter_model.pt
+INFO:torchtune.utils._logging:Adapter checkpoint of size 0.08 GiB saved to /cluster/work/projects/nn9997k/hicham/llm-hpc-course/results/profiles/llama3_2_1B_qlora_single_device/epoch_0/adapter_model.safetensors
+INFO:torchtune.utils._logging:Adapter checkpoint of size 0.00 GiB saved to /cluster/work/projects/nn9997k/hicham/llm-hpc-course/results/profiles/llama3_2_1B_qlora_single_device/epoch_0/adapter_config.json
+INFO:torchtune.utils._logging:Saving final epoch checkpoint.
+INFO:torchtune.utils._logging:Please note that you have set adapter_only=True, so only adapter weights will be saved.You need to merge the adapter weights into your base model for further use. See FullModelHFCheckpointer.save_checkpoint for more details.
+INFO:torchtune.utils._logging:Checkpoint saved in 0.26 seconds.
+1|20|Loss: 1.8009910583496094: 100%|██████████| 20/20 [00:34<00:00,  1.70s/it]
+
+real	0m45.768s
+user	0m0.011s
+sys	0m0.004s
+
+--- Finished :) ---
+
+Job 259945 consumed 0.0 billing hours and 0.0 GPU hours from project nn9997k.
+
+Submitted 2026-03-17T13:08:05; waited 2.0 seconds in the queue after becoming eligible to run.
+
+Requested wallclock time: 10.0 minutes
+Elapsed wallclock time:   46.0 seconds
+
+Job exited normally.
+
+Task and CPU statistics:
+ID                CPUs  Tasks  CPU util                Start  Elapsed  Exit status
+259945               1            0.0 %  2026-03-17T13:08:07   46.0 s  0
+259945.batch         1      1     0.1 %  2026-03-17T13:08:07   46.0 s  0
+259945.apptainer     1      1     0.0 %  2026-03-17T13:08:07   46.0 s  0
+
+Used CPU time:   0.1 CPU seconds
+Unused CPU time: 45.9 CPU seconds
+
+Memory statistics, in GiB:
+ID                 Alloc   Usage
+259945               8.0        
+259945.batch         8.0     0.0
+259945.apptainer     8.0     6.0
+
+Job 259945 completed at Tue Mar 17 13:08:53 CET 2026
