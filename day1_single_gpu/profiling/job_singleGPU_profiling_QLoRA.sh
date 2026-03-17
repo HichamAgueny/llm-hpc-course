@@ -15,14 +15,14 @@ echo "--Node: $(hostname)"
 echo
 
 # --- Variables and Paths (HOST-SIDE) ---
-PROJECT_DIR="/cluster/projects/nn9997k"
+PROJECT_DIR="/cluster/work/projects/nn9997k"
 MyWD="$PROJECT_DIR/$USER/llm-hpc-course"
 CONTAINER_DIR="${MyWD}/apptainer"
 APPTAINER_SIF="${CONTAINER_DIR}/pytorch_25.05_cuda12.9_arm_custom.sif"
 
 # Configs and python files for fine-tuning
 CONFIG_FILE="${MyWD}/configs/lora/llama3_2_1B_qlora_single_device_profiling.yaml"
-PYTHON_FILE="${MyWD}/recipes/single_device/qlora_finetune_single_device.py"
+PYTHON_FILE="${MyWD}/recipes/single_device/lora_finetune_single_device.py"
 
 # Host-side directories for output/logging
 OUTPUT_DIR="${MyWD}/results/profiles/llama3_2_1B_qlora_single_device"
