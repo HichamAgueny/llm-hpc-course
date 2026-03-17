@@ -41,7 +41,7 @@ output_dir: ${result_dir}/checkpoints_out/llama3_2_1B_lora_single_device
 log_dir: ${result_dir}/logs/lora_finetune_1B_output
 
 # Where profiling traces/timing data will be saved (if profiler enabled)
-profiling_dir: ${result_dir}/profiles/profiling_outputs_lora
+profiling_dir: ${result_dir}/profiles/profiling_outputs/lora
 
 # Model Arguments
 model:

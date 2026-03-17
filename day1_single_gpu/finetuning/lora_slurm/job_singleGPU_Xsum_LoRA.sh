@@ -15,7 +15,7 @@ echo "--Node: $(hostname)"
 echo
 
 # --- Variables and Paths (HOST-SIDE) ---
-PROJECT_DIR="/cluster/projects/nn9997k"
+PROJECT_DIR="/cluster/work/projects/nn9997k"
 MyWD="$PROJECT_DIR/$USER/llm-hpc-course"
 CONTAINER_DIR="${MyWD}/apptainer"
 APPTAINER_SIF="${CONTAINER_DIR}/pytorch_25.05_cuda12.9_arm_custom.sif"
