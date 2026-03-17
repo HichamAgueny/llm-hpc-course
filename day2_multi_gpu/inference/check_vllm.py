@@ -37,14 +37,14 @@ def main():
             # Some versions expose cuda checks in utils
             pass 
     except ImportError:
-        print("❌ vLLM is NOT installed or not in PYTHONPATH")
+        print("-- vLLM is NOT installed or not in PYTHONPATH")
     except Exception as e:
-        print(f"⚠️ Error importing vLLM: {e}")
+        print(f"-- Error importing vLLM: {e}")
 
     # 3. Check CUDA Availability & Devices
     print_section("CUDA Hardware")
     if torch.cuda.is_available():
-        print(f"✅ CUDA Available: Yes")
+        print(f"--CUDA Available: Yes")
         print(f"GPU Count: {torch.cuda.device_count()}")
         
         for i in range(torch.cuda.device_count()):
@@ -54,30 +54,30 @@ def main():
             print(f"Compute Capability: {props.major}.{props.minor}")
             print(f"Total Memory: {props.total_memory / 1024**3:.2f} GB")
     else:
-        print("❌ CUDA Available: No")
-        print("⚠️ vLLM requires a CUDA-compatible GPU to function.")
+        print("--CUDA Available: No")
+        print("-- vLLM requires a CUDA-compatible GPU to function.")
 
     # 4. Check NCCL
     print_section("NCCL (NVIDIA Collective Communications Library)")
     try:
         # PyTorch bundles NCCL; this checks the bundled version
         nccl_version = torch.cuda.nccl.version()
-        print(f"✅ NCCL Version: {nccl_version}")
+        print(f"--NCCL Version: {nccl_version}")
     except AttributeError:
-        print("⚠️ NCCL version not directly exposed via torch.cuda.nccl.version()")
+        print("-- NCCL version not directly exposed via torch.cuda.nccl.version()")
         print("   (Usually bundled with PyTorch build)")
     except Exception as e:
-        print(f"❌ Error checking NCCL: {e}")
+        print(f"--Error checking NCCL: {e}")
 
     # 5. Quick vLLM Import Test
     print_section("vLLM Import Smoke Test")
     try:
         from vllm import LLM, SamplingParams
-        print("✅ vLLM core modules imported successfully")
+        print("--vLLM core modules imported successfully")
     except ImportError as e:
-        print(f"❌ Failed to import vLLM core modules: {e}")
+        print(f"--Failed to import vLLM core modules: {e}")
     except Exception as e:
-        print(f"⚠️ Unexpected error during import: {e}")
+        print(f"-- Unexpected error during import: {e}")
 
     print("\n" + "="*40)
     print(" Check Complete")
