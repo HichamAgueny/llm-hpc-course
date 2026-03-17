@@ -25,8 +25,8 @@ CONFIG_FILE="${MyWD}/configs/lora/llama3_2_1B_lora_single_device_profiling.yaml"
 PYTHON_FILE="${MyWD}/recipes/single_device/lora_finetune_single_device.py"
 
 # Host-side directories for output/logging
-OUTPUT_DIR="${MyWD}/results/profiles/Xllama3_2_1B_lora_single_device"
-LOGGING_DIR="${MyWD}/results/profiles/logs/Xlora_finetune_1B_output"
+OUTPUT_DIR="${MyWD}/results/profiles/llama3_2_1B_lora_single_device"
+LOGGING_DIR="${MyWD}/results/profiles/logs/lora_finetune_1B_output"
 
 # Create directories on the host filesystem (persisted via bind mount)
 if [ ! -d "$OUTPUT_DIR" ]; then

@@ -9,13 +9,13 @@
 #SBATCH --ntasks-per-node=4
 #SBATCH --cpus-per-task=4
 #SBATCH -o ./out/%x-%j.out
-#SBATCH --mem-per-gpu=120G
+#SBATCH --mem-per-gpu=96G
 
 echo "--Node: $(hostname)"
 echo
 
 # --- Variables and Paths (HOST-SIDE) ---
-PROJECT_DIR="/cluster/projects/nn9997k"
+PROJECT_DIR="/cluster/work/projects/nn9997k"
 MyWD="$PROJECT_DIR/$USER/llm-hpc-course"
 CONTAINER_DIR="${MyWD}/apptainer"
 APPTAINER_SIF="${CONTAINER_DIR}/pytorch_25.05_cuda12.9_arm_custom.sif"
@@ -26,6 +26,7 @@ PYTHON_FILE="${MyWD}/recipes/distributed/lora_finetune_distributed.py"
 
 # Host-side directories for output/logging
 OUTPUT_DIR="${MyWD}/results/checkpoints_out/llama3_1_8B_qlora_multi_device"
+LOGGING_DIR="${MyWD}/results/logs/qlora_finetune_8B_output"
 
 # Create directories on the host filesystem (persisted via bind mount)
 if [ ! -d "$OUTPUT_DIR" ]; then
@@ -47,8 +48,6 @@ echo "CONFIG_FILE: ${CONFIG_FILE}"
 echo "PYTHON_FILE: ${PYTHON_FILE}"
 echo "OUTPUT_DIR: ${OUTPUT_DIR}"
 echo "LOGGING_DIR: ${LOGGING_DIR}"
-echo
-
 echo
 
 # --- Slurm setting
@@ -75,9 +74,6 @@ cat > "${INNER_SCRIPT_TEMP}" << EOF
 
 # Flash Attention for efficiency
 export USE_FLASH_ATTENTION=1
-
-# Avoid CUDA memory fragmentation
-#export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 
 # Set up variables to control distributed PyTorch training
 export RANK=\$SLURM_PROCID
@@ -116,7 +112,7 @@ CPU_BIND="map_cpu:1,73,145,217"
 # Bind host project directory to /workspace inside container
 # --nv enables NVIDIA GPU support
 
-time srun --mpi=pmix --cpu-bind=${CPU_BIND} apptainer exec --nv \
+time srun --cpu-bind=${CPU_BIND} apptainer exec --nv \
       -B "${MyWD}:/workspace" \
       -B $PROJECT_DIR \
       "${APPTAINER_SIF}" \

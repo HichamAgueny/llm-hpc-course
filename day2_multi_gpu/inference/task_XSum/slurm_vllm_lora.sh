@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH -A nn9997k
 #SBATCH -p accel
-#SBATCH -t 00:15:00
+#SBATCH -t 00:10:00
 #SBATCH -N 1
 #SBATCH --ntasks-per-node=1      
 #SBATCH --gpus=1              
@@ -16,7 +16,7 @@ module load NRIS/GPU
 module load vLLM/0.11.0
 
 # -------- User configuration --------
-PROJECT_DIR="/cluster/projects/nn9997k"
+PROJECT_DIR="/cluster/work/projects/nn9997k"
 MyWD="$PROJECT_DIR/$USER/llm-hpc-course"
 CURRENT_DIR="${MyWD}/day2_multi_gpu/inference/task_XSum"
 
@@ -58,7 +58,7 @@ if [ ! -d "$LOG_DIR" ]; then
    mkdir -p ${MyWD}/day2_multi_gpu/inference/logs	
 fi
 # --- Start GPU Monitoring in the background ---
-export MONITOR_LOG="$LOG_DIR/gpu_lora_utilization_${SLURM_JOB_ID}.csv"
+export MONITOR_LOG="$LOG_DIR/gpu_lora_utilization_xsum_${SLURM_JOB_ID}.csv"
 python $MyWD/utils/monitoring/gpu_monitor.py --interval 3 --output "$MONITOR_LOG" &
 MONITOR_PID=$!
 echo "Started GPU monitor (PID: $MONITOR_PID) logging to $MONITOR_LOG"

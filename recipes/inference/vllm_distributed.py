@@ -110,7 +110,7 @@ Total GPUs: {args.tensor_parallel_size * args.pipeline_parallel_size}
     )
 
     if is_rank_0:
-        print("\nInitializing engine with Torchrun backend...")
+        print("\nInitializing engine ...")
 
     # Configure the LLM Arguments
     quant_value = None if args.quantization == "None" else args.quantization

@@ -1,11 +1,11 @@
 #!/bin/bash
 #SBATCH -A nn9997k
 #SBATCH -p accel
-#SBATCH -t 00:15:00
+#SBATCH -t 00:10:00
 #SBATCH -N 1
 #SBATCH --ntasks-per-node=1      
 #SBATCH --gpus=1              
-#SBATCH --mem-per-cpu=80G
+#SBATCH --mem-per-gpu=96G
 #SBATCH -J vllm-lora
 #SBATCH -o ./out/%x-%j.out
 #SBATCH -e ./out/%x-%j.err
@@ -16,7 +16,7 @@ module load NRIS/GPU
 module load vLLM/0.11.0
 
 # -------- User configuration --------
-PROJECT_DIR="/cluster/projects/nn9997k"
+PROJECT_DIR="/cluster/work/projects/nn9997k"
 MyWD="$PROJECT_DIR/$USER/llm-hpc-course"
 CURRENT_DIR="${MyWD}/day2_multi_gpu/inference/task_QA"
 
