@@ -58,7 +58,7 @@ if [ ! -d "$LOG_DIR" ]; then
 fi
 # --- Start GPU Monitoring in the background ---
 export MONITOR_LOG="$LOG_DIR/gpu_lora_utilization_${SLURM_JOB_ID}.csv"
-python $MyWD/utils/monitoring/gpu_monitor.py --interval 3 --output "$MONITOR_LOG" &
+python $MyWD/utils/gpu_monitor.py --interval 3 --output "$MONITOR_LOG" &
 MONITOR_PID=$!
 echo "Started GPU monitor (PID: $MONITOR_PID) logging to $MONITOR_LOG"
 
