@@ -36,4 +36,9 @@ python recipes/single_device/lora_finetune_single_device.py \
 ```
 
 > [!TIP]
-> You can override any configuration parameter directly from the command line by appending `parameter=value` after the config file path.
+> To override the checkpointer directory while launching training, you can run:
+> ```bash
+> python recipes/single_device/lora_finetune_single_device.py \
+>     --config configs/lora/llama3_2_1B_lora_single_device_XSum.yaml \
+>     checkpointer.checkpoint_dir=<YOUR_CHECKPOINT_DIR>
+> ```
