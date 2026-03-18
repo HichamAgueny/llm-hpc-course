@@ -2,14 +2,14 @@ Starting job 259944 on gpu-1-105 on Olivia at Tue Mar 17 13:08:02 CET 2026
 
 --Node: gpu-1-105
 
---- My Main Directory (host): /cluster/work/projects/nn9997k/hicham/llm-hpc-course
+--- My Main Directory (host): /cluster/work/projects/nn9970k/hicham/llm-hpc-course
 --- Bind-mounted inside container as: /workspace
 
 === Running inside Apptainer ===
-CONFIG_FILE: /cluster/work/projects/nn9997k/hicham/llm-hpc-course/configs/lora/llama3_2_1B_lora_single_device_profiling.yaml
-PYTHON_FILE: /cluster/work/projects/nn9997k/hicham/llm-hpc-course/recipes/single_device/lora_finetune_single_device.py
-OUTPUT_DIR: /cluster/work/projects/nn9997k/hicham/llm-hpc-course/results/profiles/Xllama3_2_1B_lora_single_device
-LOGGING_DIR: /cluster/work/projects/nn9997k/hicham/llm-hpc-course/results/profiles/logs/Xlora_finetune_1B_output
+CONFIG_FILE: /cluster/work/projects/nn9970k/hicham/llm-hpc-course/configs/lora/llama3_2_1B_lora_single_device_profiling.yaml
+PYTHON_FILE: /cluster/work/projects/nn9970k/hicham/llm-hpc-course/recipes/single_device/lora_finetune_single_device.py
+OUTPUT_DIR: /cluster/work/projects/nn9970k/hicham/llm-hpc-course/results/profiles/Xllama3_2_1B_lora_single_device
+LOGGING_DIR: /cluster/work/projects/nn9970k/hicham/llm-hpc-course/results/profiles/logs/Xlora_finetune_1B_output
 
 --- Launching the application inside Apptainer ---
 INFO:    gocryptfs not found, will not be able to use gocryptfs
@@ -26,7 +26,7 @@ checkpointer:
   checkpoint_files:
   - model.safetensors
   model_type: LLAMA3_2
-  output_dir: /cluster/work/projects/nn9997k/hicham/llm-hpc-course/results/profiles/Xllama3_2_1B_lora_single_device
+  output_dir: /cluster/work/projects/nn9970k/hicham/llm-hpc-course/results/profiles/Xllama3_2_1B_lora_single_device
   recipe_checkpoint: null
 clip_grad_norm: null
 compile: false
@@ -73,7 +73,7 @@ optimizer:
   fused: true
   lr: 0.0003
   weight_decay: 0.01
-output_dir: /cluster/work/projects/nn9997k/hicham/llm-hpc-course/results/profiles/logs/Xlora_finetune_1B_output
+output_dir: /cluster/work/projects/nn9970k/hicham/llm-hpc-course/results/profiles/logs/Xlora_finetune_1B_output
 profiler:
   _component_: torchtune.training.setup_torch_profiler
   active_steps: 2
@@ -116,7 +116,7 @@ INFO:torchtune.utils._logging:Learning rate scheduler is initialized.
 WARNING:torchtune.utils._logging:`profile_memory` requires `with_stack` and `record_shapes`, these will be enabled since `profile_memory` is True
 INFO:torchtune.utils._logging: Profiler config after instantiation: {'enabled': True, 'output_dir': '/workspace/results/profiles/profiling_outputs/lora', 'cpu': True, 'cuda': True, 'xpu': True, 'profile_memory': True, 'with_stack': True, 'record_shapes': True, 'with_flops': True, 'wait_steps': 5, 'warmup_steps': 3, 'active_steps': 2, 'num_cycles': 1}
 Writing logs to /workspace/results/logs/lora_finetune_1B_output/log_1773749290.txt
-  0%|          | 0/20 [00:00<?, ?it/s]/cluster/work/projects/nn9997k/hicham/llm-hpc-course/recipes/single_device/lora_finetune_single_device.py:722: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+  0%|          | 0/20 [00:00<?, ?it/s]/cluster/work/projects/nn9970k/hicham/llm-hpc-course/recipes/single_device/lora_finetune_single_device.py:722: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
 Consider using tensor.detach() first. (Triggered internally at /opt/pytorch/pytorch/aten/src/ATen/native/Scalar.cpp:22.)
   loss_to_log = running_loss.item() / num_tokens
   5%|▌         | 1/20 [00:01<00:20,  1.08s/it]1|1|Loss: 2.162423610687256:   5%|▌         | 1/20 [00:01<00:20,  1.08s/it]1|1|Loss: 2.162423610687256:  10%|█         | 2/20 [00:01<00:12,  1.46it/s]1|2|Loss: 2.530817985534668:  10%|█         | 2/20 [00:01<00:12,  1.46it/s]1|2|Loss: 2.530817985534668:  15%|█▌        | 3/20 [00:01<00:07,  2.36it/s]1|3|Loss: 2.1026194095611572:  15%|█▌        | 3/20 [00:01<00:07,  2.36it/s]1|3|Loss: 2.1026194095611572:  20%|██        | 4/20 [00:01<00:04,  3.28it/s]1|4|Loss: 1.9177422523498535:  20%|██        | 4/20 [00:01<00:04,  3.28it/s]1|4|Loss: 1.9177422523498535:  25%|██▌       | 5/20 [00:01<00:03,  4.24it/s]1|5|Loss: 1.7050806283950806:  25%|██▌       | 5/20 [00:01<00:03,  4.24it/s]1|5|Loss: 1.7050806283950806:  30%|███       | 6/20 [00:02<00:03,  3.96it/s]1|6|Loss: 1.9022849798202515:  30%|███       | 6/20 [00:02<00:03,  3.96it/s]1|6|Loss: 1.9022849798202515:  35%|███▌      | 7/20 [00:02<00:02,  4.62it/s]1|7|Loss: 1.6155091524124146:  35%|███▌      | 7/20 [00:02<00:02,  4.62it/s]1|7|Loss: 1.6155091524124146:  40%|████      | 8/20 [00:02<00:02,  5.23it/s]1|8|Loss: 1.7749828100204468:  40%|████      | 8/20 [00:02<00:02,  5.23it/s][W317 13:08:14.611545581 unwind.cpp:10] Warning: record_context_cpp is not support on non-linux non-x86_64 platforms (function operator())
@@ -124,9 +124,9 @@ Consider using tensor.detach() first. (Triggered internally at /opt/pytorch/pyto
 INFO:torchtune.utils._logging:Finished dumping traces in 1.83 seconds
 INFO:torchtune.utils._logging:Saving profiling results to /workspace/results/profiles/profiling_outputs/lora/iteration_10
 1|10|Loss: 1.9441925287246704:  55%|█████▌    | 11/20 [00:17<00:42,  4.69s/it]1|11|Loss: 1.9098566770553589:  55%|█████▌    | 11/20 [00:17<00:42,  4.69s/it]1|11|Loss: 1.9098566770553589:  60%|██████    | 12/20 [00:17<00:26,  3.34s/it]1|12|Loss: 1.6723334789276123:  60%|██████    | 12/20 [00:17<00:26,  3.34s/it]1|12|Loss: 1.6723334789276123:  65%|██████▌   | 13/20 [00:18<00:16,  2.37s/it]1|13|Loss: 1.8482935428619385:  65%|██████▌   | 13/20 [00:18<00:16,  2.37s/it]1|13|Loss: 1.8482935428619385:  70%|███████   | 14/20 [00:18<00:10,  1.69s/it]1|14|Loss: 1.8000438213348389:  70%|███████   | 14/20 [00:18<00:10,  1.69s/it]1|14|Loss: 1.8000438213348389:  75%|███████▌  | 15/20 [00:18<00:06,  1.22s/it]1|15|Loss: 1.6614047288894653:  75%|███████▌  | 15/20 [00:18<00:06,  1.22s/it]1|15|Loss: 1.6614047288894653:  80%|████████  | 16/20 [00:18<00:03,  1.11it/s]1|16|Loss: 1.9604384899139404:  80%|████████  | 16/20 [00:18<00:03,  1.11it/s]1|16|Loss: 1.9604384899139404:  85%|████████▌ | 17/20 [00:18<00:02,  1.50it/s]1|17|Loss: 1.849780797958374:  85%|████████▌ | 17/20 [00:18<00:02,  1.50it/s] 1|17|Loss: 1.849780797958374:  90%|█████████ | 18/20 [00:18<00:01,  1.98it/s]1|18|Loss: 1.8408546447753906:  90%|█████████ | 18/20 [00:18<00:01,  1.98it/s]1|18|Loss: 1.8408546447753906:  95%|█████████▌| 19/20 [00:18<00:00,  2.52it/s]1|19|Loss: 1.6638166904449463:  95%|█████████▌| 19/20 [00:18<00:00,  2.52it/s]1|19|Loss: 1.6638166904449463: 100%|██████████| 20/20 [00:19<00:00,  3.17it/s]1|20|Loss: 1.775803804397583: 100%|██████████| 20/20 [00:19<00:00,  3.17it/s] INFO:torchtune.utils._logging:Starting checkpoint save...
-INFO:torchtune.utils._logging:Adapter checkpoint of size 0.08 GiB saved to /cluster/work/projects/nn9997k/hicham/llm-hpc-course/results/profiles/Xllama3_2_1B_lora_single_device/epoch_0/adapter_model.pt
-INFO:torchtune.utils._logging:Adapter checkpoint of size 0.08 GiB saved to /cluster/work/projects/nn9997k/hicham/llm-hpc-course/results/profiles/Xllama3_2_1B_lora_single_device/epoch_0/adapter_model.safetensors
-INFO:torchtune.utils._logging:Adapter checkpoint of size 0.00 GiB saved to /cluster/work/projects/nn9997k/hicham/llm-hpc-course/results/profiles/Xllama3_2_1B_lora_single_device/epoch_0/adapter_config.json
+INFO:torchtune.utils._logging:Adapter checkpoint of size 0.08 GiB saved to /cluster/work/projects/nn9970k/hicham/llm-hpc-course/results/profiles/Xllama3_2_1B_lora_single_device/epoch_0/adapter_model.pt
+INFO:torchtune.utils._logging:Adapter checkpoint of size 0.08 GiB saved to /cluster/work/projects/nn9970k/hicham/llm-hpc-course/results/profiles/Xllama3_2_1B_lora_single_device/epoch_0/adapter_model.safetensors
+INFO:torchtune.utils._logging:Adapter checkpoint of size 0.00 GiB saved to /cluster/work/projects/nn9970k/hicham/llm-hpc-course/results/profiles/Xllama3_2_1B_lora_single_device/epoch_0/adapter_config.json
 INFO:torchtune.utils._logging:Saving final epoch checkpoint.
 INFO:torchtune.utils._logging:Please note that you have set adapter_only=True, so only adapter weights will be saved.You need to merge the adapter weights into your base model for further use. See FullModelHFCheckpointer.save_checkpoint for more details.
 INFO:torchtune.utils._logging:Checkpoint saved in 0.11 seconds.
@@ -138,7 +138,7 @@ sys	0m0.012s
 
 --- Finished :) ---
 
-Job 259944 consumed 0.0 billing hours and 0.0 GPU hours from project nn9997k.
+Job 259944 consumed 0.0 billing hours and 0.0 GPU hours from project nn9970k.
 
 Submitted 2026-03-17T13:08:01; waited 0.0 seconds in the queue after becoming eligible to run.
 
