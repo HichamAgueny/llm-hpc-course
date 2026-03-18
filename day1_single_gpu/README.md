@@ -51,5 +51,5 @@ sbatch job_singleGPU_profiling_LoRA.sh
   ```bash
   ./utils/gpu_monitor.sh <JobID>
   ```
-- Alternatively, you can run `nvidia-smi` inside your interactive container.
+- Alternatively, you can run `nvidia-smi` from the gpu node where the job is running ex. `ssh gpu-1-20`.
 - Review the `.out` files in the `out/` subdirectories for logs and performance summaries.
