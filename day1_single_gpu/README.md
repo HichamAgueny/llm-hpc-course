@@ -25,8 +25,13 @@ This directory contains labs and scripts for performing LLM fine‑tuning and pe
 Navigate to the `finetuning` directory and choose a script (LoRA or QLoRA):
 
 ```bash
+For LoRA
 cd finetuning/lora_slurm
 sbatch job_singleGPU_Xsum_LoRA.sh
+
+For QLoRA
+cd finetuning/qlora_slurm
+sbatch job_singleGPU_Xsum_QLoRA.sh
 ```
 
 ### 2. Profiling
@@ -34,7 +39,7 @@ To analyze the performance of your training, use the profiling scripts:
 
 ```bash
 cd profiling
-sbatch job_singleGPU_profiling_QLoRA.sh
+sbatch job_singleGPU_profiling_LoRA.sh
 ```
 
 ---
@@ -42,5 +47,5 @@ sbatch job_singleGPU_profiling_QLoRA.sh
 ## Resource Usage Tips
 
 - Use `squeue --me` to monitor your job status.
-- Once the job is running, use `nvidia-smi` inside your interactive container to check GPU utilization.
+- Once the job is running, run `./gpu_monitor.sh your-jobID`  from this `/cluster/work/projects/nn9997k/hicham/llm-hpc-course/utils` to check GPU utilization.
 - Review the `.out` files in the `out/` subdirectories for logs and performance summaries.
