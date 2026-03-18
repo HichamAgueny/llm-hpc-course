@@ -17,7 +17,7 @@ profiler:
   enabled: True
 
   # Output directory for trace artifacts
-  output_dir: /cluster/work/projects/nn9970k/$USER/llm-hpc-course/data/profiling_outputs
+  output_dir: /cluster/work/projects/nn9997k/$USER/llm-hpc-course/data/profiling_outputs
 
   # Activities to trace
   cpu: True
@@ -53,7 +53,7 @@ sbatch job_singleGPU_profiling_LoRA.sh
 ```
 
 Profiling outputs will be generated in the configured `output_dir`, for example:
-`/cluster/work/projects/nn9970k/$USER/llm-hpc-course/data/profiling_outputs/`
+`/cluster/work/projects/nn9997k/$USER/llm-hpc-course/data/profiling_outputs/`
 
 ---
 
@@ -63,7 +63,7 @@ After the job completes, copy the profiling artifacts from the cluster to your l
 
 ```bash
 # Replace USERNAME with your actual cluster username
-scp -r USERNAME@olivia.sigma2.no:/cluster/work/projects/nn9970k/USERNAME/llm-hpc-course/data/profiling_outputs/ .
+scp -r USERNAME@olivia.sigma2.no:/cluster/work/projects/nn9997k/USERNAME/llm-hpc-course/data/profiling_outputs/ .
 ```
 
 ### Viewing Traces

@@ -17,7 +17,7 @@
 # For single device LoRA finetuning please use 8B_lora_single_device.yaml
 # or 8B_qlora_single_device.yaml
 
-# NOTE: The host path '/cluster/projects/nn9970k/hicham/llm-hpc-course' is 
+# NOTE: The host path '/cluster/projects/nn9997k/hicham/llm-hpc-course' is 
 #       bind-mounted to '/workspace' inside the Apptainer container.
 #       All paths below must use '/workspace' to be accessible during training.
 #
