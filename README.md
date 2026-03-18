@@ -130,6 +130,7 @@ sbatch job_singleGPU_LoRA.sh
 
 - [Day 1: Single GPU Fine-tuning](./day1_single_gpu/README.md)
 - [Day 2: Multi-GPU & Inference](./day2_multi_gpu/README.md)
+- [Profiling Guide (Single GPU)](./day1_single_gpu/profiling/README.md)
 - [Configuration Guide](./configs/README.md)
 - [Python Recipes Documentation](./recipes/README.md)
 - [Utility Scripts Documentation](./utils/README.md)
