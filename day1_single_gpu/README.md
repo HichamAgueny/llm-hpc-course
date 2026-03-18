@@ -47,5 +47,9 @@ sbatch job_singleGPU_profiling_LoRA.sh
 ## Resource Usage Tips
 
 - Use `squeue --me` to monitor your job status.
-- Once the job is running, run `./gpu_monitor.sh your-jobID`  from this `/cluster/work/projects/nn9997k/hicham/llm-hpc-course/utils` to check GPU utilization.
+- Once the job is running, use the utility script to check real-time GPU utilization:
+  ```bash
+  ./utils/gpu_monitor.sh <JobID>
+  ```
+- Alternatively, you can run `nvidia-smi` inside your interactive container.
 - Review the `.out` files in the `out/` subdirectories for logs and performance summaries.

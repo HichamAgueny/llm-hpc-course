@@ -63,6 +63,7 @@ llm-hpc-course/
 ├── day1_single_gpu/ # Labs for Day 1 (Fine-tuning & Profiling)
 ├── day2_multi_gpu/  # Labs for Day 2 (Multi-GPU FT & Inference)
 ├── recipes/        # Reusable Python scripts for FT and Inference
+├── utils/          # Utility scripts (monitoring, etc.)
 ├── LICENSE
 └── README.md        # ← You are here
 ```
@@ -131,6 +132,7 @@ sbatch job_singleGPU_LoRA.sh
 - [Day 2: Multi-GPU & Inference](./day2_multi_gpu/README.md)
 - [Configuration Guide](./configs/README.md)
 - [Python Recipes Documentation](./recipes/README.md)
+- [Utility Scripts Documentation](./utils/README.md)
 
 ---
 
