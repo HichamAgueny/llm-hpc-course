@@ -1,5 +1,5 @@
 #!/bin/bash -e
-export PROJECT_DIR="/cluster/work/projects/nn9970k"
+export PROJECT_DIR="/cluster/work/projects/nn9997k"
 export MyWD="$PROJECT_DIR/$USER/llm-hpc-course"
 export CONTAINER_WD="/workspace"
 
