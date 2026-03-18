@@ -50,5 +50,5 @@ sbatch slurm_vllm_distributed.sh
 
 ## Technical Notes
 
-- **Distributed Strategy**: Check the job scripts to see how GPUs are allocated (`--gpus-per-node`) and how distributed training is initialized.
-- **vLLM**: The inference scripts utilize vLLM to serve models efficiently. Ensure your container environment has `vllm` installed.
+- **Distributed Strategy**: Check the job scripts to see how GPUs are allocated (`--gpus-per-node`) and how distributed training is launched.
+- **vLLM**: The inference scripts utilize vLLM module, specifically `vLLM/0.11.0` to serve models efficiently. Ensure you first load the `NRIS/GPU` environment.
