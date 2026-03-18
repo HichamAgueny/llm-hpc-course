@@ -14,16 +14,15 @@ This course covers the full lifecycle of working with LLMs in an HPC environment
 #### Morning Session (09:30–12:00) — HPC Fundamentals & Fine-Tuning Optimization
 - **HPC Foundations for LLM Workloads**
   - Overview of Olivia Supercomputer
-  - Storage hierarchy strategy
+  - Storage hierarchy
   - Containerized environments
 - **LLM Fine-Tuning Fundamentals**
   - Parameter-efficient fine-tuning (LoRA, QLoRA)
-  - Quantization within QLoRA (FP4, FP8, BF16)
-  - Memory–throughput trade-offs
+  - Quantization within QLoRA 
 
 #### Afternoon Session (13:00–15:30) — Hands-On: Single-GPU Workflow
 - End-to-end LoRA fine-tuning workflow
-- Quantized fine-tuning: FP4 vs FP8 vs BF16 comparison
+- Quantized fine-tuning: FP4 vs BF16 comparison
 - GPU monitoring and memory profiling
 
 #### Wrap-Up & Discussion (15:30–16:00)
@@ -37,17 +36,14 @@ This course covers the full lifecycle of working with LLMs in an HPC environment
 #### Morning Session (09:30–12:00) — Distributed Fine-Tuning
 - **Distributed Training Concepts**
   - DDP vs FSDP
-  - Communication overhead and scaling efficiency
 - **Hands-On: Multi-GPU Fine-Tuning**
   - Multi-GPU LoRA & QLoRA fine-tuning
   - Profiling distributed workloads
-  - Throughput and scaling efficiency analysis
 
 #### Afternoon Session (13:00–15:30) — Hands-On: Optimized Inference
 - Introduction to the vLLM inference engine
 - Single-GPU inference benchmarking
 - Multi-GPU inference scaling
-- Latency vs throughput trade-offs
 
 #### Wrap-Up & Discussion (15:30–16:00)
 **Outcome:** Participants scale fine-tuned models and inference across multiple GPUs, interpret performance metrics, and apply optimization strategies suitable for HPC allocations.
@@ -98,10 +94,10 @@ username@uan02:~>
 Then run the following commands:
 
 ```bash
-mkdir /cluster/work/projects/nn9970k/$USER
-cd /cluster/work/projects/nn9970k/$USER
-git clone https://github.com/HichamAgueny/llm-hpc-workshop.git
-cd llm-hpc-workshop
+mkdir /cluster/work/projects/nn9997k/$USER
+cd /cluster/work/projects/nn9997k/$USER
+git clone https://github.com/HichamAgueny/llm-hpc-course.git
+cd llm-hpc-course
 ````
 
 ### Setup Script
