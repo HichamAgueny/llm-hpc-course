@@ -49,21 +49,6 @@ This course covers the full lifecycle of working with LLMs in an HPC environment
 **Outcome:** Participants scale fine-tuned models and inference across multiple GPUs, interpret performance metrics, and apply optimization strategies suitable for HPC allocations.
 
 ---
-
-## Environment Setup
-
-To initialize your project environment on the cluster, run the following setup script from the repository root. This will copy shared resources (datasets, models) and create the necessary directory structures for results and logs.
-
-```bash
-# Run the setup script
-bash setup_env.sh
-```
-
-> [!IMPORTANT]
-> This script is configured for the **Olivia Supercomputer** and handles the migration of resources from shared project directories.
-
----
-
 ## Repository Layout
 
 ```text
@@ -102,19 +87,17 @@ cd llm-hpc-course
 
 ### Setup Script
 
-Run the setup script:
+To initialize your project environment on the cluster, run the following setup script from the repository root. This will copy shared resources (datasets, models) and create the necessary directory structures for results and logs.
 
 ```bash
-chmod u+x my_script.sh
-./my_script.sh
+# Run the setup script
+bash setup_env.sh
 ```
 
-This script will:
-
-* Copy the Apptainer (Singularity) image and dataset from a local project to your project work area.
-* Update paths in the configuration files automatically.
+> [!IMPORTANT]
+> This script is configured for the **Olivia Supercomputer** and handles the migration of resources from shared project directories.
   
-### 1. Environment Setup
+### 2. Environment Setup
 
 We use **Apptainer** to provide a consistent environment across the cluster.
 
