@@ -1,0 +1,107 @@
+# LLM Fine‑tuning and Inference on HPC
+
+Welcome to the **LLM Fine‑tuning and Inference on HPC** course! This repository provides a hands‑on guide to training and deploying Large Language Models (LLMs) on High‑Performance Computing (HPC) clusters.
+
+## Course Overview
+
+This course covers the full lifecycle of working with LLMs in an HPC environment, from setting up the environment to distributed training and high‑throughput inference.
+
+## Course Program
+
+### Day 1 — Single-GPU Fine-Tuning & HPC Foundations
+**Theme:** Build an efficient single-GPU fine-tuning workflow on an HPC system.
+
+#### Morning Session (09:30–12:00) — HPC Fundamentals & Fine-Tuning Optimization
+- **HPC Foundations for LLM Workloads**
+  - Overview of Olivia Supercomputer
+  - Storage hierarchy strategy
+  - Containerized environments
+- **LLM Fine-Tuning Fundamentals**
+  - Parameter-efficient fine-tuning (LoRA, QLoRA)
+  - Quantization within QLoRA (FP4, FP8, BF16)
+  - Memory–throughput trade-offs
+
+#### Afternoon Session (13:00–15:30) — Hands-On: Single-GPU Workflow
+- End-to-end LoRA fine-tuning workflow
+- Quantized fine-tuning: FP4 vs FP8 vs BF16 comparison
+- GPU monitoring and memory profiling
+
+#### Wrap-Up & Discussion (15:30–16:00)
+**Outcome:** Participants implement and optimize a complete single-GPU fine-tuning pipeline with performance diagnostics on an HPC system.
+
+---
+
+### Day 2 — Distributed Training & Optimized Inference
+**Theme:** Scale fine-tuning and inference across multiple GPUs while minimizing communication overhead.
+
+#### Morning Session (09:30–12:00) — Distributed Fine-Tuning
+- **Distributed Training Concepts**
+  - DDP vs FSDP
+  - Communication overhead and scaling efficiency
+- **Hands-On: Multi-GPU Fine-Tuning**
+  - Multi-GPU LoRA & QLoRA fine-tuning
+  - Profiling distributed workloads
+  - Throughput and scaling efficiency analysis
+
+#### Afternoon Session (13:00–15:30) — Hands-On: Optimized Inference
+- Introduction to the vLLM inference engine
+- Single-GPU inference benchmarking
+- Multi-GPU inference scaling
+- Latency vs throughput trade-offs
+
+#### Wrap-Up & Discussion (15:30–16:00)
+**Outcome:** Participants scale fine-tuned models and inference across multiple GPUs, interpret performance metrics, and apply optimization strategies suitable for HPC allocations.
+
+---
+
+## Repository Layout
+
+```text
+llm-hpc-course/
+├── apptainer/       # Container definitions and launch scripts
+├── configs/         # LoRA/QLoRA configuration files (YAML)
+├── day1_single_gpu/ # Labs for Day 1 (Fine-tuning & Profiling)
+├── day2_multi_gpu/  # Labs for Day 2 (Multi-GPU FT & Inference)
+├── recipes/        # Reusable Python scripts for FT and Inference
+├── LICENSE
+└── README.md        # ← You are here
+```
+
+---
+
+## Getting Started
+
+### 1. Environment Setup
+
+We use **Apptainer** (formerly Singularity) to provide a consistent environment across the cluster.
+
+```bash
+cd apptainer
+# Build or use the existing image
+bash launch_shell.sh
+```
+Follow the instructions in [apptainer/README.md](./apptainer/README.md) for more details.
+
+### 2. Running your first job
+
+Navigate to the Day 1 labs to start your first single‑GPU fine‑tuning job.
+
+```bash
+cd day1_single_gpu/finetuning
+sbatch job_singleGPU_LoRA.sh
+```
+
+---
+
+## Resources & Documentation
+
+- [Day 1: Single GPU Fine-tuning](./day1_single_gpu/README.md)
+- [Day 2: Multi-GPU & Inference](./day2_multi_gpu/README.md)
+- [Configuration Guide](./configs/README.md)
+- [Python Recipes Documentation](./recipes/README.md)
+
+---
+
+## Contact
+**Hicham Agueny**
+[GitHub Profile](https://github.com/HichamAgueny)
