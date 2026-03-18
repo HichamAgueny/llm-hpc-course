@@ -5,7 +5,7 @@ This directory focuses on scaling LLM workloads across multiple GPUs, including 
 ## Learning Objectives
 
 - Scale fine‑tuning to multiple GPUs using **FSDP** (Fully Sharded Data Parallel) or other distributed strategies.
-- Profile your distributed workloads to identify communication bottlenecks. (See the [Profiling Guide](../day1_single_gpu/profiling/README.md) for basics).
+- Profile your distributed workloads to identify communication bottlenecks. (See the [Multi-GPU Profiling Guide](./profiling/README.md)).
 - Deploy LLMs for inference using **vLLM** for optimized throughput.
 - Compare performance between single‑GPU and multi‑GPU setups.
 
