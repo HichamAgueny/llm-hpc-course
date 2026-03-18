@@ -71,9 +71,41 @@ llm-hpc-course/
 
 ## Getting Started
 
+### 0. SSH to Olivia
+
+First, connect to **Olivia** via SSH:
+```bash
+ssh username@olivia.sigma2.no
+(username@olivia.sigma2.no) One-time password (OATH) for `username': 
+(username@olivia.sigma2.no) Password: 
+username@uan02:~> 
+```
+Then run the following commands:
+
+```bash
+mkdir /cluster/work/projects/nn9970k/$USER
+cd /cluster/work/projects/nn9970k/$USER
+git clone https://github.com/HichamAgueny/llm-hpc-workshop.git
+cd llm-hpc-workshop
+````
+
+### Setup Script
+
+Run the setup script:
+
+```bash
+chmod u+x my_script.sh
+./my_script.sh
+```
+
+This script will:
+
+* Copy the Apptainer (Singularity) image and dataset from a local project to your project work area.
+* Update paths in the configuration files automatically.
+  
 ### 1. Environment Setup
 
-We use **Apptainer** (formerly Singularity) to provide a consistent environment across the cluster.
+We use **Apptainer** to provide a consistent environment across the cluster.
 
 ```bash
 cd apptainer
