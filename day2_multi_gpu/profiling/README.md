@@ -17,7 +17,7 @@ profiler:
   enabled: True
 
   # Output directory of trace artifacts
-  output_dir: /cluster/work/projects/nn9970k/$USER/llm-hpc-course/data/profiling_outputs/multi_gpu
+  output_dir: /cluster/work/projects/nn9997k/$USER/llm-hpc-course/data/profiling_outputs/multi_gpu
 
   # Activities to trace
   cpu: True
@@ -60,7 +60,7 @@ Ensure your job script is configured for multiple GPUs (e.g., `--nodes=1 --gpus-
 Copy the resulting artifacts to your local machine:
 
 ```bash
-scp -r USERNAME@olivia.sigma2.no:/cluster/work/projects/nn9970k/USERNAME/llm-hpc-course/data/profiling_outputs/multi_gpu .
+scp -r USERNAME@olivia.sigma2.no:/cluster/work/projects/nn9997k/USERNAME/llm-hpc-course/data/profiling_outputs/multi_gpu .
 ```
 
 ### Viewing Results

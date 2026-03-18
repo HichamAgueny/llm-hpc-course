@@ -9,11 +9,11 @@
 
 # 1. Define Base Directories
 # Source: Original shared location
-SOURCE_BASE="/cluster/work/projects/nn9970k/hicham/llm-hpc-course"
+SOURCE_BASE="/cluster/work/projects/nn9997k/hicham/llm-hpc-course"
 
 # Target: Current user's project location
-# (Adapting to the project code specified by the user: nn9970k)
-TARGET_BASE="/cluster/work/projects/nn9970k/$USER/llm-hpc-course"
+# (Adapting to the project code specified by the user: nn9997k)
+TARGET_BASE="/cluster/work/projects/nn9997k/$USER/llm-hpc-course"
 
 echo "----------------------------------------------------------------"
 echo "Initializing Environment Setup"
