@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -A nn9997k
+#SBATCH -A nn9970k
 #SBATCH -p accel
 #SBATCH -t 00:15:00
 #SBATCH -N 1
@@ -16,7 +16,7 @@ module load NRIS/GPU
 module load vLLM/0.11.0
 
 # -------- User configuration --------
-PROJECT_DIR="/cluster/work/projects/nn9997k"
+PROJECT_DIR="/cluster/work/projects/nn9970k"
 MyWD="$PROJECT_DIR/$USER/llm-hpc-course"
 CURRENT_DIR="${MyWD}/day2_multi_gpu/inference/task_QA"
 # Python path for inference

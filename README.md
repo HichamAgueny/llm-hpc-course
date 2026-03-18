@@ -54,6 +54,20 @@ This course covers the full lifecycle of working with LLMs in an HPC environment
 
 ---
 
+## Environment Setup
+
+To initialize your project environment on the cluster, run the following setup script from the repository root. This will copy shared resources (datasets, models) and create the necessary directory structures for results and logs.
+
+```bash
+# Run the setup script
+bash setup_env.sh
+```
+
+> [!IMPORTANT]
+> This script is configured for the **Olivia Supercomputer** and handles the migration of resources from shared project directories.
+
+---
+
 ## Repository Layout
 
 ```text
