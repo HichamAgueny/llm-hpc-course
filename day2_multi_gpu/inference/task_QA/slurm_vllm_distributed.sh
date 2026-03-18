@@ -13,6 +13,7 @@
 # Exit on error
 set -e
 module load NRIS/GPU
+module load CUDA/12.9.1
 module load vLLM/0.11.0
 
 # -------- User configuration --------
