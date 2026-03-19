@@ -113,7 +113,7 @@ Follow the instructions in [apptainer/README.md](./apptainer/README.md) for more
 Navigate to the Day 1 labs to start your first single‑GPU fine‑tuning job.
 
 ```bash
-cd day1_single_gpu/finetuning
+cd day1_single_gpu/finetuning/lora_slurm
 sbatch job_singleGPU_LoRA.sh
 ```
 
