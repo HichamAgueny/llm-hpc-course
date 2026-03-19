@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Usage: ./monitor_multiGPU.sh <JOB_ID>
+# Usage: ./gpu_monitor.sh <JOB_ID>
 # To stop the script, press Ctrl+C
 
 JOB_ID="$1"
