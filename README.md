@@ -85,7 +85,7 @@ git clone https://github.com/HichamAgueny/llm-hpc-course.git
 cd llm-hpc-course
 ````
 
-### Setup Script
+### 1. Environment Script
 
 To initialize your project environment on the cluster, run the following setup script from the repository root. This will copy shared resources (datasets, models) and create the necessary directory structures for results and logs.
 
@@ -97,7 +97,7 @@ bash setup_env.sh
 > [!IMPORTANT]
 > This script is configured for the **Olivia Supercomputer** and handles the migration of resources from shared project directories.
   
-### 2. Environment Setup
+### 3. Environment Setup
 
 We use **Apptainer** to provide a consistent environment across the cluster.
 
@@ -114,7 +114,7 @@ Navigate to the Day 1 labs to start your first single‑GPU fine‑tuning job.
 
 ```bash
 cd day1_single_gpu/finetuning/lora_slurm
-sbatch job_singleGPU_LoRA.sh
+sbatch job_singleGPU_Xsum_LoRA.sh
 ```
 
 ---
