@@ -17,7 +17,7 @@ profiler:
   enabled: True
 
   # Output directory for trace artifacts
-  output_dir: /cluster/work/projects/nn9997k/$USER/llm-hpc-course/data/profiling_outputs
+  output_dir: /cluster/work/projects/nn9997k/$USER/llm-hpc-course/results/profiles/profiling_outputs
 
   # Activities to trace
   cpu: True
