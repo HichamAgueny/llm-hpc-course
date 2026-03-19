@@ -5,9 +5,7 @@
 #SBATCH --partition=accel
 #SBATCH --nodes=1
 #SBATCH --gpus=1
-#SBATCH --gpus-per-node=1
 #SBATCH --ntasks-per-node=1
-#SBATCH --cpus-per-task=1
 #SBATCH -o ./out/%x-%j.out
 #SBATCH --mem-per-cpu=8G
 
