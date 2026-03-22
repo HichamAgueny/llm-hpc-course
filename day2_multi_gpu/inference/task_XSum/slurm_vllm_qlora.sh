@@ -5,7 +5,7 @@
 #SBATCH -N 1
 #SBATCH --ntasks-per-node=1      
 #SBATCH --gpus=1              
-#SBATCH --mem-per-cpu=80G
+#SBATCH --mem-per-cpu=8G
 #SBATCH -J vllm-qlora
 #SBATCH -o ./out/%x-%j.out
 #SBATCH -e ./out/%x-%j.err
