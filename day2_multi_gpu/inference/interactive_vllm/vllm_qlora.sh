@@ -7,7 +7,7 @@ module load CUDA/12.9.1
 module load vLLM/0.11.0
 
 # -------- User configuration --------
-PROJECT_DIR="/cluster/work/projects/nn9997k"
+PROJECT_DIR="/cluster/work/projects/nn9970k"
 MyWD="$PROJECT_DIR/$USER/llm-hpc-course"
 CURRENT_DIR="${MyWD}/day2_multi_gpu/inference/task_QA"
 

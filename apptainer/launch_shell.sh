@@ -1,6 +1,6 @@
 #!/bin/bash -e
 #Sets the base project directory on the HPC cluster
-export PROJECT_DIR="/cluster/work/projects/nn9997k"
+export PROJECT_DIR="/cluster/work/projects/nn9970k"
 
 #Defines your working directory within the project.
 export MyWD="$PROJECT_DIR/$USER/llm-hpc-course"

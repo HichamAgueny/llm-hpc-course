@@ -8,16 +8,16 @@ This guide explains how to build a custom PyTorch container using **Apptainer (f
 
 ### 1. Launch an interactive session
 ```bash
-srun -A nn9997k -p accel --nodes=1 --gpus=1 --mem-per-gpu=96G --time=00:10:00 --reservation=llm_course --pty bash -i
+srun -A nn9970k -p accel --nodes=1 --gpus=1 --mem-per-gpu=96G --time=00:10:00 --reservation=llm_course --pty bash -i
 ```
 
 ### 2. Pull the Base PyTorch Container
 To accelerate pulling the container from the NVIDIA NGC catalog (and to prevent home-directory quota issues):
 
 ```bash
-mkdir -p /cluster/work/projects/nn9997k/$USER/llm-hpc-course/tmp
-export APPTAINER_TMPDIR=/cluster/work/projects/nn9997k/$USER/llm-hpc-course/tmp
-export APPTAINER_CACHEDIR=/cluster/work/projects/nn9997k/$USER/llm-hpc-course/tmp
+mkdir -p /cluster/work/projects/nn9970k/$USER/llm-hpc-course/tmp
+export APPTAINER_TMPDIR=/cluster/work/projects/nn9970k/$USER/llm-hpc-course/tmp
+export APPTAINER_CACHEDIR=/cluster/work/projects/nn9970k/$USER/llm-hpc-course/tmp
 
 export APPTAINER_DOCKER_USERNAME='$oauthtoken'
 export APPTAINER_DOCKER_PASSWORD=<Your-NVIDIA-Password>
@@ -57,7 +57,7 @@ apptainer build --ignore-fakeroot-command \
 
 ### 1. Navigate to the Working Directory
 ```bash
-cd /cluster/work/projects/nn9997k/$USER/llm-hpc-course/apptainer
+cd /cluster/work/projects/nn9970k/$USER/llm-hpc-course/apptainer
 ```
 
 ### 2. Start an Interactive Shell
@@ -93,20 +93,20 @@ Once you have successfully launched the PyTorch container, you can set up fineâ€
 ### 1. Download the Model
 Specify the path to the cache:
 ```bash
-mkdir -p /cluster/work/projects/nn9997k/$USER/llm-hpc-course/.cache/huggingface
-export HF_HOME=/cluster/work/projects/nn9997k/$USER/llm-hpc-course/.cache/huggingface
+mkdir -p /cluster/work/projects/nn9970k/$USER/llm-hpc-course/.cache/huggingface
+export HF_HOME=/cluster/work/projects/nn9970k/$USER/llm-hpc-course/.cache/huggingface
 ```
 
 Use `tune` to fetch the pretrained weights (if not already present):
 ```bash
 tune download meta-llama/Llama-3.2-1B-Instruct \
-  --output-dir /cluster/work/projects/nn9997k/$USER/llm-hpc-course/data/Llama-3.2-1B-Instruct \
+  --output-dir /cluster/work/projects/nn9970k/$USER/llm-hpc-course/data/Llama-3.2-1B-Instruct \
   --ignore-patterns "original/consolidated*" \
   --hf-token <your-hugging-face-token>
 ```
 
 > [!NOTE]
-> Pre-trained weights are already available at: `/cluster/work/projects/nn9997k/$USER/llm-hpc-course/data/Llama-3.2-1B-Instruct`
+> Pre-trained weights are already available at: `/cluster/work/projects/nn9970k/$USER/llm-hpc-course/data/Llama-3.2-1B-Instruct`
 
 ### 2. Copy Configuration Files
 Copy the built-in configuration files for single GPU and multiple GPUs:
