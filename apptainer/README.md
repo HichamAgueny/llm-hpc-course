@@ -12,9 +12,7 @@ srun -A nn9997k -p accel --nodes=1 --gpus=1 --mem-per-gpu=96G --time=00:10:00 --
 ```
 
 ### 2. Pull the Base PyTorch Container
-To accelerate pulling the container from the NVIDIA NGC catalog:
-- [NVIDIA PyTorch Containers](https://catalog.ngc.nvidia.com/orgs/nvidia/containers/pytorch/tags?version=26.02-py3)
-- [PyTorch Release Notes](https://docs.nvidia.com/deeplearning/frameworks/pytorch-release-notes/rel-25-05.html#rel-25-05)
+To accelerate pulling the container from the NVIDIA NGC catalog (and to prevent home-directory quota issues):
 
 ```bash
 mkdir -p /cluster/work/projects/nn9997k/$USER/llm-hpc-course/tmp
@@ -25,6 +23,9 @@ export APPTAINER_DOCKER_USERNAME='$oauthtoken'
 export APPTAINER_DOCKER_PASSWORD=<Your-NVIDIA-Password>
 apptainer remote login --username='$oauthtoken'
 ```
+
+- [NVIDIA PyTorch Containers](https://catalog.ngc.nvidia.com/orgs/nvidia/containers/pytorch/tags?version=26.02-py3)
+- [PyTorch Release Notes](https://docs.nvidia.com/deeplearning/frameworks/pytorch-release-notes/rel-25-05.html#rel-25-05)
 
 Download the official NVIDIA PyTorch container (pinned for reproducibility):
 ```bash
