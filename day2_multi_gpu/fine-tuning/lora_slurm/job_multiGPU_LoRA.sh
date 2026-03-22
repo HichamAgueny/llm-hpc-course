@@ -9,7 +9,7 @@
 #SBATCH --ntasks-per-node=4
 #SBATCH --cpus-per-task=4
 #SBATCH -o ./out/%x-%j.out
-#SBATCH --mem-per-gpu=96G
+#SBATCH --mem-per-cpu=8G
 
 echo "--Node: $(hostname)"
 echo

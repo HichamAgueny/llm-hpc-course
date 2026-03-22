@@ -5,7 +5,7 @@
 #SBATCH -N 1
 #SBATCH --ntasks-per-node=4
 #SBATCH --gpus=4             
-#SBATCH --mem-per-gpu=96G
+#SBATCH --mem-per-cpu=8G
 #SBATCH -J vllm-distributed
 #SBATCH -o ./out/%x-%j.out
 #SBATCH -e ./out/%x-%j.err
