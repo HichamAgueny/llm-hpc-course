@@ -79,8 +79,8 @@ username@uan02:~>
 Then run the following commands:
 
 ```bash
-mkdir /cluster/work/projects/nn9997k/$USER
-cd /cluster/work/projects/nn9997k/$USER
+mkdir /cluster/work/projects/nn9970k/$USER
+cd /cluster/work/projects/nn9970k/$USER
 git clone https://github.com/HichamAgueny/llm-hpc-course.git
 cd llm-hpc-course
 ````

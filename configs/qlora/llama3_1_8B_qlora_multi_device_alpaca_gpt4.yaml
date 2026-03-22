@@ -4,7 +4,7 @@
 
 # This config works only for training on single device.
 
-# NOTE: The host path '/cluster/projects/nn9997k/hicham/llm-hpc-course' is 
+# NOTE: The host path '/cluster/projects/nn9970k/hicham/llm-hpc-course' is 
 #       bind-mounted to '/workspace' inside the Apptainer container.
 #       All paths below must use '/workspace' to be accessible during training.
 #

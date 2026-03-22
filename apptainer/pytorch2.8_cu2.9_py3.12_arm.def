@@ -2,7 +2,7 @@ Bootstrap: localimage
 
 # Base container image to build from.
 # This specifies the local Singularity Image Format (.sif) file to use as the base.
-From: /cluster/work/projects/nn9997k/hicham/llm-hpc-course/apptainer/pytorch_25.05_cuda12.9_base_arm.sif
+From: /cluster/work/projects/nn9970k/hicham/llm-hpc-course/apptainer/pytorch_25.05_cuda12.9_base_arm.sif
 
 %post
 # This section runs commands inside the container after it is been created.
