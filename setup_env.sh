@@ -13,7 +13,7 @@ SOURCE_BASE="/cluster/work/projects/nn9970k/hicham/llm-hpc-course"
 
 # Target: Current user's project location
 # (Adapting to the project code specified by the user: nn9970k)
-TARGET_BASE="/cluster/work/projects/nn9970k/$USER/llm-hpc-course"
+TARGET_BASE="/cluster/work/projects/nn9997k/$USER/llm-hpc-course"
 
 echo "----------------------------------------------------------------"
 echo "Initializing Environment Setup"
