@@ -9,7 +9,7 @@
 
 # 1. Define Base Directories
 # Source: Original shared location
-SOURCE_BASE="/cluster/work/projects/nn9997k/hicham/llm-hpc-course"
+SOURCE_BASE="/cluster/work/projects/nn9970k/hicham/llm-hpc-course"
 
 # Target: Current user's project location
 # (Adapting to the project code specified by the user: nn9970k)
