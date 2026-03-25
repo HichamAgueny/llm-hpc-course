@@ -4,9 +4,9 @@ This directory focuses on scaling LLM workloads across multiple GPUs, including 
 
 ## Learning Objectives
 
-- Scale fine‑tuning to multiple GPUs using **FSDP** (Fully Sharded Data Parallel) or other distributed strategies.
-- Profile your distributed workloads to identify communication bottlenecks. (See the [Multi-GPU Profiling Guide](./profiling/README.md)).
-- Deploy LLMs for inference using **vLLM** for optimized throughput.
+- Scale fine‑tuning to multiple GPUs using **FSDP** (Fully Sharded Data Parallel).
+- Profile your distributed workloads to identify bottlenecks. (See the [Multi-GPU Profiling Guide](./profiling/README.md)).
+- Run LLMs for inference using **vLLM** for optimized throughput.
 - Compare performance between single‑GPU and multi‑GPU setups.
 
 ---
@@ -36,8 +36,8 @@ Use the `inference` directory to run high‑throughput inference. We provide set
 ```bash
 cd inference
 # For interactive session inside the container
-bash srun_interactive
-bash launch_shell.sh
+./srun_interactive
+./launch_shell.sh
 ```
 
 To run a specific task (e.g., Question Answering):
