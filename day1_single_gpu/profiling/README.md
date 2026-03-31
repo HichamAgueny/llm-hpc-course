@@ -78,6 +78,7 @@ For a more detailed interactive view, use the PyTorch Profiler plugin for Tensor
 
 1. **Install TensorBoard locally**:
    ```bash
+   pip install torch-tb-profiler
    pip install tensorboard 
    ```
 2. **Launch TensorBoard**:
