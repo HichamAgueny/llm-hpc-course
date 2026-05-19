@@ -15,9 +15,9 @@ srun -A nn9970k -p accel --nodes=1 --gpus=1 --mem-per-cpu=8G --time=00:30:00 --r
 To accelerate pulling the container from the NVIDIA NGC catalog (and to prevent home-directory quota issues):
 
 ```bash
-mkdir -p /cluster/work/projects/nn9970k/$USER/llm-hpc-course/tmp
-export APPTAINER_TMPDIR=/cluster/work/projects/nn9970k/$USER/llm-hpc-course/tmp
-export APPTAINER_CACHEDIR=/cluster/work/projects/nn9970k/$USER/llm-hpc-course/tmp
+mkdir -p /cluster/work/projects/nn9970k/$USER/llm-hpc-course/apptainer/tmp
+export APPTAINER_TMPDIR=/cluster/work/projects/nn9970k/$USER/llm-hpc-course/apptainer/tmp
+export APPTAINER_CACHEDIR=/cluster/work/projects/nn9970k/$USER/llm-hpc-course/apptainer/tmp
 
 export APPTAINER_DOCKER_USERNAME='$oauthtoken'
 export APPTAINER_DOCKER_PASSWORD=<Your-NVIDIA-Password>
@@ -29,11 +29,15 @@ apptainer remote login --username='$oauthtoken'
 
 Download the official NVIDIA PyTorch container (pinned for reproducibility):
 ```bash
-apptainer pull --arch arm64 --disable-cache pytorch_25.05_cuda12.9_base_arm.sif \
+apptainer pull --arch arm64 pytorch_25.05_cuda12.9_base_arm.sif \
                  docker://nvcr.io/nvidia/pytorch:25.05-py3
 ```
 - The flag `--arch arm64` specifies the architecture for the Olivia supercomputer.
-- The flag `--disable-cache` forces a clean and fresh download (see also [Sigma2 Documentation](https://documentation.sigma2.no/hpc_machines/olivia/software_stack.html#downloading-containers)).
+- If disabling cache is desired then add the flag `--disable-cache` to force a clean and fresh download (see also [Sigma2 Documentation](https://documentation.sigma2.no/hpc_machines/olivia/software_stack.html#downloading-containers)).
+- After the image has been pulled successfully (when cache is enabled), temporary files can be removed to free disk space:
+```bash
+rm -rf /cluster/projects/nn9970k/$USER/llm-hpc-course/apptainer/tmp/*
+```
 
 ### 3. Add Extra Packages
 Update the container with additional packages as defined in the definition file:
