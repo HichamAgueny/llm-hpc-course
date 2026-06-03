@@ -1,0 +1,25 @@
+Bootstrap: localimage
+From: /cluster/projects/nn9997k/hicham/llm-hpc-course/apptainer/nvidia_VLLM25_12.sif
+
+%post
+    set -e
+
+    # -------------------------------------------------------------------------
+    # Python symlinks
+    # -------------------------------------------------------------------------
+    mkdir -p /opt/python
+    ln -sf /usr/bin/python3.12 /opt/python/python3.12
+    ln -sf /usr/bin/python3    /opt/python/python3
+    ln -sf /usr/bin/python     /opt/python/python
+
+    # -------------------------------------------------------------------------
+    # Install TorchAO
+    # -------------------------------------------------------------------------
+    echo "Installing TorchAO..."
+    pip install \
+        --no-build-isolation \
+        --no-cache-dir \
+        torchao==0.16.0
+
+%environment
+    export PATH="/opt/python:$PATH"

@@ -12,13 +12,16 @@ export CONTAINER_WD="/workspace"
 CONTAINER_DIR="${MyWD}/apptainer"
 
 #Defines the full path to the container image file.
-APPTAINER_SIF="${CONTAINER_DIR}/pytorch_25.05_cuda12.9_arm_custom.sif"
+APPTAINER_SIF="${CONTAINER_DIR}/pytorch_25.08_cuda13.0_arm_custom.sif"
 
 #Launches an interactive shell session inside the container.
 #The --nv flag enables NVIDIA GPU support
+#Mounts your host work directory into the container.
+#Mounts the entire project directory (accessing shared datasets, etc)
+#Passes the MyWD environment variable into the container.
 apptainer shell --nv \                
-      -B "${MyWD}:${CONTAINER_WD}" \ #Mounts your host work directory into the container. 
-      -B $PROJECT_DIR \              #Mounts the entire project directory (accessing shared datasets, etc)
-      --env MyWD="$PROJECT_DIR/$USER/llm-hpc-course" \  #Passes the MyWD environment variable into the container.
+      -B "${MyWD}:${CONTAINER_WD}" \  
+      -B $PROJECT_DIR \              
+      --env MyWD="$PROJECT_DIR/$USER/llm-hpc-course" \  
       "${APPTAINER_SIF}"
 
