@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """
+ref: adapted from https://docs.vllm.ai/en/v0.11.0/examples/offline_inference/lora_with_quantization_inference.html
 VLLM LoRA Inference Script for SLURM clusters.
 Adapted from official VLLM v0.11.0 example.
 Supports both LoRA and QLoRA via command-line arguments.
