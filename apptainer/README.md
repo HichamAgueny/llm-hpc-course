@@ -29,14 +29,14 @@ apptainer remote login --username='$oauthtoken'
 
 Download the official NVIDIA PyTorch container (pinned for reproducibility):
 ```bash
-apptainer pull --arch arm64 pytorch_25.05_cuda12.9_base_arm.sif \
-                 docker://nvcr.io/nvidia/pytorch:25.05-py3
+apptainer pull --arch arm64 pytorch_25.08_cuda13.0_arm.sif \
+                 docker://nvcr.io/nvidia/pytorch:25.08-py3
 ```
 - The flag `--arch arm64` specifies the architecture for the Olivia supercomputer.
 - If disabling cache is desired then add the flag `--disable-cache` to force a clean and fresh download (see also [Sigma2 Documentation](https://documentation.sigma2.no/hpc_machines/olivia/software_stack.html#downloading-containers)).
 - After the image has been pulled successfully (when cache is enabled), temporary files can be removed to free disk space:
 ```bash
-rm -rf /cluster/projects/nn9970k/$USER/llm-hpc-course/apptainer/tmp/*
+rm -rf /cluster/work/projects/nn9970k/$USER/llm-hpc-course/apptainer/tmp/*
 ```
 
 ### 3. Add Extra Packages
@@ -47,13 +47,13 @@ Update the container with additional packages as defined in the definition file:
 Use the definition file to build a new image:
 ```bash
 apptainer build --ignore-fakeroot-command \
-    pytorch_25.05_cuda12.9_arm_custom.sif \
-    pytorch2.8_cu2.9_py3.12_arm.def
+    pytorch_25.08_cuda13.0_arm_custom.sif \
+    pytorch2.10_cuda13.0.2_py3.12_arm.def
 ```
 
 **Output Files:**
-- Base image: `pytorch_25.05_cuda12.9_base_arm.sif`
-- Custom image: `pytorch_25.05_cuda12.9_arm_custom.sif`
+- Base image: `pytorch_25.08_cuda13.0_arm.sif`
+- Custom image: `pytorch_25.08_cuda13.0_arm_custom.sif`
 
 ---
 

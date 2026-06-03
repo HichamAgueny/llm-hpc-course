@@ -1,0 +1,26 @@
+Bootstrap: localimage
+From: /cluster/work/projects/nn9997k/hicham/llm-hpc-course/apptainer/pytorch2.10_cuda13.0.2_base_arm.sif
+
+%post
+    set -e
+
+    # -------------------------------------------------------------------------
+    # Python symlinks
+    # -------------------------------------------------------------------------
+    mkdir -p /opt/python
+    ln -sf /usr/bin/python3.12 /opt/python/python3.12
+    ln -sf /usr/bin/python3    /opt/python/python3
+    ln -sf /usr/bin/python     /opt/python/python
+
+    # -------------------------------------------------------------------------
+    # Install Torchtune
+    # --no-build-isolation: reuse already-installed torch/CUDA libs in the image
+    # -------------------------------------------------------------------------
+    echo "Installing Torchtune..."
+    pip install \
+        --no-build-isolation \
+        --no-cache-dir \
+        torchtune==0.6.1
+
+%environment
+    export PATH="/opt/python:$PATH"
