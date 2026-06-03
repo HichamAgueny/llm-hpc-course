@@ -1,43 +1,28 @@
 #!/bin/bash -e
-#SBATCH --job-name=ft-llama3-8B-lora-4gpu
-#SBATCH --account=nn9970k
-#SBATCH --time=00:10:00
+#SBATCH --job-name=ft-llama3-1B-qlora-4gpu
+#SBATCH --account=nn9997k
+#SBATCH --time=00:15:00
 #SBATCH --partition=accel
 #SBATCH --nodes=1
 #SBATCH --gpus=4
 #SBATCH --gpus-per-node=4
 #SBATCH --ntasks-per-node=4
-#SBATCH --cpus-per-task=4
+#SBATCH --cpus-per-task=72
 #SBATCH -o ./out/%x-%j.out
-#SBATCH --mem-per-cpu=8G
+#SBATCH --mem-per-gpu=97G
 
 echo "--Node: $(hostname)"
 echo
 
 # --- Variables and Paths (HOST-SIDE) ---
-PROJECT_DIR="/cluster/work/projects/nn9970k"
+PROJECT_DIR="/cluster/projects/nn9997k"
 MyWD="$PROJECT_DIR/$USER/llm-hpc-course"
 CONTAINER_DIR="${MyWD}/apptainer"
-APPTAINER_SIF="${CONTAINER_DIR}/pytorch_25.05_cuda12.9_arm_custom.sif"
+APPTAINER_SIF="${CONTAINER_DIR}/pytorch_25.08_cuda13.0_arm_custom.sif"
 
 # Configs and python files for fine-tuning
-CONFIG_FILE="${MyWD}/configs/lora/llama3_1_8B_lora_multi_device_alpaca_gpt4.yaml"
+CONFIG_FILE="${MyWD}/configs/qlora/llama3_2_1B_qlora_multi_device_QA.yaml"
 PYTHON_FILE="${MyWD}/recipes/distributed/lora_finetune_distributed.py"
-
-# Host-side directories for output/logging
-OUTPUT_DIR="${MyWD}/results/checkpoints_out/llama3_1_8B_lora_multi_device"
-LOGGING_DIR="${MyWD}/results/logs/lora_finetune_8B_output"
-
-# Create directories on the host filesystem (persisted via bind mount)
-if [ ! -d "$OUTPUT_DIR" ]; then
-  echo "Creating output directory: $OUTPUT_DIR"
-  mkdir -p "$OUTPUT_DIR"
-fi
-
-if [ ! -d "$LOGGING_DIR" ]; then
-  echo "Creating logging directory: $LOGGING_DIR"
-  mkdir -p "$LOGGING_DIR"
-fi
 
 echo "--- My Main Directory (host): ${MyWD}"
 echo "--- Bind-mounted inside container as: /workspace"
@@ -46,8 +31,6 @@ echo
 echo "=== Running inside Apptainer ==="
 echo "CONFIG_FILE: ${CONFIG_FILE}"
 echo "PYTHON_FILE: ${PYTHON_FILE}"
-echo "OUTPUT_DIR: ${OUTPUT_DIR}"
-echo "LOGGING_DIR: ${LOGGING_DIR}"
 echo
 
 # --- Slurm setting
@@ -83,11 +66,7 @@ echo "Task \${SLURM_PROCID}: RANK=${SLURM_PROCID}, LOCAL_RANK=${SLURM_LOCALID}, 
 echo "LOCAL_RANK: \${LOCAL_RANK}, CUDA_VISIBLE_DEVICES: \${CUDA_VISIBLE_DEVICES}"
 
 # Run the fine-tuning script
-# To override output dirs (optional):
-#python "${PYTHON_FILE}" --config "${CONFIG_FILE}" checkpointer.checkpoint_dir="${OUTPUT_DIR}"
-
-# Default execution
-python "${PYTHON_FILE}" --config "${CONFIG_FILE}"
+python "${PYTHON_FILE}" --config "${CONFIG_FILE}" 
 
 # Syntax of "tune run" command
 #the flag --standalone is Useful when launching single-node, multi-worker job
