@@ -1,7 +1,7 @@
 #!/bin/bash -e
-#SBATCH --job-name=ft-llama3-1B-lora-1gpu_xsum
+#SBATCH --job-name=ft-llama3-1B-lora-1gpu
 #SBATCH --account=nn9997k
-#SBATCH --time=00:15:00
+#SBATCH --time=00:10:00
 #SBATCH --partition=accel
 #SBATCH --nodes=1
 #SBATCH --gpus=1
@@ -21,7 +21,7 @@ CONTAINER_DIR="${MyWD}/apptainer"
 APPTAINER_SIF="${CONTAINER_DIR}/pytorch_25.08_cuda13.0_arm_custom.sif"
 
 # Configs and python files for fine-tuning
-CONFIG_FILE="${MyWD}/configs/lora/llama3_2_1B_lora_single_device_XSum.yaml"
+CONFIG_FILE="${MyWD}/configs/lora/llama3_2_1B_lora_single_device_QA.yaml"
 PYTHON_FILE="${MyWD}/recipes/single_device/lora_finetune_single_device.py"
 
 echo "--- My Main Directory (host): ${MyWD}"
@@ -41,7 +41,7 @@ time srun apptainer exec --nv \
       -B "${MyWD}:/workspace" \
        -B $PROJECT_DIR \
       "${APPTAINER_SIF}" \
-       python "${PYTHON_FILE}" --config "${CONFIG_FILE}"
+      python "${PYTHON_FILE}" --config "${CONFIG_FILE}"
 
 echo
 echo "--- Finished :) ---"
