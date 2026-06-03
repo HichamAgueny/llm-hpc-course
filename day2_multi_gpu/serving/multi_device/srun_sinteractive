@@ -1,0 +1,4 @@
+srun -A nn9997k -p accel --nodes=1 --gpus=4 --ntasks-per-node=4  --cpus-per-task 72 --mem-per-gpu=97G --time=00:10:00 --pty bash -i
+
+#--nodelist=gpu-1-50 
+
