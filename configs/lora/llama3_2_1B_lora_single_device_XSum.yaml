@@ -15,7 +15,7 @@
 #
 # This config works only for training on single device.
 
-# NOTE: The host path '/cluster/projects/nn9970k/hicham/llm-hpc-course' is 
+# NOTE: The host path '/cluster/projects/nn9997k/hicham/llm-hpc-course' is 
 #       bind-mounted to '/workspace' inside the Apptainer container.
 #       All paths below must use '/workspace' to be accessible during training.
 #
@@ -79,7 +79,7 @@ dataset:
   #source: EdinburghNLP/xsum
   source: json
   data_files: ${dataset_dir}
-  split: train[:2000]
+  split: train[:10000]
 
   # TorchTune-specific parameters
   column_map:
@@ -104,14 +104,14 @@ optimizer:
   lr: 3e-4
 lr_scheduler:
   _component_: torchtune.training.lr_schedulers.get_cosine_schedule_with_warmup
-  num_warmup_steps: 100
+  num_warmup_steps: 10
 
 loss:
   _component_: torchtune.modules.loss.CEWithChunkedOutputLoss
 
 # Training
 epochs: 1
-max_steps_per_epoch: null
+max_steps_per_epoch: 1800 #null
 gradient_accumulation_steps: 1  # Use to increase effective batch size
 clip_grad_norm: null
 compile: False  # torch.compile the model + loss, True increases speed + decreases memory
@@ -120,7 +120,7 @@ compile: False  # torch.compile the model + loss, True increases speed + decreas
 metric_logger:
   _component_: torchtune.training.metric_logging.DiskLogger
   log_dir: ${log_dir}
-log_every_n_steps: 10
+log_every_n_steps: 200
 log_peak_memory_stats: True
 
 # Environment
