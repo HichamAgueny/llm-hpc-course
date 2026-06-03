@@ -6,6 +6,8 @@ module load NRIS/GPU
 module load CUDA/12.9.1
 module load vLLM/0.11.0
 
+export PYTHONNOUSERSITE=1
+
 # -------- User configuration --------
 PROJECT_DIR="/cluster/work/projects/nn9970k"
 MyWD="$PROJECT_DIR/$USER/llm-hpc-course"
@@ -15,8 +17,9 @@ CURRENT_DIR="${MyWD}/day2_multi_gpu/inference/task_QA"
 PYTHON_FILE="${MyWD}/recipes/inference/vllm_inference.py"
 
 # Set paths
-MODEL_PATH=${MODEL_PATH:-"${MyWD}/shared/models/Llama-3.1-8B-Instruct"}
-LORA_PATH=${LORA_PATH:-"${MyWD}/results/checkpoints_out/llama3_1_8B_qlora_multi_device/epoch_0"}
+export MODEL_PATH=${MODEL_PATH:-"${MyWD}/shared/models/Llama-3.2-1B-Instruct"}
+export LORA_PATH=${LORA_PATH:-"${MyWD}/results/checkpoints_out/llama3_2_1B_qlora_single_device_QA/epoch_0"}
+
 PROMPT_FILE=${PROMPT_FILE:-"$CURRENT_DIR/prompt_QA.json"}
 QUANTIZATION=${QUANTIZATION:-"bitsandbytes"}  # Set to "bitsandbytes" for QLoRA
 
