@@ -9,7 +9,7 @@ Monitoring GPU utilization is crucial for optimizing your fine‑tuning and infe
 
 **Usage:**
 ```bash
-./gpu_monitor.sh <JobID>
+./gpu.monitor.sh <JobID>
 ```
 
 **What it does:**
