@@ -14,7 +14,7 @@ I refactored the Apptainer copy section into a loop so it cleanly handles both `
 
 # 1. Define Base Directories
 # Source: Original shared location
-SOURCE_BASE="/cluster/work/projects/nn9970k/hicham/llm-hpc-course"
+SOURCE_BASE="/cluster/work/projects/nn9970k/hichamX/llm-hpc-course"
 
 # Target: Current user's project location
 TARGET_BASE="/cluster/work/projects/nn9970k/$USER/llm-hpc-course"
