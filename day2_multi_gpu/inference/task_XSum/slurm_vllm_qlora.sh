@@ -1,11 +1,11 @@
 #!/bin/bash
-#SBATCH -A nn9970k
+#SBATCH -A nn9997k
 #SBATCH -p accel
 #SBATCH -t 00:10:00
 #SBATCH -N 1
 #SBATCH --ntasks-per-node=1      
 #SBATCH --gpus=1              
-#SBATCH --mem-per-cpu=8G
+#SBATCH --mem-per-gpu=97G
 #SBATCH -J vllm-qlora
 #SBATCH -o ./out/%x-%j.out
 #SBATCH -e ./out/%x-%j.err
@@ -13,11 +13,12 @@
 # Exit on error
 set -e
 module load NRIS/GPU
-module load CUDA/12.9.1
 module load vLLM/0.11.0
 
+export PYTHONNOUSERSITE=1
+
 # -------- User configuration --------
-PROJECT_DIR="/cluster/work/projects/nn9970k"
+PROJECT_DIR="/cluster/projects/nn9997k"
 MyWD="$PROJECT_DIR/$USER/llm-hpc-course"
 CURRENT_DIR="${MyWD}/day2_multi_gpu/inference/task_XSum"
 
@@ -26,7 +27,7 @@ PYTHON_FILE="${MyWD}/recipes/inference/vllm_inference.py"
 
 # Set paths
 MODEL_PATH=${MODEL_PATH:-"${MyWD}/shared/models/Llama-3.2-1B-Instruct"}
-LORA_PATH=${LORA_PATH:-"${MyWD}/results/checkpoints_out/llama3_2_1B_qlora_single_device/epoch_0"}
+LORA_PATH=${LORA_PATH:-"${MyWD}/results/checkpoints_out/llama3_2_1B_qlora_single_device_XSum/epoch_0"}
 PROMPT_FILE=${PROMPT_FILE:-"$CURRENT_DIR/prompt_XSum.json"}
 
 QUANTIZATION=${QUANTIZATION:-"bitsandbytes"}  # Set to "bitsandbytes" for QLoRA
@@ -59,8 +60,8 @@ if [ ! -d "$LOG_DIR" ]; then
    mkdir -p ${MyWD}/day2_multi_gpu/inference/logs	
 fi
 # --- Start GPU Monitoring in the background ---
-export MONITOR_LOG="$LOG_DIR/gpu_qlora_utilization_xsum_${SLURM_JOB_ID}.csv"
-python $MyWD/utils/gpu_monitor.py --interval 2 --output "$MONITOR_LOG" &
+export MONITOR_LOG="$LOG_DIR/gpu_qlora_utilization_${SLURM_JOB_ID}.csv"
+python $MyWD/utils/monitoring/gpu_monitor.py --interval 3 --output "$MONITOR_LOG" &
 MONITOR_PID=$!
 echo "Started GPU monitor (PID: $MONITOR_PID) logging to $MONITOR_LOG"
 
