@@ -93,8 +93,8 @@ loss:
   _component_: torchtune.modules.loss.CEWithChunkedOutputLoss
 
 # Training
-epochs: 3
-max_steps_per_epoch: null #450 #null
+epochs: 1
+max_steps_per_epoch: 450 #null
 gradient_accumulation_steps: 1  # Use to increase effective batch size
 clip_grad_norm: null
 compile: False  # torch.compile the model + loss, True increases speed + decreases memory
@@ -103,7 +103,7 @@ compile: False  # torch.compile the model + loss, True increases speed + decreas
 metric_logger:
   _component_: torchtune.training.metric_logging.DiskLogger
   log_dir: ${log_dir}
-log_every_n_steps: 200 #50
+log_every_n_steps: 50
 log_peak_memory_stats: True
 
 # Environment
