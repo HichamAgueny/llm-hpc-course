@@ -13,7 +13,7 @@
 # you can run:
 #   tune run --nproc_per_node 2 qat_lora_finetune_distributed --config llama3_2/1B_qat_lora checkpointer.checkpoint_dir=<YOUR_CHECKPOINT_DIR>
 
-# NOTE: The host path '/cluster/projects/nn9997k/hicham/llm-hpc-course' is 
+# NOTE: The host path '/cluster/work/projects/nn9970k/hicham/llm-hpc-course' is 
 #       bind-mounted to '/workspace' inside the Apptainer container.
 #       All paths below must use '/workspace' to be accessible during training.
 #

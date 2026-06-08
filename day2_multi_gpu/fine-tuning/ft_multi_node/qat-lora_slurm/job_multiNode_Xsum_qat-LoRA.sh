@@ -1,6 +1,7 @@
 #!/bin/bash -e
 #SBATCH --job-name=ft-llama3-1B-qat-lora-8gpu_xsum
-#SBATCH --account=nn9997k
+#SBATCH --reservation=LLM_in_person_course
+#SBATCH --account=nn9970k
 #SBATCH --time=00:15:00
 #SBATCH --partition=accel
 #SBATCH --nodes=2
@@ -16,7 +17,7 @@ module load NRIS/GPU
 module load NCCL/2.30.4-GCCcore-14.3.0-CUDA-13.0.0
 
 # --- Variables and Paths (HOST-SIDE) ---
-PROJECT_DIR="/cluster/projects/nn9997k"
+PROJECT_DIR="/cluster/work/projects/nn9970k"
 MyWD="$PROJECT_DIR/$USER/llm-hpc-course"
 MyCurrentWD="${MyWD}/day2_multi_gpu/fine-tuning/ft_multi_node/lora_slurm"
 CONTAINER_DIR="${MyWD}/apptainer"

@@ -1,5 +1,5 @@
 Bootstrap: localimage
-From: /cluster/work/projects/nn9997k/hicham/llm-hpc-course/apptainer/pytorch2.10_cuda13.0.2_base_arm.sif
+From: /cluster/work/projects/nn9970k/hicham/llm-hpc-course/apptainer/pytorch2.10_cuda13.0.2_base_arm.sif
 
 %post
     set -e
