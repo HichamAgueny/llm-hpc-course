@@ -1,8 +1,3 @@
-Here is your updated script.
-
-I refactored the Apptainer copy section into a loop so it cleanly handles both `.sif` files, and I streamlined the directory creation block to target just your three new base paths.
-
-```bash
 #!/bin/bash
 
 # ==============================================================================
@@ -69,5 +64,3 @@ echo "----------------------------------------------------------------"
 echo "Setup Complete!"
 echo "You can now navigate to $TARGET_BASE and start the labs."
 echo "----------------------------------------------------------------"
-
-```
