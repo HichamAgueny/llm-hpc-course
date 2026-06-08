@@ -1,5 +1,6 @@
 #!/bin/bash
-#SBATCH -A nn9997k
+#SBATCH -A nn9970k
+#SBATCH --reservation=LLM_in_person_course
 #SBATCH -p accel
 #SBATCH -t 00:10:00
 #SBATCH -N 1
@@ -18,7 +19,7 @@ module load vLLM/0.11.0
 export PYTHONNOUSERSITE=1
 
 # -------- User configuration --------
-PROJECT_DIR="/cluster/projects/nn9997k"
+PROJECT_DIR="/cluster/work/projects/nn9970k"
 MyWD="$PROJECT_DIR/$USER/llm-hpc-course"
 CURRENT_DIR="${MyWD}/day2_multi_gpu/inference/task_XSum"
 

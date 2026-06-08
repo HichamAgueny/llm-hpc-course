@@ -4,9 +4,9 @@ from transformers import TorchAoConfig, AutoModelForCausalLM, AutoTokenizer
 from torchao.quantization import Int8WeightOnlyConfig
 
 # 1. Point to your local model directory
-local_model_path = "/cluster/projects/nn9997k/hicham/llm-hpc-course/shared/models/Llama-3.2-1B-Instruct" 
+local_model_path = "/cluster/work/projects/nn9970k/hicham/llm-hpc-course/shared/models/Llama-3.2-1B-Instruct" 
 # 2. Define where you want to save the quantized model
-output_path = "/cluster/projects/nn9997k/hicham/llm-hpc-course/shared/models/XLlama-3.2-1B-Instruct-torchao"
+output_path = "/cluster/work/projects/nn9970k/hicham/llm-hpc-course/shared/models/XLlama-3.2-1B-Instruct-torchao"
 
 # Configure the INT8 weight-only quantization via torchao
 quantization_config = TorchAoConfig(Int8WeightOnlyConfig(version=2))

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PROJECT_DIR="/cluster/projects/nn9997k"
+PROJECT_DIR="/cluster/work/projects/nn9970k"
 MyWD="$PROJECT_DIR/$USER/llm-hpc-course"
 CONNECTION_FILE="${MyWD}/day2_multi_gpu/serving/single_device/connection.env"
 

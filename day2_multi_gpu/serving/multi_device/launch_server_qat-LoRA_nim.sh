@@ -5,7 +5,7 @@ echo "--nbr of GPUs: $NUM_GPUS"
 echo
 
 # -------- User configuration --------
-PROJECT_DIR="/cluster/projects/nn9997k"
+PROJECT_DIR="/cluster/work/projects/nn9970k"
 MyWD="$PROJECT_DIR/$USER/llm-hpc-course"
 APPTAINER_SIF="${MyWD}/apptainer/vllm0.12_cu131_py3.12_arm_custom.sif"
 
