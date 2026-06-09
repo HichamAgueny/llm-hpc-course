@@ -11,7 +11,7 @@ APPTAINER_SIF="${MyWD}/apptainer/vllm0.12_cu131_py3.12_arm_custom.sif"
 
 # Set paths
 export MODEL_PATH=${MODEL_PATH:-"${MyWD}/shared/models/Llama-3.2-1B-Instruct"}
-export QUANTIZED_MODEL_PATH=${QUANTIZED_MODEL_PATH:-"${MyWD}/shared/models/Llama-3.2-1B-Instruct-INT8"}
+export QUANTIZED_MODEL_PATH=${QUANTIZED_MODEL_PATH:-"${MyWD}/shared/models/Llama-3.2-1B-Instruct-torchao_1GPU"}
 export LORA_PATH=${LORA_PATH:-""}                # Leave empty to disable LoRA
 export QUANTIZATION=${QUANTIZATION:-"torchao"}
 export MAX_LORA_RANK=${MAX_LORA_RANK:-64}
@@ -76,7 +76,7 @@ VLLM_CMD="vllm serve $QUANTIZED_MODEL_PATH
     --tensor-parallel-size $NUM_GPUS
     --host 0.0.0.0
     --port 8000
-    --quantization $QUANTIZATION
+    --quantization $QUANTIZATION"
 
 if [[ "$USE_LORA" == true ]]; then
     VLLM_CMD="$VLLM_CMD
