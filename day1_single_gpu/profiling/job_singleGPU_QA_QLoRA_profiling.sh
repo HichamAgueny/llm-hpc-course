@@ -33,8 +33,6 @@ echo "CONFIG_FILE: ${CONFIG_FILE}"
 echo "PYTHON_FILE: ${PYTHON_FILE}"
 echo
 
-python "${PYTHON_FILE}" --config "${CONFIG_FILE}"
-
 echo "--- Launching the application inside Apptainer ---"
 
 # --- Execute with Apptainer ---
