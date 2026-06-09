@@ -17,7 +17,7 @@ This course covers the full lifecycle of working with LLMs in an HPC environment
   - Storage hierarchy
   - Containerized environments
 - **LLM Fine-Tuning Fundamentals**
-  - Parameter-efficient fine-tuning (LoRA, QLoRA)
+  - Parameter-efficient fine-tuning (LoRA, QLoRA, QAT-LoRA)
   - Quantization within QLoRA 
 
 #### Afternoon Session (13:00–15:30) — Hands-On: Single-GPU Workflow
@@ -37,7 +37,8 @@ This course covers the full lifecycle of working with LLMs in an HPC environment
 - **Distributed Training Concepts**
   - DDP vs FSDP
 - **Hands-On: Multi-GPU Fine-Tuning**
-  - Multi-GPU LoRA & QLoRA fine-tuning
+  - Multi-GPU, single node LoRA, QLoRA &QAT-LoRA fine-tuning
+  - Multi-GPU, multiple nodes LoRA, QLoRA &QAT-LoRA fine-tuning
   - Profiling distributed workloads
 
 #### Afternoon Session (13:00–15:30) — Hands-On: Optimized Inference
@@ -87,7 +88,7 @@ cd llm-hpc-course
 
 ### 1. Environment Script
 
-To initialize your project environment on the cluster, run the following setup script from the repository root. This will copy shared resources (datasets, models) and create the necessary directory structures for results and logs.
+To initialize your project environment on the cluster, run the following setup script from the repository root. This will copy shared resources (datasets, models) and the apptainer images.
 
 ```bash
 # Run the setup script
