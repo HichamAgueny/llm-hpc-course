@@ -130,7 +130,7 @@ profiler:
   cuda: True
 
   #trace options passed to `torch.profiler.profile`
-  profile_memory: False
+  profile_memory: True
   with_stack: False
   record_shapes: True
   with_flops: False
