@@ -116,7 +116,7 @@ tune download meta-llama/Llama-3.2-1B-Instruct \
 Copy the built-in configuration files for single GPU and multiple GPUs:
 ```bash
 tune cp llama3_2/1B_lora_single_device .
-tune cp llama3_2/1B_lora_multi_device .
+tune cp llama3_2/1B_lora .
 ```
 
 ### 3. Copy Fine‑Tuning Recipe Scripts
