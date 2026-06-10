@@ -10,7 +10,7 @@ MyWD="$PROJECT_DIR/$USER/llm-hpc-course"
 APPTAINER_SIF="${MyWD}/apptainer/vllm0.12_cu131_py3.12_arm_custom.sif"
 # Set paths
 export MODEL_PATH=${MODEL_PATH:-"${MyWD}/shared/models/Llama-3.2-1B-Instruct"}
-export LORA_PATH=${LORA_PATH:-"${MyWD}/results/checkpoints_out_full/llama3_2_1B_lora_multi_device/epoch_0"} # Enable LoRA
+export LORA_PATH=${LORA_PATH:-"${MyWD}/results/checkpoints_out/llama3_2_1B_lora_multi_device/epoch_0"} # Enable LoRA
 export QUANTIZATION=${QUANTIZATION:-"None"}
 export MAX_LORA_RANK=${MAX_LORA_RANK:-64}
 
