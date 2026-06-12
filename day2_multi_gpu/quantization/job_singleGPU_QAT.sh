@@ -50,6 +50,35 @@ echo "SLURM Job ID: $SLURM_JOB_ID"
 echo "--nbr of nodes: $N"
 echo "--nbr of GPUs: $nproc_perN"
 echo
+INNER_SCRIPT_TEMP="./.my_script_temp_${SLURM_JOB_ID}"
+cat > "${INNER_SCRIPT_TEMP}" << EOF
+#!/bin/bash -e
+export PYTHONNOUSERSITE=1
+# Create virtual env only if it doesn't already exist
+if [ ! -d "$CONTAINER_DIR/MyEn" ]; then
+    echo "Creating virtual environment at $CONTAINER_DIR/MyEn..."
+    python -m venv "$CONTAINER_DIR/MyEn" --system-site-packages
+else
+    echo "Virtual environment already exists."
+fi
+
+# Activate the env. var.
+source $CONTAINER_DIR/MyEn/bin/activate
+
+# Check if 'accelerate' is installed. If not, install it.
+if ! pip show accelerate > /dev/null 2>&1; then
+    echo "Package 'accelerate' not found. Installing..."
+    pip install accelerate
+else
+    echo "Package 'accelerate' is already installed. Skipping installation."
+fi
+
+# Run the qat with torchao script
+python "${PYTHON_FILE}" --model_path "$MODEL_DIR" --output_path "$OUT_DIR"
+
+EOF
+
+chmod +x "${INNER_SCRIPT_TEMP}"
 
 echo "--- Launching the application inside Apptainer ---"
 
@@ -61,7 +90,7 @@ time srun apptainer exec --nv \
       -B "${MyWD}:/workspace" \
       -B $PROJECT_DIR \
       "${APPTAINER_SIF}" \
-      python "${PYTHON_FILE}" --model_path "$MODEL_DIR" --output_path "$OUT_DIR"
+      ${INNER_SCRIPT_TEMP}
 
 echo
 echo "--- Finished :) ---"
