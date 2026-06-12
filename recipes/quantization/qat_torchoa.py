@@ -39,13 +39,13 @@ def main():
     tokenizer = AutoTokenizer.from_pretrained(local_model_path)
 
     # Optional: Quick inference check to ensure it works
-    print("Running a quick test inference...")
-    input_text = "What are we having for dinner?"
-    input_ids = tokenizer(input_text, return_tensors="pt").to("cuda")
+    #print("Running a quick test inference...")
+    #input_text = "What are we having for dinner?"
+    #input_ids = tokenizer(input_text, return_tensors="pt").to("cuda")
 
-    with torch.no_grad():
-        outputs = quantized_model.generate(**input_ids, max_new_tokens=20)
-        print("Response:", tokenizer.decode(outputs[0], skip_special_tokens=True))
+    #with torch.no_grad():
+    #    outputs = quantized_model.generate(**input_ids, max_new_tokens=20)
+    #    print("Response:", tokenizer.decode(outputs[0], skip_special_tokens=True))
 
     # Save the quantized model and tokenizer locally
     print(f"Saving quantized model to {output_path}...")
