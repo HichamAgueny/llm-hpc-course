@@ -1,7 +1,7 @@
 #!/bin/bash -e
-#SBATCH --job-name=qat-llama3-1B-1gpu
-#SBATCH --reservation=LLM_in_person_course
-#SBATCH --account=nn9970k
+#SBATCH --job-name=xqat-llama3-1B-1gpu
+##SBATCH --reservation=LLM_in_person_course
+#SBATCH --account=nn9997k
 #SBATCH --time=00:10:00
 #SBATCH --partition=accel
 #SBATCH --nodes=1
@@ -10,7 +10,7 @@
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=72
 #SBATCH -o ./out/%x-%j.out
-#SBATCH --mem-per-gpu=97G
+#SBATCH --mem-per-gpu=96G
 
 echo "--Node: $(hostname)"
 echo
@@ -20,7 +20,6 @@ PROJECT_DIR="/cluster/work/projects/nn9970k"
 MyWD="$PROJECT_DIR/$USER/llm-hpc-course"
 CONTAINER_DIR="${MyWD}/apptainer"
 APPTAINER_SIF="${CONTAINER_DIR}/vllm0.12_cu131_py3.12_arm_custom.sif"
-
 
 # Configs and python files for fine-tuning
 PYTHON_FILE="${MyWD}/recipes/quantization/qat_torchoa.py"
@@ -50,10 +49,16 @@ echo "SLURM Job ID: $SLURM_JOB_ID"
 echo "--nbr of nodes: $N"
 echo "--nbr of GPUs: $nproc_perN"
 echo
+
+echo "--- Launching the application inside Apptainer ---"
+
 INNER_SCRIPT_TEMP="./.my_script_temp_${SLURM_JOB_ID}"
 cat > "${INNER_SCRIPT_TEMP}" << EOF
 #!/bin/bash -e
+
+# Prevents Python from loading packages from the home/.local directory
 export PYTHONNOUSERSITE=1
+
 # Create virtual env only if it doesn't already exist
 if [ ! -d "$CONTAINER_DIR/MyEn" ]; then
     echo "Creating virtual environment at $CONTAINER_DIR/MyEn..."
@@ -65,13 +70,15 @@ fi
 # Activate the env. var.
 source $CONTAINER_DIR/MyEn/bin/activate
 
-# Check if 'accelerate' is installed. If not, install it.
-if ! pip show accelerate > /dev/null 2>&1; then
-    echo "Package 'accelerate' not found. Installing..."
-    pip install accelerate
-else
-    echo "Package 'accelerate' is already installed. Skipping installation."
-fi
+# Install additional packages if dont exist
+for pkg in accelerate transformers; do
+    if pip show "\$pkg" >/dev/null 2>&1; then
+        echo "Package '\$pkg' is already installed. Skipping installation."
+    else
+        echo "Package '\$pkg' not found. Installing..."
+        pip install "\$pkg"
+    fi
+done
 
 # Run the qat with torchao script
 python "${PYTHON_FILE}" --model_path "$MODEL_DIR" --output_path "$OUT_DIR"
@@ -80,12 +87,7 @@ EOF
 
 chmod +x "${INNER_SCRIPT_TEMP}"
 
-echo "--- Launching the application inside Apptainer ---"
-
 # --- Execute with Apptainer ---
-# Bind host project directory to /workspace inside container
-# --nv enables NVIDIA GPU support
-
 time srun apptainer exec --nv \
       -B "${MyWD}:/workspace" \
       -B $PROJECT_DIR \
