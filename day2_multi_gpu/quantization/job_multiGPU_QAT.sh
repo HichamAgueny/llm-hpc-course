@@ -68,7 +68,9 @@ export LOCAL_RANK=\$SLURM_LOCALID
 echo "Task \${SLURM_PROCID}: RANK=${SLURM_PROCID}, LOCAL_RANK=${SLURM_LOCALID}, WORLD_SIZE = $WORLD_SIZE, LOCAL_WORLD_SIZE = $LOCAL_WORLD_SIZE"
 echo "LOCAL_RANK: \${LOCAL_RANK}, CUDA_VISIBLE_DEVICES: \${CUDA_VISIBLE_DEVICES}"
 
+# Prevents Python from loading packages from the home/.local directory
 export PYTHONNOUSERSITE=1
+
 # Create virtual env only if it doesn't already exist
 if [ ! -d "$CONTAINER_DIR/MyEn" ]; then
     echo "Creating virtual environment at $CONTAINER_DIR/MyEn..."
@@ -80,13 +82,15 @@ fi
 # Activate the env. var.
 source $CONTAINER_DIR/MyEn/bin/activate
 
-# Check if 'accelerate' is installed. If not, install it.
-if ! pip show accelerate > /dev/null 2>&1; then
-    echo "Package 'accelerate' not found. Installing..."
-    pip install accelerate
-else
-    echo "Package 'accelerate' is already installed. Skipping installation."
-fi
+# Install additional packages if dont exist
+for pkg in accelerate transformers; do
+    if pip show "\$pkg" >/dev/null 2>&1; then
+        echo "Package '\$pkg' is already installed. Skipping installation."
+    else
+        echo "Package '\$pkg' not found. Installing..."
+        pip install "\$pkg"
+    fi
+done
 
 # Run the qat with torchao script
 python "${PYTHON_FILE}" --model_path "$MODEL_DIR" --output_path "$OUT_DIR"
