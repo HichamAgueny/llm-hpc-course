@@ -23,17 +23,17 @@ PROJECT_DIR="/cluster/work/projects/nn9970k"
 MyWD="$PROJECT_DIR/$USER/llm-hpc-course"
 CURRENT_DIR="${MyWD}/day2_multi_gpu/inference/task_QA"
 # Python path for inference
-PYTHON_FILE="${MyWD}/recipes/inference/vllm_distributed.py"
+export PYTHON_FILE="${MyWD}/recipes/inference/vllm_distributed.py"
 
 # Set paths
-MODEL_PATH=${MODEL_PATH:-"${MyWD}/shared/models/Llama-3.2-1B-Instruct"}
-LORA_PATH=${LORA_PATH:-"${MyWD}/results/checkpoints_out/llama3_2_1B_lora_multi_device/epoch_0"}
-PROMPT_FILE=${PROMPT_FILE:-"$CURRENT_DIR/prompt_QA.json"}
-QUANTIZATION=${QUANTIZATION:-"None"}  # Set to "bitsandbytes" for QLoRA
+export MODEL_PATH=${MODEL_PATH:-"${MyWD}/shared/models/Llama-3.2-1B-Instruct"}
+export LORA_PATH=${LORA_PATH:-"${MyWD}/results/checkpoints_out/llama3_2_1B_lora_multi_device/epoch_0"}
+export PROMPT_FILE=${PROMPT_FILE:-"$CURRENT_DIR/prompt_QA.json"}
+export QUANTIZATION=${QUANTIZATION:-"None"}  # Set to "bitsandbytes" for QLoRA
 
 # Parallelism settings
-TP_SIZE=${TP_SIZE:-4}   # Tensor parallel = number of GPUs per node (must match --ntasks-per-node)
-PP_SIZE=${PP_SIZE:-1}   # Pipeline parallel (use >1 for multi-node)
+export TP_SIZE=${TP_SIZE:-4}   # Tensor parallel = number of GPUs per node (must match --ntasks-per-node)
+export PP_SIZE=${PP_SIZE:-1}   # Pipeline parallel (use >1 for multi-node)
 
 echo "----------------------------------------"
 echo "Configuration:"
@@ -74,20 +74,36 @@ export MASTER_PORT=25900
 export WORLD_SIZE=$SLURM_NPROCS
 export LOCAL_WORLD_SIZE=$SLURM_GPUS_PER_NODE
 
+# --- Create the Inner Script (runs INSIDE container) ---
+INNER_SCRIPT_TEMP="./.my_script_temp_${SLURM_JOB_ID}"
+cat > "${INNER_SCRIPT_TEMP}" << EOF
+#!/bin/bash -e
+
+# Flash Attention for efficiency
+export USE_FLASH_ATTENTION=1
+
 # Set up variables to control distributed PyTorch training
-export RANK=$SLURM_PROCID
-export LOCAL_RANK=$SLURM_LOCALID
+export RANK=\$SLURM_PROCID
+export LOCAL_RANK=\$SLURM_LOCALID
 
-echo "Task ${SLURM_PROCID}: RANK=${SLURM_PROCID}, LOCAL_RANK=${SLURM_LOCALID}, WORLD_SIZE = $WORLD_SIZE, LOCAL_WORLD_SIZE = $LOCAL_WORLD_SIZE"
-echo "LOCAL_RANK: ${LOCAL_RANK}, CUDA_VISIBLE_DEVICES: ${CUDA_VISIBLE_DEVICES}"
+echo "Task \${SLURM_PROCID}: RANK=${SLURM_PROCID}, LOCAL_RANK=${SLURM_LOCALID}, WORLD_SIZE = $WORLD_SIZE, LOCAL_WORLD_SIZE = $LOCAL_WORLD_SIZE"
+echo "LOCAL_RANK: \${LOCAL_RANK}, CUDA_VISIBLE_DEVICES: \${CUDA_VISIBLE_DEVICES}"
 
-# Run the inference script
-srun python "${PYTHON_FILE}" \
+python "${PYTHON_FILE}" \
     --model "$MODEL_PATH" \
     --lora-path "$LORA_PATH" \
-    --prompt-file "$PROMPT_FILE"
+    --prompt-file "$PROMPT_FILE" \
     --tensor-parallel-size "$TP_SIZE" \
-    --pipeline-parallel-size "$PP_SIZE"  
+    --pipeline-parallel-size "$PP_SIZE"
+EOF
+
+chmod +x "${INNER_SCRIPT_TEMP}"
+
+# Run the inference script
+time srun "${INNER_SCRIPT_TEMP}"
+
+# --- Clean Up Temporary Script ---
+rm -f "${INNER_SCRIPT_TEMP}"
 
 echo "Job finished at: $(date)"
 
