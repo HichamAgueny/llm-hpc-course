@@ -19,9 +19,4 @@ APPTAINER_SIF="${CONTAINER_DIR}/pytorch_25.08_cuda13.0_arm_custom.sif"
 #Mounts your host work directory into the container.
 #Mounts the entire project directory (accessing shared datasets, etc)
 #Passes the MyWD environment variable into the container.
-apptainer shell --nv \                
-      -B "${MyWD}:${CONTAINER_WD}" \  
-      -B $PROJECT_DIR \              
-      --env MyWD="$PROJECT_DIR/$USER/llm-hpc-course" \  
-      "${APPTAINER_SIF}"
-
+apptainer shell --nv -B "${MyWD}:${CONTAINER_WD}" -B $PROJECT_DIR --env MyWD="$PROJECT_DIR/$USER/llm-hpc-course" "${APPTAINER_SIF}"
