@@ -22,6 +22,6 @@ APPTAINER_SIF="${CONTAINER_DIR}/pytorch_25.08_cuda13.0_arm_custom.sif"
 apptainer shell --nv \                
       -B "${MyWD}:${CONTAINER_WD}" \  
       -B $PROJECT_DIR \              
-      --env MyWD="$PROJECT_DIR/$USER/llm-hpc-course" \  
+      --env MyWD \  
       "${APPTAINER_SIF}"
 
