@@ -1,18 +1,4 @@
-#!/bin/bash -e
-#SBATCH --job-name=vllm-serve-1gpu-bnb-eessi
-#SBATCH --account=nn9997k
-#SBATCH --reservation=software
-#SBATCH --time=00:30:00
-#SBATCH --partition=accel
-#SBATCH --nodes=1
-#SBATCH --ntasks=1
-#SBATCH --gpus-per-node=1
-#SBATCH --cpus-per-task=72
-#SBATCH --mem-per-gpu=96G
-#SBATCH -o ./out/%x-%j.out
-#
-# Start the server:  sbatch serve_vllm_quantized_bnb_eessi.sh
-#   (or run ./serve_vllm_quantized_bnb_eessi.sh inside an interactive GPU shell: bash srun_sinteractive)
+# Start the server: run ./serve_vllm_quantized_bnb_eessi.sh inside an interactive GPU shell: bash srun_sinteractive)
 # Then chat with it from a login node, in this folder:  ./chat.sh
 
 export PYTHONNOUSERSITE=1
