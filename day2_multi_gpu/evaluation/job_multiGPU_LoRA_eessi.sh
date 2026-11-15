@@ -23,6 +23,7 @@ module load torchtune/0.6.1-foss-2025b-PyTorch-2.12.0-CUDA-12.9.1
 module load Transformers
 module load accelerate
 module load lm-eval/0.4.12-foss-2025b
+module load peft
 
 export NUMEXPR_MAX_THREADS=72
 
