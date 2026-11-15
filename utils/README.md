@@ -7,9 +7,10 @@ This directory contains utility scripts for monitoring and managing LLM fine-tun
 ### 1. GPU Monitor (`gpu.monitor.sh`)
 Monitoring GPU utilization is crucial for optimizing your fine‑tuning, profiling, and inference jobs. This script provides real‑time feedback on GPU metrics (utilization, memory consumption, temperature) for a specific active Slurm job.
 
-**Usage:**
+**Usage** (in a second terminal while your job runs):
 ```bash
-./gpu.monitor.sh <JobID>
+./gpu.monitor.sh <JobID>                                        # in lab folders that contain a copy
+/cluster/work/projects/nn9971k/$USER/llm-hpc-course/utils/gpu.monitor.sh <JobID>   # from any folder
 ```
 
 **Features:**
@@ -24,7 +25,7 @@ Launches the interactive curses-based `nvitop` GPU process monitor. See [install
 
 **Usage:**
 ```bash
-./run_nvitop.sh <JobID>
+/cluster/work/projects/nn9971k/$USER/llm-hpc-course/utils/run_nvitop.sh <JobID>
 ```
 
 ---

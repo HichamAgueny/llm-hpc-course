@@ -49,14 +49,15 @@ python recipes/single_device/lora_finetune_single_device.py \
 ### Merging LoRA Adapter with Base Model
 ```bash
 python recipes/merge/merge_and_save.py \
-    --base_model /cluster/projects/nn9997k/$USER/llm-hpc-course/shared/models/Llama-3.2-1B-Instruct \
-    --adapter_dir /cluster/projects/nn9997k/$USER/llm-hpc-course/results/checkpoint_results/llama3.2-1b_lora_single_device/checkpoints/epoch_0 \
-    --output_dir /cluster/projects/nn9997k/$USER/llm-hpc-course/results/checkpoint_results/Llama-3.2-1B-Instruct_merged
+    --base_model_path /cluster/work/projects/nn9971k/$USER/llm-hpc-course/shared/models/Llama-3.2-1B-Instruct \
+    --lora_adapter_path /cluster/work/projects/nn9971k/$USER/llm-hpc-course/results/checkpoint_results/llama3.2-1b_lora_single_device/checkpoints/epoch_0 \
+    --output_path /cluster/work/projects/nn9971k/$USER/llm-hpc-course/results/checkpoint_results/Llama-3.2-1B-Instruct_merged
 ```
 
 ### Serving / Inference with vLLM
 ```bash
 python recipes/inference/vllm_inference.py \
-    --model_id /cluster/projects/nn9997k/$USER/llm-hpc-course/shared/models/Llama-3.2-1B-Instruct \
-    --prompt "What is High-Performance Computing?"
+    --model /cluster/work/projects/nn9971k/$USER/llm-hpc-course/shared/models/Llama-3.2-1B-Instruct \
+    --lora-path /cluster/work/projects/nn9971k/$USER/llm-hpc-course/results/checkpoint_results/llama3.2-1b_lora_single_device/checkpoints/epoch_0 \
+    --prompt-file day2_multi_gpu/inference/prompt_QA.json
 ```

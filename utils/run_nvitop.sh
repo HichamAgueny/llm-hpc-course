@@ -16,7 +16,7 @@ module load cray-python/3.12.12
 # Prevent loading user-site packages
 export PYTHONNOUSERSITE=1
 
-export CLUSTER_PROJECT_ROOT="/cluster/projects/nn9997k"
+export CLUSTER_PROJECT_ROOT="/cluster/work/projects/nn9971k"
 export PROJECT_DIR="${CLUSTER_PROJECT_ROOT}/${USER}/llm-hpc-course"
 
 # nvitop installation directory

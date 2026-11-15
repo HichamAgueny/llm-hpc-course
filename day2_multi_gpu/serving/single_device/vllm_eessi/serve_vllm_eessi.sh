@@ -1,4 +1,19 @@
 #!/bin/bash -e
+#SBATCH --job-name=vllm-serve-1gpu-eessi
+#SBATCH --account=nn9997k
+#SBATCH --reservation=software
+#SBATCH --time=00:30:00
+#SBATCH --partition=accel
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --gpus-per-node=1
+#SBATCH --cpus-per-task=72
+#SBATCH --mem-per-gpu=96G
+#SBATCH -o ./out/%x-%j.out
+#
+# Start the server:  sbatch serve_vllm_eessi.sh
+#   (or run ./serve_vllm_eessi.sh inside an interactive GPU shell: bash srun_sinteractive)
+# Then chat with it from a login node, in this folder:  ./chat.sh
 
 export PYTHONNOUSERSITE=1
 ml EESSI/2025.06
@@ -18,7 +33,7 @@ echo
 # =====================================================================
 
 # 1. Base Project Allocation
-export CLUSTER_PROJECT_ROOT="/cluster/projects/nn9997k"
+export CLUSTER_PROJECT_ROOT="/cluster/work/projects/nn9971k"
 
 # 2. Personal Workspace Setup
 export PROJECT_DIR="${CLUSTER_PROJECT_ROOT}/${USER}/llm-hpc-course"
@@ -28,7 +43,7 @@ export RESULT_DIR="${PROJECT_DIR}/results"
 # 3. Model, Adapter & Serving Parameters
 export BASE_MODEL_DIR="${MODEL_PATH:-${SHARED_DIR}/models/Llama-3.2-1B-Instruct}"
 
-export LORA_ADAPTER_DIR="${LORA_PATH-${RESULT_DIR}/checkpoint_results/llama3.2-1b_lora_single_device/checkpoints/epoch_0}"
+export LORA_ADAPTER_DIR="${LORA_PATH-${RESULT_DIR}/checkpoint_results/eessi_llama3.2-1b_lora_single_device/checkpoints/epoch_0}"
 
 export QUANTIZATION="${QUANTIZATION:-None}"
 export MAX_LORA_RANK="${MAX_LORA_RANK:-64}"
@@ -55,7 +70,6 @@ else
 fi
 
 echo "--- My Main Directory (host): ${PROJECT_DIR}"
-echo "--- Bind-mounted inside container as: /workspace"
 echo
 echo "=== vLLM Server Configuration ==="
 echo "BASE_MODEL_DIR:   ${BASE_MODEL_DIR}"
@@ -65,8 +79,8 @@ echo "GPUs:             ${NUM_GPUS}"
 echo "Status:           Starting API Server on Port ${PORT}..."
 echo "================================="
 echo "💡 Usage Reminder:"
-echo "   • Run with LoRA (default):  ./serve_vllm.sh"
-echo "   • Run Base Model only:      LORA_PATH=\"\" ./serve_vllm.sh"
+echo "   • Run with LoRA (default):  ./serve_vllm_eessi.sh"
+echo "   • Run Base Model only:      LORA_PATH=\"\" ./serve_vllm_eessi.sh"
 echo "================================="
 echo
 
@@ -110,7 +124,7 @@ echo "--Model name for chat.sh: ${MODEL_NAME}"
 echo
 
 # =====================================================================
-# STEP 3: Build & Launch vLLM API Server Inside Apptainer
+# STEP 3: Build & Launch vLLM API Server
 # =====================================================================
 VLLM_ARGS=(
     "serve" "${BASE_MODEL_DIR}"

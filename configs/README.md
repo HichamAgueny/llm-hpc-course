@@ -47,8 +47,12 @@ These YAML configurations are typically passed to recipes via Slurm batch script
 # Example: Running single-device LoRA fine-tuning
 python recipes/single_device/lora_finetune_single_device.py \
     --config configs/lora/llama3_2_1B_lora_single_device_QA.yaml \
-    --checkpoint_dir /cluster/projects/nn9997k/$USER/llm-hpc-course/shared/models/Llama-3.2-1B-Instruct \
-    --output_dir /cluster/projects/nn9997k/$USER/llm-hpc-course/results/checkpoint_results/llama3.2-1b_lora_single_device/checkpoints
+    --checkpoint_dir /cluster/work/projects/nn9971k/$USER/llm-hpc-course/shared/models/Llama-3.2-1B-Instruct \
+    --tokenizer_dir /cluster/work/projects/nn9971k/$USER/llm-hpc-course/shared/models/Llama-3.2-1B-Instruct/original/tokenizer.model \
+    --dataset_dir /cluster/work/projects/nn9971k/$USER/llm-hpc-course/shared/datasets/GPT-4-LLM/alpaca_gpt4_data.json \
+    --output_dir /cluster/work/projects/nn9971k/$USER/llm-hpc-course/results/checkpoint_results/my_run/checkpoints \
+    --log_dir /cluster/work/projects/nn9971k/$USER/llm-hpc-course/results/checkpoint_results/my_run/logs \
+    --profiling_dir /cluster/work/projects/nn9971k/$USER/llm-hpc-course/results/checkpoint_results/my_run/profiles
 ```
 
 > [!TIP]

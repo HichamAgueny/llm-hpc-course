@@ -1,4 +1,19 @@
 #!/bin/bash -e
+#SBATCH --job-name=vllm-serve-1gpu
+#SBATCH --account=nn9997k
+#SBATCH --reservation=software
+#SBATCH --time=00:30:00
+#SBATCH --partition=accel
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --gpus-per-node=1
+#SBATCH --cpus-per-task=72
+#SBATCH --mem-per-gpu=96G
+#SBATCH -o ./out/%x-%j.out
+#
+# Start the server:  sbatch serve_vllm.sh
+#   (or run ./serve_vllm.sh inside an interactive GPU shell: bash srun_sinteractive)
+# Then chat with it from a login node, in this folder:  ./chat.sh
 
 export PYTHONNOUSERSITE=1
 export NUMEXPR_MAX_THREADS=72
@@ -13,7 +28,7 @@ echo
 # =====================================================================
 
 # 1. Base Project Allocation
-export CLUSTER_PROJECT_ROOT="/cluster/projects/nn9997k"
+export CLUSTER_PROJECT_ROOT="/cluster/work/projects/nn9971k"
 
 # 2. Personal Workspace Setup
 export PROJECT_DIR="${CLUSTER_PROJECT_ROOT}/${USER}/llm-hpc-course"

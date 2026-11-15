@@ -1,6 +1,6 @@
 #!/bin/bash -e
 # --- Configuration ---
-export PROJECT_DIR="/cluster/projects/nn9997k"
+export PROJECT_DIR="/cluster/work/projects/nn9971k"
 export MyWD="$PROJECT_DIR/$USER/llm-hpc-course"
 CONTAINER_DIR="${MyWD}/apptainer"
 APPTAINER_SIF="${CONTAINER_DIR}/pytorch_25.08_cuda13.0_arm_custom.sif"

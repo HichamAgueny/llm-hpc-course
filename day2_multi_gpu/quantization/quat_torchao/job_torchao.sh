@@ -30,7 +30,7 @@ export NUMEXPR_MAX_THREADS=72
 # =====================================================================
 
 # 1. Base Project Allocation (Change this if migrating to a different project share)
-export CLUSTER_PROJECT_ROOT="/cluster/projects/nn9997k"
+export CLUSTER_PROJECT_ROOT="/cluster/work/projects/nn9971k"
 
 # 2. Personal Workspace Setup (Derived automatically from your root above)
 export PROJECT_DIR="${CLUSTER_PROJECT_ROOT}/${USER}/llm-hpc-course"

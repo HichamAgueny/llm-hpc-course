@@ -3,7 +3,7 @@
 # =====================================================================
 # --- CONFIGURABLE VARIABLES AND PATHS ---
 # =====================================================================
-export CLUSTER_PROJECT_ROOT="/cluster/projects/nn9997k"
+export CLUSTER_PROJECT_ROOT="/cluster/work/projects/nn9971k"
 export PROJECT_DIR="${CLUSTER_PROJECT_ROOT}/${USER}/llm-hpc-course"
 export CONNECTION_FILE="${PROJECT_DIR}/day2_multi_gpu/serving/single_device/vllm_container/connection.env"
 # =====================================================================

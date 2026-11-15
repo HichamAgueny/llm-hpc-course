@@ -8,7 +8,7 @@ set -e
 # =====================================================================
 export PYTHONNOUSERSITE=1
 
-export PROJECT_DIR="/cluster/projects/nn9997k"
+export PROJECT_DIR="/cluster/work/projects/nn9971k"
 export MyWD="$PROJECT_DIR/$USER/llm-hpc-course"
 
 CONTAINER_DIR="${MyWD}/apptainer"

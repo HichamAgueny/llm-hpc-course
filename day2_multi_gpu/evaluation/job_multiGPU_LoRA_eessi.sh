@@ -1,6 +1,5 @@
 #!/bin/bash -e
 #SBATCH --job-name=eval-llama3.2-1B-lora-4gpu_mmlu_eessi
-##SBATCH --reservation=LLM_in_person_course
 #SBATCH --account=nn9997k
 #SBATCH --time=00:30:00
 #SBATCH --partition=accel
@@ -28,7 +27,7 @@ module load lm-eval/0.4.12-foss-2025b
 export NUMEXPR_MAX_THREADS=72
 
 # 1. Base Project Allocation (Change this if migrating to a different project share)
-export CLUSTER_PROJECT_ROOT="/cluster/projects/nn9997k"
+export CLUSTER_PROJECT_ROOT="/cluster/work/projects/nn9971k"
 
 # 2. Personal Workspace Setup (Derived automatically from your root above)
 export PROJECT_DIR="${CLUSTER_PROJECT_ROOT}/${USER}/llm-hpc-course"
@@ -37,8 +36,9 @@ export RESULT_DIR="${PROJECT_DIR}/results"
 
 # 3. Model & Adapter Component Paths
 export BASE_MODEL_DIR="${SHARED_DIR}/models/Llama-3.2-1B-Instruct"
-export LORA_ADAPTER_DIR="${RESULT_DIR}/checkpoint_results/llama3.2-1b_lora_single_device/checkpoints/epoch_0"
-export MERGED_MODEL_DIR="${RESULT_DIR}/checkpoint_results/Llama-3.2-1B-Instruct_merged"
+# Adapter produced by the EESSI fine-tuning job (job_singleGPU_QA_LoRA_eessi.sh)
+export LORA_ADAPTER_DIR="${RESULT_DIR}/checkpoint_results/eessi_llama3.2-1b_lora_single_device/checkpoints/epoch_0"
+export MERGED_MODEL_DIR="${RESULT_DIR}/checkpoint_results/Llama-3.2-1B-Instruct_merged_eessi"
 export TOKENIZER_DIR="${BASE_MODEL_DIR}/original/tokenizer.model"
 export MAX_SHARD_SIZE="5GB"
 

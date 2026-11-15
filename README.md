@@ -88,112 +88,123 @@ flowchart TD
 
 ---
 
+## Getting Started on Olivia
+
+You only need a terminal. All labs are plain Slurm job scripts that you submit with `sbatch`.
+
+### Step 1 — Log in and get the course files
+
+```bash
+ssh <username>@olivia.sigma2.no
+
+mkdir -p /cluster/work/projects/nn9971k/$USER
+cd /cluster/work/projects/nn9971k/$USER
+git clone -b bergen-simple https://github.com/HichamAgueny/llm-hpc-course.git
+cd llm-hpc-course
+```
+
+> [!IMPORTANT]
+> Use exactly this folder: **`/cluster/work/projects/nn9971k/$USER/llm-hpc-course`**.
+> The job scripts look for the course files there.
+
+### Step 2 — Copy the models, datasets and containers (once, takes a few minutes)
+
+```bash
+./setup_env.sh
+```
+
+This copies the base model, the dataset and the two container images into your course folder
+and creates the `results/` folders.
+
+### Step 3 — Submit your first job
+
+```bash
+cd /cluster/work/projects/nn9971k/$USER/llm-hpc-course/day1_single_gpu/finetuning/lora_slurm/job_container
+sbatch job_singleGPU_QA_LoRA.sh
+```
+
+Then follow it:
+
+```bash
+squeue --me                      # is my job waiting (PD) or running (R)?
+tail -f out/*.out                # follow the job log (Ctrl+C to stop following)
+./gpu.monitor.sh <JobID>         # live GPU usage while the job runs (Ctrl+C to stop)
+```
+
+That's it — every lab works the same way: **go to the lab folder, run `sbatch <script>`, read the log in `out/`.**
+
+---
+
+## The Labs at a Glance
+
+Step-by-step instructions: **[Day 1 guide](./day1_single_gpu/README.md)** · **[Day 2 guide](./day2_multi_gpu/README.md)**
+
+| Lab | Folder (inside `llm-hpc-course/`) | Script to submit |
+| :--- | :--- | :--- |
+| 1.1 LoRA fine-tuning (1 GPU) | `day1_single_gpu/finetuning/lora_slurm/job_container` | `job_singleGPU_QA_LoRA.sh` |
+| 1.2 QLoRA fine-tuning (1 GPU) | `day1_single_gpu/finetuning/qlora_slurm/job_container` | `job_singleGPU_QA_QLoRA.sh` |
+| 1.3 Profiling | `day1_single_gpu/profiling` | `job_singleGPU_QA_LoRA_profiling.sh` |
+| 1.4 Merge + MMLU evaluation | `day1_single_gpu/evaluation` | `job_singleGPU_LoRA.sh` (base model: `job_singleGPU_No_LoRA.sh`) |
+| 2.1 Fine-tuning on 4 GPUs | `day2_multi_gpu/fine-tuning/ft_single_node/lora_slurm/job_container` | `job_multiGPU_QA_LoRA.sh` |
+| 2.2 Fine-tuning on 2 nodes | `day2_multi_gpu/fine-tuning/ft_multi_node/lora_slurm/job_container` | `job_multiNode_QA_LoRA.sh` |
+| 2.3 Distributed profiling | `day2_multi_gpu/profiling` | `job_multiGPU_QA_LoRA.sh` |
+| 2.4 Evaluation on 4 GPUs | `day2_multi_gpu/evaluation` | `job_multiGPU_LoRA.sh` |
+| 2.5 Quantization | `day2_multi_gpu/quantization/quat_bitsandbytes` | `job_bnb_8bit.sh` |
+| 2.6 vLLM serving + chat | `day2_multi_gpu/serving/single_device/vllm_container` | `serve_vllm.sh`, then `./chat.sh` |
+| 2.7 Batch inference | `day2_multi_gpu/inference` | `slurm_vllm_distributed_container.sh` |
+
+Every lab also has an **EESSI** version (software modules instead of a container): the script name
+ends with `_eessi.sh`, usually in a `job_eessi` folder next to `job_container`.
+
+---
+
+## Useful Slurm Commands
+
+| Command | What it does |
+| :--- | :--- |
+| `sbatch <script>.sh` | Submit a job; prints its **JobID** |
+| `squeue --me` | List your jobs (`PD` = waiting, `R` = running) |
+| `scancel <JobID>` | Cancel a job |
+| `tail -f out/*.out` | Follow the log of the jobs in the current lab folder |
+| `./gpu.monitor.sh <JobID>` | Live GPU usage of a running job (also available as `utils/gpu.monitor.sh`) |
+
+---
+
+## Where to Find Your Results
+
+Every job writes its **log** to the `out/` folder next to the script, and its **results** to:
+
+```text
+/cluster/work/projects/nn9971k/$USER/llm-hpc-course/results/
+├── checkpoint_results/  # Fine-tuned adapters and training logs
+├── profiling_results/   # PyTorch Profiler traces
+└── evaluation_results/  # MMLU benchmark scores
+```
+
+---
+
+## If a Job Fails
+
+1. Read the end of the log: `tail -50 out/<job-name>-<JobID>.out`
+2. `No such file or directory` for a model or dataset → run `./setup_env.sh` again (Step 2) and check
+   that the course is in `/cluster/work/projects/nn9971k/$USER/llm-hpc-course`.
+3. The evaluation / serving labs need a fine-tuned adapter: finish Lab 1.1 first.
+4. Still stuck? Ask an instructor and show them the log file.
+
+---
+
 ## Repository Layout
 
 ```text
 llm-hpc-course/
-├── run.sh           # Unified CLI runner for all Day 1 & Day 2 jobs
-├── menu.sh          # Interactive terminal menu launcher
-├── check_env.sh     # Pre-flight environment & directory health check
-├── course_env.sh    # Centralized Slurm account & path configuration
-├── apptainer/       # Container definitions (.def), build guides, and launch scripts
+├── setup_env.sh     # One-time setup: copies models, datasets and containers into your folder
+├── apptainer/       # Container definitions (.def), build guide, and launch scripts
 ├── configs/         # YAML configurations (LoRA, QLoRA, QAT-LoRA, and Evaluation)
-├── day1_single_gpu/ # Single-GPU labs: Fine-Tuning, Evaluation, and Profiling
-├── day2_multi_gpu/  # Multi-GPU labs: Distributed FT, Evaluation, Profiling, Quantization, Serving & Inference
-├── recipes/         # Standalone Python recipes for training, merging, evaluation, quantization, and vLLM
-├── utils/           # Cluster utilities (GPU monitoring, interactive nvitop)
-├── run_course.sh    # Multi-node / single-point execution launcher
+├── day1_single_gpu/ # Day 1 labs: Fine-Tuning, Evaluation, and Profiling
+├── day2_multi_gpu/  # Day 2 labs: Distributed FT, Evaluation, Profiling, Quantization, Serving & Inference
+├── recipes/         # Python programs used by the job scripts (training, merging, evaluation, quantization, vLLM)
+├── utils/           # GPU monitoring tools (gpu.monitor.sh, nvitop)
 └── README.md        # ← You are here
-```
-
----
-
-## Output Directory Structure (`results/`)
-
-All training, profiling, and evaluation runs save outputs into organized subfolders under `results/`:
-
-```text
-results/
-├── checkpoint_results/  # Checkpoints and adapter weights produced by fine-tuning
-├── profiling_results/   # PyTorch Profiler JSON/HTML traces and training logs
-└── evaluation_results/  # EleutherAI LM Evaluation Harness benchmark outputs (MMLU)
-```
-
----
-
-## Getting Started on Olivia
-
-### 1. SSH to Olivia & Clone Repo
-
-Connect to the **Olivia Supercomputer** via SSH:
-```bash
-ssh username@olivia.sigma2.no
-```
-
-Navigate to your user directory on the project share and clone the repository:
-```bash
-cd /cluster/projects/nn9997k/$USER
-git clone https://github.com/HichamAgueny/llm-hpc-course.git
-cd llm-hpc-course
-```
-
----
-
-### 2. Pre-Flight Health Check
-
-Verify cluster paths, permissions, container images, and initialize result folders:
-```bash
-./check_env.sh
-```
-
----
-
-### 3. Running Jobs: Three Simple Ways
-
-You can run any lab using either the **Interactive Menu**, the **Unified CLI Runner**, or directly via standard `sbatch`.
-
-#### Option A: Interactive Menu (Easiest)
-Simply run the interactive text menu and pick any Day 1 or Day 2 lab by number:
-```bash
-./menu.sh
-```
-
-#### Option B: Unified CLI Runner (`./run.sh`)
-Submit jobs directly from the repository root without navigating into deep directories:
-
-```bash
-# --- DAY 1 (Single GPU) ---
-./run.sh day1 lora               # Submit single-GPU LoRA fine-tuning (Container)
-./run.sh day1 lora --env=eessi   # Submit single-GPU LoRA fine-tuning (EESSI)
-./run.sh day1 lora --with-eval   # Train AND automatically schedule evaluation when training succeeds!
-./run.sh day1 qlora              # Submit single-GPU 4-bit QLoRA
-./run.sh day1 eval               # Evaluate LoRA adapter on MMLU
-./run.sh day1 profile            # Profile GPU memory and kernel execution
-
-# --- DAY 2 (Multi-GPU Distributed) ---
-./run.sh day2 ft-single          # 4-GPU distributed fine-tuning (single node)
-./run.sh day2 ft-multi           # Multi-node distributed fine-tuning
-./run.sh day2 eval               # Multi-GPU MMLU evaluation
-./run.sh day2 quantize bnb4      # 4-bit BitsAndBytes quantization
-./run.sh day2 serve              # Launch vLLM OpenAI-compatible server
-./run.sh day2 chat               # Connect interactive chat client to vLLM server
-./run.sh day2 inference          # Distributed high-throughput batch inference
-
-# --- UTILITIES ---
-./run.sh monitor <JobID>         # Attach real-time GPU monitor to your active job
-./run.sh status                  # Check active Slurm queue (squeue --me)
-```
-
-#### Option C: Manual Slurm Submissions
-If you prefer inspecting or running Slurm scripts directly:
-```bash
-# Day 1 LoRA (Container)
-cd day1_single_gpu/finetuning/lora_slurm/job_container
-sbatch job_singleGPU_QA_LoRA.sh
-
-# Day 1 LoRA (EESSI)
-cd day1_single_gpu/finetuning/lora_slurm/job_eessi
-sbatch job_singleGPU_QA_LoRA_eessi.sh
 ```
 
 ---

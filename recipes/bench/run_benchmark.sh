@@ -9,7 +9,7 @@ echo
 # =====================================================================
 # --- PATH CONFIGURATION ---
 # =====================================================================
-export CLUSTER_PROJECT_ROOT="/cluster/projects/nn9997k"
+export CLUSTER_PROJECT_ROOT="/cluster/work/projects/nn9971k"
 export PROJECT_DIR="${CLUSTER_PROJECT_ROOT}/${USER}/llm-hpc-course"
 export RESULT_DIR="${PROJECT_DIR}/results"
 
@@ -18,7 +18,8 @@ export CONTAINER_DIR="${PROJECT_DIR}/apptainer"
 export APPTAINER_SIF="${CONTAINER_DIR}/vllm0.12_cu131_py3.12_arm_custom.sif"
 
 # Connection file generated dynamically by serve_vllm.sh
-export CONNECTION_FILE="${PROJECT_DIR}/day2_multi_gpu/serving/single_device/connection.env"
+# (written by day2_multi_gpu/serving/single_device/vllm_container/serve_vllm.sh)
+export CONNECTION_FILE="${PROJECT_DIR}/day2_multi_gpu/serving/single_device/vllm_container/connection.env"
 
 # Benchmark Output Directory & Filename
 export BENCHMARK_RESULT_DIR="${RESULT_DIR}/benchmark_logs"

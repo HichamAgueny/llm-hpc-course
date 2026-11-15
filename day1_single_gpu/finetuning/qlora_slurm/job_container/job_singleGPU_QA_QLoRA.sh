@@ -1,6 +1,5 @@
 #!/bin/bash -e
 #SBATCH --job-name=ft-llama3-1B-qlora-1gpu
-##SBATCH --reservation=LLM_in_person_course
 #SBATCH --account=nn9997k
 #SBATCH --time=00:10:00
 #SBATCH --partition=accel
@@ -23,7 +22,7 @@ export PYTHONNOUSERSITE=1
 # =====================================================================
 
 # 1. Base Project Allocation (Change this if migrating to a different project share)
-export CLUSTER_PROJECT_ROOT="/cluster/projects/nn9997k"
+export CLUSTER_PROJECT_ROOT="/cluster/work/projects/nn9971k"
 
 # 2. Personal Workspace Setup (Derived automatically from your root above)
 export PROJECT_DIR="${CLUSTER_PROJECT_ROOT}/${USER}/llm-hpc-course"

@@ -12,200 +12,227 @@ This directory contains labs, configurations, and job scripts for scaling LLM wo
 
 ---
 
-## Directory Contents
+## Before You Start
 
-| Folder | Description |
-| :--- | :--- |
-| `fine-tuning/` | Slurm job scripts for multi-GPU single-node (`ft_single_node/`) and multi-node (`ft_multi_node/`) training (LoRA, QLoRA, QAT-LoRA) via Apptainer and EESSI. |
-| `evaluation/` | Multi-GPU evaluation scripts (MMLU benchmark) with LoRA adapter merging and base model baseline. |
-| `profiling/` | Multi-GPU distributed profiling scripts for measuring communication overhead and kernel efficiency. |
-| `quantization/` | Post-training quantization labs: BitsAndBytes (4-bit & 8-bit), TorchAO, and GPTQModel. |
-| `serving/` | vLLM OpenAI-compatible server deployment (single-device and multi-device, with container or EESSI) and interactive `chat.sh` clients. |
-| `inference/` | Distributed batch inference scripts powered by vLLM with LoRA adapter support. |
+The course is in **`/cluster/work/projects/nn9971k/$USER/llm-hpc-course`** (see [Getting Started](../README.md#getting-started-on-olivia)).
+As on Day 1, every lab works the same way:
+
+1. `cd` into the lab folder (copy the full `cd` line below),
+2. `sbatch <script>.sh` — note the **JobID** it prints,
+3. follow the job with `squeue --me` and `tail -f out/*.out`.
 
 ---
 
-## Output Directory Organization
+## Lab 2.1: Multi-GPU Fine-Tuning (1 node, 4 GPUs)
+**Goal:** Scale fine-tuning across 4 GPUs on a single node using PyTorch Fully Sharded Data Parallel (FSDP).
 
-Outputs conform to the course-wide `results/` folder hierarchy:
+**Run it** — pick one method:
+```bash
+# LoRA (container)
+cd /cluster/work/projects/nn9971k/$USER/llm-hpc-course/day2_multi_gpu/fine-tuning/ft_single_node/lora_slurm/job_container
+sbatch job_multiGPU_QA_LoRA.sh
 
-- **`${PROJECT_DIR}/results/checkpoint_results/`**: Checkpoints and adapter weights generated during fine-tuning (e.g., `llama3.2-1b_lora_multi_device/checkpoints/`).
-- **`${PROJECT_DIR}/results/profiling_results/`**: Distributed profiling outputs and logs.
-- **`${PROJECT_DIR}/results/evaluation_results/`**: MMLU benchmark output files and summary metrics.
+# LoRA (EESSI)
+cd /cluster/work/projects/nn9971k/$USER/llm-hpc-course/day2_multi_gpu/fine-tuning/ft_single_node/lora_slurm/job_eessi
+sbatch job_multiGPU_QA_LoRA_eessi.sh
 
----
+# QLoRA (container)
+cd /cluster/work/projects/nn9971k/$USER/llm-hpc-course/day2_multi_gpu/fine-tuning/ft_single_node/qlora_slurm
+sbatch job_multiGPU_QA_QLoRA.sh
 
-## Guided Hands-On Lab Worksheets (Day 2)
+# QAT-LoRA (container)
+cd /cluster/work/projects/nn9971k/$USER/llm-hpc-course/day2_multi_gpu/fine-tuning/ft_single_node/qat-lora_slurm
+sbatch job_multiGPU_QA_qat-LoRA.sh
+```
 
-### **Lab 2.1: Multi-GPU Distributed Fine-Tuning (Single Node)**
-* **Objective:** Scale fine-tuning across 4 GPUs on a single node using PyTorch Fully Sharded Data Parallel (FSDP).
-* **Launch Commands:**
-  * Fast launcher (from repo root):
-    ```bash
-    ./run.sh day2 ft-single --method=lora       # LoRA
-    ./run.sh day2 ft-single --method=qlora      # QLoRA
-    ./run.sh day2 ft-single --method=qat-lora  # QAT-LoRA
-    ```
-  * Direct Slurm submission:
-    ```bash
-    # LoRA (Container):
-    cd day2_multi_gpu/fine-tuning/ft_single_node/lora_slurm/job_container && sbatch job_multiGPU_QA_LoRA.sh
-    # LoRA (EESSI):
-    cd day2_multi_gpu/fine-tuning/ft_single_node/lora_slurm/job_eessi && sbatch job_multiGPU_QA_LoRA_eessi.sh
-    # QLoRA (4 GPUs):
-    cd day2_multi_gpu/fine-tuning/ft_single_node/qlora_slurm && sbatch job_multiGPU_QA_QLoRA.sh
-    # QAT-LoRA (4 GPUs):
-    cd day2_multi_gpu/fine-tuning/ft_single_node/qat-lora_slurm && sbatch job_multiGPU_QA_qat-LoRA.sh
-    ```
-* **Where to Inspect Outputs:**
-  * **Slurm Job Logs:** `day2_multi_gpu/fine-tuning/ft_single_node/<method>_slurm/out/*.out`
-  * **Training Loss & Metrics:** `results/checkpoint_results/<RUN_NAME>/logs/`
-  * **Checkpoints:** `results/checkpoint_results/<RUN_NAME>/checkpoints/`
-* **Student Focus:** Use `./run.sh monitor <JobID>` to observe balanced workload distribution and memory utilization across all 4 GPUs simultaneously.
+**Watch all 4 GPUs** (in the same folder): `./gpu.monitor.sh <JobID>` — is the work balanced across the GPUs?
+
+**Results:** job log in `out/`; training loss and adapter in
+`results/checkpoint_results/llama3.2-1b_<method>_multi_device/` (`<method>` = `lora`, `qlora` or `qat-lora`;
+EESSI: `eessi_llama3.2-1b_lora_multi_device/`).
 
 ---
 
-### **Lab 2.2: Multi-Node Distributed Scaling**
-* **Objective:** Scale training across multiple cluster nodes with optimized Slingshot interconnect and AWS-OFI-NCCL network bindings.
-* **Launch Commands:**
-  * Fast launcher (from repo root):
-    ```bash
-    ./run.sh day2 ft-multi --method=lora       # Multi-node LoRA
-    ./run.sh day2 ft-multi --method=qlora      # Multi-node QLoRA
-    ./run.sh day2 ft-multi --method=qat-lora  # Multi-node QAT-LoRA
-    ```
-  * Direct Slurm submission:
-    ```bash
-    # LoRA (Container):
-    cd day2_multi_gpu/fine-tuning/ft_multi_node/lora_slurm/job_container && sbatch job_multiNode_QA_LoRA.sh
-    # LoRA (EESSI):
-    cd day2_multi_gpu/fine-tuning/ft_multi_node/lora_slurm/job_eessi && sbatch job_multiNode_QA_LoRA_eessi.sh
-    # QLoRA (Multi-Node):
-    cd day2_multi_gpu/fine-tuning/ft_multi_node/qlora_slurm && sbatch job_multiNode_QA_QLoRA.sh
-    # QAT-LoRA (Multi-Node):
-    cd day2_multi_gpu/fine-tuning/ft_multi_node/qat-lora_slurm && sbatch job_multiNode_QA_qat-LoRA.sh
-    ```
-* **Where to Inspect Outputs:**
-  * **Slurm Job Logs:** `day2_multi_gpu/fine-tuning/ft_multi_node/<method>_slurm/out/*.out`
-  * **Checkpoints:** `results/checkpoint_results/<RUN_NAME>/checkpoints/`
+## Lab 2.2: Multi-Node Fine-Tuning (2 nodes, 8 GPUs)
+**Goal:** Scale training across several nodes over the Slingshot network (AWS-OFI-NCCL).
+
+**Run it** — pick one method:
+```bash
+# LoRA (container)
+cd /cluster/work/projects/nn9971k/$USER/llm-hpc-course/day2_multi_gpu/fine-tuning/ft_multi_node/lora_slurm/job_container
+sbatch job_multiNode_QA_LoRA.sh
+
+# LoRA (EESSI)
+cd /cluster/work/projects/nn9971k/$USER/llm-hpc-course/day2_multi_gpu/fine-tuning/ft_multi_node/lora_slurm/job_eessi
+sbatch job_multiNode_QA_LoRA_eessi.sh
+
+# QLoRA (container)
+cd /cluster/work/projects/nn9971k/$USER/llm-hpc-course/day2_multi_gpu/fine-tuning/ft_multi_node/qlora_slurm
+sbatch job_multiNode_QA_QLoRA.sh
+
+# QAT-LoRA (container)
+cd /cluster/work/projects/nn9971k/$USER/llm-hpc-course/day2_multi_gpu/fine-tuning/ft_multi_node/qat-lora_slurm
+sbatch job_multiNode_QA_qat-LoRA.sh
+```
+
+**Results:** job log in `out/`; adapter in `results/checkpoint_results/llama3.2-1b_<method>_multi_node/`.
+The network settings used by these jobs are in `nccl_env.sh`, next to each script.
+
+**Question:** Compare the training time per step with Lab 2.1. How well does it scale from 4 to 8 GPUs?
 
 ---
 
-### **Lab 2.3: Distributed Profiling & Communication Bottleneck Analysis**
-* **Objective:** Profile multi-GPU training to identify inter-GPU collective communication overhead in FSDP.
-* **Launch Commands:**
-  * Fast launcher (from repo root):
-    ```bash
-    ./run.sh day2 profile --method=lora
-    ./run.sh day2 profile --method=qlora
-    ./run.sh day2 profile --method=qat-lora
-    ```
-  * Direct Slurm submission:
-    ```bash
-    cd day2_multi_gpu/profiling
-    sbatch job_multiGPU_QA_LoRA.sh       # Profile LoRA
-    sbatch job_multiGPU_QA_QLoRA.sh      # Profile QLoRA
-    sbatch job_multiGPU_QA_qat-LoRA.sh   # Profile QAT-LoRA
-    ```
-* **Where to Inspect Outputs:**
-  * **Slurm Job Logs:** `day2_multi_gpu/profiling/out/*.out`
-  * **Per-Rank Traces:** Outputs generated per GPU rank under `results/profiling_results/<RUN_NAME>/profiles/` (`rank0_...`, `rank1_...`, etc.)
-* **Viewing Distributed Traces Locally:**
-  ```bash
-  scp -r USERNAME@olivia.sigma2.no:/cluster/projects/nn9997k/USERNAME/llm-hpc-course/results/profiling_results/profiling_llama3.2-1b_lora_multi_device/profiles .
-  open profiles/rank0_memory-timeline.html
-  ```
-* **Key Analytical Questions for Students:**
-  * What proportion of iteration time is spent in NCCL collective calls (`all_reduce`, `reduce_scatter`) vs. local matrix multiplication compute?
-  * How does NVLink intra-node communication efficiency compare against single-GPU kernel execution?
+## Lab 2.3: Distributed Profiling
+**Goal:** Profile 4-GPU training to see how much time goes into communication between GPUs.
+
+**Run it:**
+```bash
+cd /cluster/work/projects/nn9971k/$USER/llm-hpc-course/day2_multi_gpu/profiling
+sbatch job_multiGPU_QA_LoRA.sh        # LoRA
+sbatch job_multiGPU_QA_QLoRA.sh       # QLoRA
+sbatch job_multiGPU_QA_qat-LoRA.sh    # QAT-LoRA
+```
+
+**Results:** job log in `profiling/out/`; one trace per GPU (`rank0_...`, `rank1_...`) in
+`results/profiling_results/profiling_llama3.2-1b_<method>_multi_device/profiles/`.
+
+**Look at the traces on your laptop** (run this on your laptop, not on Olivia):
+```bash
+scp -r <username>@olivia.sigma2.no:/cluster/work/projects/nn9971k/<username>/llm-hpc-course/results/profiling_results/profiling_llama3.2-1b_lora_multi_device/profiles .
+open profiles/rank0_memory-timeline.html     # macOS  (Linux: xdg-open, Windows: start)
+```
+
+**Questions:**
+* What proportion of iteration time is spent in NCCL collective calls (`all_reduce`, `reduce_scatter`) vs. matrix multiplication?
+* How does this compare with the single-GPU profile from Lab 1.3?
 
 ---
 
-### **Lab 2.4: Multi-GPU Distributed Evaluation**
-* **Objective:** Evaluate multi-GPU fine-tuned checkpoints on the MMLU benchmark across 4 GPUs.
-* **Checkpoint Selection:** By default, evaluation scripts evaluate the Day 1 LoRA checkpoint (`results/checkpoint_results/llama3.2-1b_lora_single_device/checkpoints/epoch_0`). To evaluate your Day 2 multi-device checkpoint, pass `LORA_PATH="${PROJECT_DIR}/results/checkpoint_results/llama3.2-1b_lora_multi_device/checkpoints/epoch_0"`.
-* **Launch Commands:**
-  * Fast launcher (from repo root):
-    ```bash
-    ./run.sh day2 eval         # Evaluate LoRA adapter (merges adapter first)
-    ./run.sh day2 eval --base  # Evaluate base model baseline
-    ```
-  * Direct Slurm submission:
-    ```bash
-    cd day2_multi_gpu/evaluation && sbatch job_multiGPU_LoRA.sh
-    # or base model:
-    cd day2_multi_gpu/evaluation && sbatch job_multiGPU_No_LoRA.sh
-    ```
-* **Where to Inspect Outputs:**
-  * **Slurm Job Logs:** `day2_multi_gpu/evaluation/out/*.out`
-  * **Benchmark Metrics:** `results/evaluation_results/llama3.2-1b-mmlu_multigpu/`
+## Lab 2.4: Evaluation on 4 GPUs (MMLU)
+**Goal:** Evaluate the fine-tuned model on MMLU using 4 GPUs.
+
+**Run it:**
+```bash
+cd /cluster/work/projects/nn9971k/$USER/llm-hpc-course/day2_multi_gpu/evaluation
+sbatch job_multiGPU_LoRA.sh          # fine-tuned model (adapter from Lab 1.1, container)
+sbatch job_multiGPU_No_LoRA.sh       # base model, for comparison
+```
+EESSI versions: `job_multiGPU_LoRA_eessi.sh` (adapter from the EESSI run of Lab 1.1) and `job_multiGPU_No_LoRA_eessi.sh`.
+
+**Results** (in `results/evaluation_results/`): `llama3.2-1b-mmlu_multigpu/` and `llama3.2-1b-base-mmlu/`
+(EESSI: `llama3.2-1b-mmlu_eessi/`, `llama3.2-1b-base-mmlu_eessi/`).
+
+> [!TIP]
+> To evaluate your Day 2 adapter instead, open `job_multiGPU_LoRA.sh` and set
+> `LORA_ADAPTER_DIR` to `.../checkpoint_results/llama3.2-1b_lora_multi_device/checkpoints/epoch_0`.
+> Also give `MERGED_MODEL_DIR` a new name, otherwise the old merged model is reused.
 
 ---
 
-### **Lab 2.5: Post-Training Quantization (PTQ)**
-* **Objective:** Quantize base model weights using diverse quantization backends without retraining.
-* **Launch Commands:**
-  * Fast launcher (from repo root):
-    ```bash
-    ./run.sh day2 quantize bnb4      # BitsAndBytes 4-bit
-    ./run.sh day2 quantize bnb8      # BitsAndBytes 8-bit
-    ./run.sh day2 quantize torchao   # TorchAO
-    ./run.sh day2 quantize gptq      # GPTQModel
-    ```
-  * Direct Slurm submission:
-    ```bash
-    cd day2_multi_gpu/quantization/quat_bitsandbytes && sbatch job_bnb_4bit.sh
-    cd day2_multi_gpu/quantization/quat_torchao && sbatch job_torchao.sh
-    cd day2_multi_gpu/quantization/quat_gptqmodel && sbatch job_gptq.sh
-    ```
-* **Where to Inspect Outputs:**
-  * **Slurm Job Logs:** `day2_multi_gpu/quantization/<backend>/out/*.out`
-  * **Saved Quantized Model Directory:** `${SHARED_DIR}/models/Llama-3.2-1B-Instruct-<backend>`
-* **Student Focus:** Inspect file sizes of the generated model weights and compare the on-disk footprint across FP16, INT8, and INT4.
+## Lab 2.5: Post-Training Quantization
+**Goal:** Make the model smaller by quantizing its weights, without retraining. (These jobs use EESSI modules.)
+
+**Run it** — one job per method:
+```bash
+cd /cluster/work/projects/nn9971k/$USER/llm-hpc-course/day2_multi_gpu/quantization/quat_bitsandbytes
+sbatch job_bnb_4bit.sh               # BitsAndBytes 4-bit
+sbatch job_bnb_8bit.sh               # BitsAndBytes 8-bit (used by the serving lab)
+
+cd /cluster/work/projects/nn9971k/$USER/llm-hpc-course/day2_multi_gpu/quantization/quat_torchao
+sbatch job_torchao.sh                # TorchAO INT8
+
+cd /cluster/work/projects/nn9971k/$USER/llm-hpc-course/day2_multi_gpu/quantization/quat_gptqmodel
+sbatch job_gptq.sh                   # GPTQ 4-bit (job_gptq_with_filter.sh: filtered calibration data)
+```
+
+**Results:** the quantized models are saved in your course folder, in
+`shared/models/Llama-3.2-1B-Instruct-<method>` (`bnb_4bit`, `bnb_8bit`, `torchao_int8`, `gptq_4bit`).
+
+**Question:** Compare the size on disk:
+```bash
+du -sh /cluster/work/projects/nn9971k/$USER/llm-hpc-course/shared/models/*
+```
 
 ---
 
-### **Lab 2.6: High-Throughput Serving & Interactive Terminal Chat with vLLM**
-* **Objective:** Deploy an OpenAI-compatible vLLM serving engine with dynamic LoRA adapter loading and connect using an interactive terminal chat interface.
-* **Adapter Selection:** Serving scripts default to loading the Day 1 LoRA checkpoint (`results/checkpoint_results/llama3.2-1b_lora_single_device/checkpoints/epoch_0`). To serve your Day 2 multi-device checkpoint instead, pass `LORA_PATH="${PROJECT_DIR}/results/checkpoint_results/llama3.2-1b_lora_multi_device/checkpoints/epoch_0" ./run.sh day2 serve`.
-* **Port Customization:** In a classroom environment with multiple users, specify a distinct port to avoid collisions: `PORT=8001 ./run.sh day2 serve`.
-* **Launch Commands:**
-  1. Start server:
-     ```bash
-     ./run.sh day2 serve
-     # or direct:
-     cd day2_multi_gpu/serving/multi_device/vllm_container && sbatch serve_vllm.sh
-     ```
-  2. Monitor startup:
-     ```bash
-     ./run.sh monitor <JobID>
-     # or inspect:
-     cat day2_multi_gpu/serving/multi_device/vllm_container/out/*.out
-     ```
-  3. Connect chat client:
-     ```bash
-     ./run.sh day2 chat
-     # or direct:
-     cd day2_multi_gpu/serving/multi_device/vllm_container && ./chat.sh
-     ```
-* **Student Focus:** Interact with your fine-tuned QA model directly from the command line and observe how vLLM handles token streaming.
+## Lab 2.6: Serving with vLLM + Terminal Chat
+**Goal:** Start an OpenAI-compatible vLLM server with your LoRA adapter, then chat with it from the terminal.
+
+**1. Start the server** (it runs as a Slurm job for up to 30 minutes):
+```bash
+cd /cluster/work/projects/nn9971k/$USER/llm-hpc-course/day2_multi_gpu/serving/single_device/vllm_container
+sbatch serve_vllm.sh
+```
+
+**2. Wait until it is ready** — the log shows `Application startup complete`:
+```bash
+tail -f out/*.out          # Ctrl+C to stop following
+```
+
+**3. Chat with it** (same folder; type `exit` to quit):
+```bash
+./chat.sh
+```
+
+**4. Stop the server** when you are done: `scancel <JobID>`
+
+**Other servers** — same steps, other folder or script:
+
+| Folder (in `day2_multi_gpu/serving/`) | Script | What it serves |
+| :--- | :--- | :--- |
+| `single_device/vllm_container` | `serve_vllm.sh` | base model + your LoRA adapter, 1 GPU |
+| `single_device/vllm_container` | `serve_vllm_quantized_bnb.sh` / `_gptq.sh` / `_torchao.sh` | quantized model (Lab 2.5) + adapter |
+| `multi_device/vllm_container` | same script names | the same on 4 GPUs (tensor parallel) |
+| `single_device/vllm_eessi`, `multi_device/vllm_eessi` | `serve_vllm_eessi.sh`, `serve_vllm_quantized_*_eessi.sh` | EESSI versions (use the EESSI adapter) |
+
+Always run `./chat.sh` in the **same folder** as the server you started.
+The quantized servers need the matching model from Lab 2.5 (`bnb_8bit`, `gptq_4bit` or `torchao_int8`).
+
+**Options** (put them in front of `sbatch`):
+```bash
+LORA_PATH="" sbatch serve_vllm.sh        # serve the base model only, without adapter
+PORT=8001 sbatch serve_vllm.sh           # use another port if 8000 is busy
+```
+
+**Optional — benchmark the running single-GPU container server:**
+```bash
+/cluster/work/projects/nn9971k/$USER/llm-hpc-course/recipes/bench/run_benchmark.sh
+```
 
 ---
 
-### **Lab 2.7: Distributed High-Throughput Batch Inference**
-* **Objective:** Benchmark batch inference throughput using vLLM tensor parallelism across multiple GPUs.
-* **Launch Commands:**
-  * Fast launcher (from repo root):
-    ```bash
-    ./run.sh day2 inference               # Container
-    ./run.sh day2 inference --env=eessi   # EESSI
-    ```
-  * Direct Slurm submission:
-    ```bash
-    cd day2_multi_gpu/inference && sbatch slurm_vllm_distributed_container.sh
-    # or with EESSI:
-    cd day2_multi_gpu/inference && sbatch slurm_vllm_distributed_eessi.sh
-    ```
-* **Where to Inspect Outputs:**
-  * **Throughput & Latency Metrics:** `day2_multi_gpu/inference/out/*.out`
-* **Student Focus:** Inspect the generated tokens/second throughput and per-token generation latency reported in the Slurm log.
+## Lab 2.7: Batch Inference with vLLM
+**Goal:** Measure batch inference throughput with vLLM tensor parallelism on 4 GPUs.
+
+**Run it:**
+```bash
+cd /cluster/work/projects/nn9971k/$USER/llm-hpc-course/day2_multi_gpu/inference
+sbatch slurm_vllm_distributed_container.sh     # 4 GPUs, container
+sbatch slurm_vllm_distributed_eessi.sh         # 4 GPUs, EESSI (uses the EESSI adapter)
+sbatch slurm_vllm_lora_singlegpu.sh            # 1 GPU, for comparison
+```
+The prompts are in `prompt_QA.json` in this folder.
+
+**Results:** the generated answers, tokens/second and latency are printed in the job log (`out/`).
+
+**Question:** How much faster is 4-GPU inference than 1-GPU inference for this small model?
+
+---
+
+## Monitoring Your Jobs
+
+```bash
+squeue --me                                   # your jobs: PD = waiting, R = running
+tail -f out/*.out                             # follow the logs of this lab folder (Ctrl+C to stop)
+./gpu.monitor.sh <JobID>                      # live GPU usage (in folders that contain it)
+/cluster/work/projects/nn9971k/$USER/llm-hpc-course/utils/gpu.monitor.sh <JobID>   # same, from any folder
+scancel <JobID>                               # cancel a job
+```
+
+## If a Job Fails
+
+1. Read the end of the log: `tail -50 out/<job-name>-<JobID>.out`
+2. A model, dataset or adapter is missing → check that the lab it comes from has finished
+   (Lab 1.1 for adapters, Lab 2.5 for quantized models).
+3. `chat.sh` keeps waiting → the server is still starting, or it stopped: check the server log in `out/`.
+4. Still stuck? Ask an instructor and show them the log file.

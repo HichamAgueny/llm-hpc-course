@@ -52,7 +52,7 @@ profiler:
 Submit the profiling job script from this directory:
 
 ```bash
-cd day1_single_gpu/profiling
+cd /cluster/work/projects/nn9971k/$USER/llm-hpc-course/day1_single_gpu/profiling
 
 # Profile LoRA fine-tuning
 sbatch job_singleGPU_QA_LoRA_profiling.sh
@@ -63,8 +63,8 @@ sbatch job_singleGPU_QA_QLoRA_profiling.sh
 
 Profiling outputs and logs will be generated under:
 ```text
-/cluster/projects/nn9997k/$USER/llm-hpc-course/results/profiling_results/${RUN_NAME}/profiles
-/cluster/projects/nn9997k/$USER/llm-hpc-course/results/profiling_results/${RUN_NAME}/logs
+/cluster/work/projects/nn9971k/$USER/llm-hpc-course/results/profiling_results/<RUN_NAME>/profiles
+/cluster/work/projects/nn9971k/$USER/llm-hpc-course/results/profiling_results/<RUN_NAME>/logs
 ```
 
 ---
@@ -74,8 +74,8 @@ Profiling outputs and logs will be generated under:
 After the job completes, copy the profiling artifacts from the cluster to your local machine for analysis:
 
 ```bash
-# Replace USERNAME with your actual cluster username and RUN_NAME with your job run name
-scp -r USERNAME@olivia.sigma2.no:/cluster/projects/nn9997k/USERNAME/llm-hpc-course/results/profiling_results/profiling_llama3.2-1b_lora_single_device/profiles .
+# Run this on your laptop; replace <username> with your cluster username
+scp -r <username>@olivia.sigma2.no:/cluster/work/projects/nn9971k/<username>/llm-hpc-course/results/profiling_results/profiling_llama3.2-1b_lora_single_device/profiles .
 ```
 
 ### Viewing Traces

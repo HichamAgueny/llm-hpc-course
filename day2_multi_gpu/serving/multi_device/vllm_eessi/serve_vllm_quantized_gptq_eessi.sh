@@ -1,4 +1,19 @@
 #!/bin/bash -e
+#SBATCH --job-name=vllm-serve-4gpu-gptq-eessi
+#SBATCH --account=nn9997k
+#SBATCH --reservation=software
+#SBATCH --time=00:30:00
+#SBATCH --partition=accel
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --gpus-per-node=4
+#SBATCH --cpus-per-task=72
+#SBATCH --mem-per-gpu=96G
+#SBATCH -o ./out/%x-%j.out
+#
+# Start the server:  sbatch serve_vllm_quantized_gptq_eessi.sh
+#   (or run ./serve_vllm_quantized_gptq_eessi.sh inside an interactive GPU shell: bash srun_sinteractive_4gpus)
+# Then chat with it from a login node, in this folder:  ./chat.sh
 
 export PYTHONNOUSERSITE=1
 
@@ -20,7 +35,7 @@ echo
 # =====================================================================
 
 # 1. Base Project Allocation
-export CLUSTER_PROJECT_ROOT="/cluster/projects/nn9997k"
+export CLUSTER_PROJECT_ROOT="/cluster/work/projects/nn9971k"
 
 # 2. Personal Workspace Setup
 export PROJECT_DIR="${CLUSTER_PROJECT_ROOT}/${USER}/llm-hpc-course"
@@ -36,7 +51,7 @@ export QUANTIZED_MODEL_DIR="${QUANTIZED_MODEL_PATH:-${SHARED_DIR}/models/Llama-3
 export ACTIVE_MODEL_DIR="${QUANTIZED_MODEL_DIR}"
 
 # LoRA Adapter path
-export LORA_ADAPTER_DIR="${LORA_PATH-${RESULT_DIR}/checkpoint_results/llama3.2-1b_lora_single_device/checkpoints/epoch_0}"
+export LORA_ADAPTER_DIR="${LORA_PATH-${RESULT_DIR}/checkpoint_results/eessi_llama3.2-1b_lora_single_device/checkpoints/epoch_0}"
 
 export QUANTIZATION="${QUANTIZATION:-gptq_marlin}"
 export MAX_LORA_RANK="${MAX_LORA_RANK:-64}"
@@ -64,7 +79,7 @@ fi
 
 echo "--- My Main Directory (host): ${PROJECT_DIR}"
 echo
-echo "=== vLLM TorchAO + LoRA Server Configuration ==="
+echo "=== vLLM GPTQ + LoRA Server Configuration ==="
 echo "Quantized Base Model: ${ACTIVE_MODEL_DIR}"
 echo "Local Tokenizer Src:  ${BASE_MODEL_DIR}"
 echo "Quantization Method:  ${QUANTIZATION}"
@@ -73,8 +88,8 @@ echo "GPUs:                 ${NUM_GPUS}"
 echo "Status:               Starting API Server on Port ${PORT}..."
 echo "================================="
 echo "💡 Usage Reminder:"
-echo "   • Run with LoRA with quantized base model(default):  ./serve_vllm_quantized.sh"
-echo "   • Run Quantized Base Model only:      LORA_PATH=\"\" ./serve_vllm_quantized.sh"
+echo "   • Run with LoRA with quantized base model(default):  ./serve_vllm_quantized_gptq_eessi.sh"
+echo "   • Run Quantized Base Model only:      LORA_PATH=\"\" ./serve_vllm_quantized_gptq_eessi.sh"
 echo "================================="
 echo
 
@@ -84,7 +99,7 @@ echo
 echo "--- Validating model, tokenizer, and adapter paths ---"
 
 if [[ ! -d "${ACTIVE_MODEL_DIR}" ]]; then
-    echo "ERROR: TorchAO quantized model not found at: ${ACTIVE_MODEL_DIR}"
+    echo "ERROR: GPTQ quantized model not found at: ${ACTIVE_MODEL_DIR}"
     exit 1
 fi
 
@@ -141,6 +156,6 @@ if [[ "${USE_LORA}" == true ]]; then
     )
 fi
 
-echo "--- Launching GPTQ model + LoRA vLLM Server inside Apptainer ---"
+echo "--- Launching GPTQ + LoRA vLLM Server ---"
 
 vllm "${VLLM_ARGS[@]}"

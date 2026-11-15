@@ -28,7 +28,7 @@ export NUMEXPR_MAX_THREADS=72
 # =====================================================================
 
 # Root directory of the project
-PROJECT_DIR="/cluster/projects/nn9997k/$USER/llm-hpc-course"
+PROJECT_DIR="/cluster/work/projects/nn9971k/$USER/llm-hpc-course"
 SHARED_DIR="${PROJECT_DIR}/shared"
 RESULT_DIR="${PROJECT_DIR}/results/checkpoint_results"
 

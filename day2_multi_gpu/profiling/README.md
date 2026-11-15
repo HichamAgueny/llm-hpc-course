@@ -21,7 +21,7 @@ Distributed profiling captures inter-GPU communication metrics, NCCL collective 
 ## Submitting a Profiling Job
 
 ```bash
-cd day2_multi_gpu/profiling
+cd /cluster/work/projects/nn9971k/$USER/llm-hpc-course/day2_multi_gpu/profiling
 
 # Run LoRA distributed profiling
 sbatch job_multiGPU_QA_LoRA.sh
@@ -37,6 +37,7 @@ sbatch job_multiGPU_QA_qat-LoRA.sh
 
 ## Output and Visualization
 
+- Traces and logs are written to `results/profiling_results/profiling_llama3.2-1b_<method>_multi_device/` (`profiles/` and `logs/`); the job log is in `out/`.
 - Each rank generates its own timeline and trace (e.g., `rank0_...`, `rank1_...`, `rank2_...`, `rank3_...`).
 - Download trace artifacts to your workstation using `scp` and visualize using Chrome Tracing (`chrome://tracing`), [Perfetto](https://ui.perfetto.dev/), or the PyTorch Profiler plugin for TensorBoard.
 
