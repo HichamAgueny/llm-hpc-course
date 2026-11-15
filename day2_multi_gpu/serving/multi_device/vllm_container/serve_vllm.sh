@@ -1,18 +1,4 @@
-#!/bin/bash -e
-#SBATCH --job-name=vllm-serve-4gpu
-#SBATCH --account=nn9997k
-#SBATCH --reservation=software
-#SBATCH --time=00:30:00
-#SBATCH --partition=accel
-#SBATCH --nodes=1
-#SBATCH --ntasks=1
-#SBATCH --gpus-per-node=4
-#SBATCH --cpus-per-task=72
-#SBATCH --mem-per-gpu=96G
-#SBATCH -o ./out/%x-%j.out
-#
-# Start the server:  sbatch serve_vllm.sh
-#   (or run ./serve_vllm.sh inside an interactive GPU shell: bash srun_sinteractive_4gpus)
+# Start the server:  run ./serve_vllm.sh inside an interactive GPU shell: bash srun_sinteractive_4gpus)
 # Then chat with it from a login node, in this folder:  ./chat.sh
 
 export PYTHONNOUSERSITE=1
