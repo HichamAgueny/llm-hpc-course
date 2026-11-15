@@ -1,0 +1,7 @@
+accelerate==1.13
+transformers==5.9.0
+torchtune==0.6.1
+lm-eval==0.4.12
+langdetect
+immutabledict
+gguf==0.19.0

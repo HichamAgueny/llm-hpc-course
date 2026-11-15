@@ -971,6 +971,38 @@ def recipe_main(cfg: DictConfig) -> None:
     recipe.train()
     recipe.cleanup()
 
-
 if __name__ == "__main__":
+    import argparse
+
+    # 1. Capture all explicit configuration arguments from the SLURM script
+    parser = argparse.ArgumentParser(argument_default=argparse.SUPPRESS, add_help=False)
+    for arg_name in ["checkpoint_dir", "tokenizer_dir", "dataset_dir", "output_dir", "log_dir", "profiling_dir"]:
+        parser.add_argument(f"-{arg_name}", dest=arg_name)
+        parser.add_argument(f"--{arg_name}", dest=arg_name)
+
+    args, unknown_args = parser.parse_known_args()
+
+    # 2. Map flat flags directly into torchtune's native dot-notation component blocks
+    # This completely eliminates OmegaConf interpolation resolution failures.
+    config_mapping = {
+        "checkpoint_dir": ["checkpoint_dir", "checkpointer.checkpoint_dir"],
+        "tokenizer_dir": ["tokenizer_dir", "tokenizer.path"],
+        "dataset_dir": ["dataset_dir", "dataset.data_files"],
+        "output_dir": ["output_dir", "checkpointer.output_dir"],
+        "log_dir": ["log_dir", "metric_logger.log_dir"],
+        "profiling_dir": ["profiling_dir", "profiler.output_dir"]
+    }
+
+    overrides = []
+    for key, value in vars(args).items():
+        if key in config_mapping:
+            for target_config_key in config_mapping[key]:
+                overrides.append(f"{target_config_key}={value}")
+        else:
+            overrides.append(f"{key}={value}")
+
+    # 3. Reconstruct sys.argv so torchtune handles them out of the box
+    sys.argv = [sys.argv[0]] + unknown_args + overrides
+
     sys.exit(recipe_main())
+

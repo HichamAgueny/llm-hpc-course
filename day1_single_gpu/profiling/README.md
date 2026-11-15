@@ -11,13 +11,17 @@ To generate profiling data, you must enable and configure the profiler in your Y
 A minimal example (extracted from `configs/lora/llama3_2_1B_lora_single_device_profiling.yaml`):
 
 ```yaml
+# Activations Memory
+enable_activation_checkpointing: False  # True reduces memory
+enable_activation_offloading: False     # True reduces memory
+
 # Profiler (enabled)
 profiler:
   _component_: torchtune.training.setup_torch_profiler
   enabled: True
 
   # Output directory for trace artifacts
-  output_dir: /cluster/work/projects/nn9970k/$USER/llm-hpc-course/results/profiles/profiling_outputs
+  output_dir: ${profiling_dir}
 
   # Activities to trace
   cpu: True
@@ -38,22 +42,30 @@ profiler:
 
 ### Key Parameters:
 - **`enabled: True`**: Turns on the PyTorch Profiler.
-- **`output_dir`**: Specifies where the JSON/HTML trace files will be saved.
+- **`output_dir`**: Specifies where the JSON/HTML trace files will be saved (mapped to `${PROFILING_DIR}`).
 - **`wait_steps`, `warmup_steps`, `active_steps`**: Control the profiling window to capture steady-state performance.
 
 ---
 
 ## 2. Submitting a Profiling Job
 
-Once profiling is enabled in the config, submit the job script from this directory:
+Submit the profiling job script from this directory:
 
 ```bash
 cd day1_single_gpu/profiling
-sbatch job_singleGPU_profiling_LoRA.sh
+
+# Profile LoRA fine-tuning
+sbatch job_singleGPU_QA_LoRA_profiling.sh
+
+# Profile QLoRA fine-tuning
+sbatch job_singleGPU_QA_QLoRA_profiling.sh
 ```
 
-Profiling outputs will be generated in the configured `output_dir`, for example:
-`/cluster/work/projects/nn9970k/$USER/llm-hpc-course/results/profiles/profiling_outputs`
+Profiling outputs and logs will be generated under:
+```text
+/cluster/projects/nn9997k/$USER/llm-hpc-course/results/profiling_results/${RUN_NAME}/profiles
+/cluster/projects/nn9997k/$USER/llm-hpc-course/results/profiling_results/${RUN_NAME}/logs
+```
 
 ---
 
@@ -62,34 +74,36 @@ Profiling outputs will be generated in the configured `output_dir`, for example:
 After the job completes, copy the profiling artifacts from the cluster to your local machine for analysis:
 
 ```bash
-# Replace USERNAME with your actual cluster username
-scp -r USERNAME@olivia.sigma2.no:/cluster/work/projects/nn9970k/USERNAME/llm-hpc-course/results/profiles/profiling_outputs .
+# Replace USERNAME with your actual cluster username and RUN_NAME with your job run name
+scp -r USERNAME@olivia.sigma2.no:/cluster/projects/nn9997k/USERNAME/llm-hpc-course/results/profiling_results/profiling_llama3.2-1b_lora_single_device/profiles .
 ```
 
 ### Viewing Traces
-The profiling outputs are often stored as HTML files (e.g., `rank0_memory-timeline.html`). Open them in your preferred browser:
+The profiling outputs include memory timelines and trace files (e.g., `rank0_memory-timeline.html`, `*.pt.trace.json`):
 
-- **macOS**: `open rank0_memory-timeline.html`
-- **Linux**: `xdg-open rank0_memory-timeline.html`
-- **Windows**: `start rank0_memory-timeline.html`
+- **Memory timeline HTML**: Open directly in your browser:
+  - **macOS**: `open profiles/rank0_memory-timeline.html`
+  - **Linux**: `xdg-open profiles/rank0_memory-timeline.html`
+  - **Windows**: `start profiles/rank0_memory-timeline.html`
+- **Chrome Tracing**: Navigate to `chrome://tracing` or [Perfetto](https://ui.perfetto.dev/) in Chrome and load the `*.pt.trace.json` file.
 
 ### TensorBoard Integration (Optional)
 For a more detailed interactive view, use the PyTorch Profiler plugin for TensorBoard:
 
 1. **Install TensorBoard locally**:
    ```bash
-   pip install torch-tb-profiler
-   pip install tensorboard 
+   pip install torch-tb-profiler tensorboard
    ```
 2. **Launch TensorBoard**:
    ```bash
-   tensorboard --logdir=profiling_outputs/iteration_10
+   tensorboard --logdir=profiles
    ```
 3. **Open in Browser**: Navigate to `http://localhost:6006` and select the **"PyTorch Profiler"** tab.
 
 ---
 
 ## Best Practices
-- **Short Runs**: Keep the number of training steps low (e.g., 10-20 steps) to avoid generating excessively large trace files.
-- **Cleanup**: Delete old profiling runs to save disk space on the cluster.
-- **Multi-GPU**: Note that distributed runs will generate one report per rank (e.g., `rank0_...`, `rank1_...`).
+- **Short Runs**: Keep the number of training steps low (e.g., 10–20 steps) to avoid generating excessively large trace files.
+- **Temporary Checkpoints**: The profiling scripts point `OUTPUT_DIR` to local scratch `/tmp/${USER}_${SLURM_JOB_ID}/checkpoints` to avoid saving throwaway checkpoints to permanent storage.
+- **Cleanup**: Delete old profiling runs when finished to save disk space on the cluster.
+- **Multi-GPU**: Distributed runs generate one trace file per rank (e.g., `rank0_...`, `rank1_...`).

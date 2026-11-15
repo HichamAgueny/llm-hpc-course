@@ -1,0 +1,47 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# OS artifacts
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Editor & IDE swap files
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+
+# Slurm outputs and logs
+out/*.out
+out/*.err
+*.out
+*.log
+slurm-*.out
+
+# Dynamic vLLM connection environment files
+**/connection.env
+
+# Apptainer temporary files and large SIF images
+apptainer/tmp/
+apptainer/nvitop/
+*.sif
+
+# Generated results, checkpoints, and evaluation artifacts
+results/checkpoint_results/
+results/profiling_results/
+results/evaluation_results/
+
+# HuggingFace & vLLM Caches
+hf_cache/
+.cache/
+
+# Offload & model weights
+gptqmodel_offload/
+*.safetensors
+*.bin
+*.pt
+

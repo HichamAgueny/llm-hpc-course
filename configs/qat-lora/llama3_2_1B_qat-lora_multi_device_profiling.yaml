@@ -12,39 +12,24 @@
 # to override the checkpointer directory while launching training
 # you can run:
 #   tune run --nproc_per_node 2 qat_lora_finetune_distributed --config llama3_2/1B_qat_lora checkpointer.checkpoint_dir=<YOUR_CHECKPOINT_DIR>
-
-# NOTE: The host path '/cluster/work/projects/nn9970k/hicham/llm-hpc-course' is 
-#       bind-mounted to '/workspace' inside the Apptainer container.
-#       All paths below must use '/workspace' to be accessible during training.
 #
-# Root directory of the project (inside container)
-project_dir: /workspace
+# This config works best when the model is being fine-tuned on 2+ GPUs.
+# For single device LoRA finetuning please use 1B_lora_single_device.yaml
+# or 1B_qlora_single_device.yaml
+#
 
-# Shared resources directory (models, datasets, etc.)
-shared_dir: ${project_dir}/shared
-
-# Base model checkpoint directory (pre-trained Llama weights)
-checkpoint_dir: ${shared_dir}/models/Llama-3.2-1B-Instruct
-
-# Training dataset file path (QA-alpaca dataset)
-dataset_dir: ${shared_dir}/datasets/GPT-4-LLM/alpaca_gpt4_data.json
-
-# Parent directory for all training outputs
-result_dir: ${project_dir}/results
-
-# Where fine-tuned model checkpoints/weights will be saved
-output_dir: ${result_dir}/checkpoints_out/llama3_2_1B_qat-lora_multi_device_profiling
-
-# Where training logs and metrics will be stored
-log_dir: ${result_dir}/logs/qat-lora_finetune_1B_output_multi_device_profiling
-
-# Where profiling traces/timing data will be saved (if profiler enabled)
-profiling_dir: ${result_dir}/profiles/profiling_outputs_multi_device_qat-LoRA
+# Placeholder paths to be dynamically overridden by the SLURM/CLI script
+checkpoint_dir: null
+tokenizer_dir: null
+dataset_dir: null
+output_dir: null
+log_dir: null
+profiling_dir: null
 
 # Tokenizer
 tokenizer:
   _component_: torchtune.models.llama3.llama3_tokenizer
-  path: ${checkpoint_dir}/original/tokenizer.model
+  path: ${tokenizer_dir}
   max_seq_len: null
 
 # Model Arguments
@@ -52,6 +37,7 @@ model:
   _component_: torchtune.models.llama3_2.lora_llama3_2_1b
   lora_attn_modules: ['q_proj', 'v_proj', 'output_proj']
   apply_lora_to_mlp: True
+  apply_lora_to_output: False
   lora_rank: 64  # higher increases accuracy and memory
   lora_alpha: 128  # usually alpha=2*rank
   lora_dropout: 0.0

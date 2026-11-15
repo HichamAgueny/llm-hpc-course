@@ -1,0 +1,2 @@
+srun -A nn9997k --nodes=1 --ntasks=1 --mem-per-cpu=8G --time=00:50:00 --reservation=software --pty bash -i
+

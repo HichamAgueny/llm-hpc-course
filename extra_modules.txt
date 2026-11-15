@@ -1,0 +1,11 @@
+#Missing: 
+lm-eval>=0.4.5
+
+------
+#Available:
+module load transformers
+module load accelerate
+module load bitsandbytes
+module load GPTQModel
+module load gguf
+

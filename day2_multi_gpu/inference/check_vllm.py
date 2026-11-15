@@ -37,7 +37,7 @@ def main():
             # Some versions expose cuda checks in utils
             pass 
     except ImportError:
-        print("-- vLLM is NOT installed or not in PYTHONPATH")
+        print("--vLLM is NOT installed or not in PYTHONPATH")
     except Exception as e:
         print(f"-- Error importing vLLM: {e}")
 
