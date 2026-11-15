@@ -48,7 +48,7 @@ export CONFIG_FILE="${PROJECT_DIR}/configs/lora/llama3_2_1B_lora_multi_node_QA.y
 export PYTHON_FILE="${PROJECT_DIR}/recipes/distributed/lora_finetune_distributed.py"
 
 # 7. Internal Multi-Node Network Helper Path
-export MyCurrentWD="${PROJECT_DIR}/day2_multi_gpu/fine-tuning/ft_multi_node/lora_slurm/job_eessi"
+export MyCurrentWD="${PROJECT_DIR}/day2_multi_gpu/fine-tuning/ft_multi_node/lora_slurm"
 # =====================================================================
 
 

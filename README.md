@@ -119,7 +119,7 @@ and creates the `results/` folders.
 ### Step 3 — Submit your first job
 
 ```bash
-cd /cluster/work/projects/nn9971k/$USER/llm-hpc-course/day1_single_gpu/finetuning/lora_slurm/job_container
+cd /cluster/work/projects/nn9971k/$USER/llm-hpc-course/day1_single_gpu/finetuning/lora_slurm
 sbatch job_singleGPU_QA_LoRA.sh
 ```
 
@@ -141,20 +141,20 @@ Step-by-step instructions: **[Day 1 guide](./day1_single_gpu/README.md)** · **[
 
 | Lab | Folder (inside `llm-hpc-course/`) | Script to submit |
 | :--- | :--- | :--- |
-| 1.1 LoRA fine-tuning (1 GPU) | `day1_single_gpu/finetuning/lora_slurm/job_container` | `job_singleGPU_QA_LoRA.sh` |
-| 1.2 QLoRA fine-tuning (1 GPU) | `day1_single_gpu/finetuning/qlora_slurm/job_container` | `job_singleGPU_QA_QLoRA.sh` |
+| 1.1 LoRA fine-tuning (1 GPU) | `day1_single_gpu/finetuning/lora_slurm` | `job_singleGPU_QA_LoRA.sh` |
+| 1.2 QLoRA fine-tuning (1 GPU) | `day1_single_gpu/finetuning/qlora_slurm` | `job_singleGPU_QA_QLoRA.sh` |
 | 1.3 Profiling | `day1_single_gpu/profiling` | `job_singleGPU_QA_LoRA_profiling.sh` |
 | 1.4 Merge + MMLU evaluation | `day1_single_gpu/evaluation` | `job_singleGPU_LoRA.sh` (base model: `job_singleGPU_No_LoRA.sh`) |
-| 2.1 Fine-tuning on 4 GPUs | `day2_multi_gpu/fine-tuning/ft_single_node/lora_slurm/job_container` | `job_multiGPU_QA_LoRA.sh` |
-| 2.2 Fine-tuning on 2 nodes | `day2_multi_gpu/fine-tuning/ft_multi_node/lora_slurm/job_container` | `job_multiNode_QA_LoRA.sh` |
+| 2.1 Fine-tuning on 4 GPUs | `day2_multi_gpu/fine-tuning/ft_single_node/lora_slurm` | `job_multiGPU_QA_LoRA.sh` |
+| 2.2 Fine-tuning on 2 nodes | `day2_multi_gpu/fine-tuning/ft_multi_node/lora_slurm` | `job_multiNode_QA_LoRA.sh` |
 | 2.3 Distributed profiling | `day2_multi_gpu/profiling` | `job_multiGPU_QA_LoRA.sh` |
 | 2.4 Evaluation on 4 GPUs | `day2_multi_gpu/evaluation` | `job_multiGPU_LoRA.sh` |
 | 2.5 Quantization | `day2_multi_gpu/quantization/quat_bitsandbytes` | `job_bnb_8bit.sh` |
 | 2.6 vLLM serving + chat | `day2_multi_gpu/serving/single_device/vllm_container` | `serve_vllm.sh`, then `./chat.sh` |
 | 2.7 Batch inference | `day2_multi_gpu/inference` | `slurm_vllm_distributed_container.sh` |
 
-Every lab also has an **EESSI** version (software modules instead of a container): the script name
-ends with `_eessi.sh`, usually in a `job_eessi` folder next to `job_container`.
+Most labs also have an **EESSI** version (software modules instead of a container): a script whose
+name ends with `_eessi.sh`, in the same folder.
 
 ---
 

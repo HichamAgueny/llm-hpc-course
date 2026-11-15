@@ -22,8 +22,9 @@ Every lab works the same way:
 2. `sbatch <script>.sh` — note the **JobID** it prints,
 3. follow the job with `squeue --me` and `tail -f out/*.out`.
 
-**Container or EESSI?** Each fine-tuning lab comes in two versions that do the same work:
-`job_container/` runs inside an Apptainer container, `job_eessi/` uses EESSI software modules.
+**Container or EESSI?** Each fine-tuning lab comes in two versions that do the same work, side by side
+in the same folder: the plain script runs inside an Apptainer container, the `_eessi.sh` script uses EESSI
+software modules.
 Start with the container version; try EESSI afterwards if you have time.
 
 ---
@@ -33,13 +34,13 @@ Start with the container version; try EESSI afterwards if you have time.
 
 **Run it (container):**
 ```bash
-cd /cluster/work/projects/nn9971k/$USER/llm-hpc-course/day1_single_gpu/finetuning/lora_slurm/job_container
+cd /cluster/work/projects/nn9971k/$USER/llm-hpc-course/day1_single_gpu/finetuning/lora_slurm
 sbatch job_singleGPU_QA_LoRA.sh
 ```
 
 **Run it (EESSI):**
 ```bash
-cd /cluster/work/projects/nn9971k/$USER/llm-hpc-course/day1_single_gpu/finetuning/lora_slurm/job_eessi
+cd /cluster/work/projects/nn9971k/$USER/llm-hpc-course/day1_single_gpu/finetuning/lora_slurm
 sbatch job_singleGPU_QA_LoRA_eessi.sh
 ```
 
@@ -48,7 +49,7 @@ sbatch job_singleGPU_QA_LoRA_eessi.sh
 **Results** (in `llm-hpc-course/results/checkpoint_results/`):
 | | Container | EESSI |
 | :--- | :--- | :--- |
-| Job log | `job_container/out/` | `job_eessi/out/` |
+| Job log | `lora_slurm/out/` | `lora_slurm/out/` |
 | Training loss | `llama3.2-1b_lora_single_device/logs/` | `eessi_llama3.2-1b_lora_single_device/logs/` |
 | Fine-tuned adapter | `llama3.2-1b_lora_single_device/checkpoints/epoch_0/` | `eessi_llama3.2-1b_lora_single_device/checkpoints/epoch_0/` |
 
@@ -59,13 +60,13 @@ sbatch job_singleGPU_QA_LoRA_eessi.sh
 
 **Run it (container):**
 ```bash
-cd /cluster/work/projects/nn9971k/$USER/llm-hpc-course/day1_single_gpu/finetuning/qlora_slurm/job_container
+cd /cluster/work/projects/nn9971k/$USER/llm-hpc-course/day1_single_gpu/finetuning/qlora_slurm
 sbatch job_singleGPU_QA_QLoRA.sh
 ```
 
 **Run it (EESSI):**
 ```bash
-cd /cluster/work/projects/nn9971k/$USER/llm-hpc-course/day1_single_gpu/finetuning/qlora_slurm/job_eessi
+cd /cluster/work/projects/nn9971k/$USER/llm-hpc-course/day1_single_gpu/finetuning/qlora_slurm
 sbatch job_singleGPU_QA_QLoRA_eessi.sh
 ```
 

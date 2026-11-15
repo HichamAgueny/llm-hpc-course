@@ -29,11 +29,11 @@ As on Day 1, every lab works the same way:
 **Run it** — pick one method:
 ```bash
 # LoRA (container)
-cd /cluster/work/projects/nn9971k/$USER/llm-hpc-course/day2_multi_gpu/fine-tuning/ft_single_node/lora_slurm/job_container
+cd /cluster/work/projects/nn9971k/$USER/llm-hpc-course/day2_multi_gpu/fine-tuning/ft_single_node/lora_slurm
 sbatch job_multiGPU_QA_LoRA.sh
 
 # LoRA (EESSI)
-cd /cluster/work/projects/nn9971k/$USER/llm-hpc-course/day2_multi_gpu/fine-tuning/ft_single_node/lora_slurm/job_eessi
+cd /cluster/work/projects/nn9971k/$USER/llm-hpc-course/day2_multi_gpu/fine-tuning/ft_single_node/lora_slurm
 sbatch job_multiGPU_QA_LoRA_eessi.sh
 
 # QLoRA (container)
@@ -59,11 +59,11 @@ EESSI: `eessi_llama3.2-1b_lora_multi_device/`).
 **Run it** — pick one method:
 ```bash
 # LoRA (container)
-cd /cluster/work/projects/nn9971k/$USER/llm-hpc-course/day2_multi_gpu/fine-tuning/ft_multi_node/lora_slurm/job_container
+cd /cluster/work/projects/nn9971k/$USER/llm-hpc-course/day2_multi_gpu/fine-tuning/ft_multi_node/lora_slurm
 sbatch job_multiNode_QA_LoRA.sh
 
 # LoRA (EESSI)
-cd /cluster/work/projects/nn9971k/$USER/llm-hpc-course/day2_multi_gpu/fine-tuning/ft_multi_node/lora_slurm/job_eessi
+cd /cluster/work/projects/nn9971k/$USER/llm-hpc-course/day2_multi_gpu/fine-tuning/ft_multi_node/lora_slurm
 sbatch job_multiNode_QA_LoRA_eessi.sh
 
 # QLoRA (container)

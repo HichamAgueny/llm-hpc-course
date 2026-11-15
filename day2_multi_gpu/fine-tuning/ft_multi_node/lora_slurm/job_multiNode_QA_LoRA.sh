@@ -52,7 +52,7 @@ export CONTAINER_DIR="${PROJECT_DIR}/apptainer"
 export APPTAINER_SIF="${CONTAINER_DIR}/pytorch_25.08_cuda13.0_arm_custom.sif"
 
 # 7. Internal Multi-Node Network Helper Path
-export MyCurrentWD="${PROJECT_DIR}/day2_multi_gpu/fine-tuning/ft_multi_node/lora_slurm/job_container"
+export MyCurrentWD="${PROJECT_DIR}/day2_multi_gpu/fine-tuning/ft_multi_node/lora_slurm"
 
 # =====================================================================
 
