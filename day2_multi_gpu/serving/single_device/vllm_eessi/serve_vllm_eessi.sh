@@ -1,9 +1,32 @@
 #!/bin/bash -e
+#SBATCH --job-name=vllm-serve-single-base-eessi
+#SBATCH --time=00:30:00
+#SBATCH --partition=accel
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --gpus-per-node=1
+#SBATCH --cpus-per-task=72
+#SBATCH --mem-per-gpu=96G
+#SBATCH -o ./out/%x-%j.out
+# Slurm account & reservation are set in course_env.sh - no need to add them here.
+#
+# Two ways to start this server:
+#   sbatch serve_vllm_eessi.sh     -> batch job, log in ./out/
+#   ./serve_vllm_eessi.sh          -> inside an interactive GPU shell (bash srun_sinteractive)
+# Then, from a login node in this folder:  ./chat.sh
+
+# --- Load the course settings (account, paths, containers, modules) ----------
+for _d in "${SLURM_SUBMIT_DIR:-$PWD}" "$PWD" "${COURSE_ROOT:-/}"; do
+    until [[ -f "$_d/course_env.sh" || "$_d" == "/" ]]; do _d="$(dirname "$_d")"; done
+    if [[ -f "$_d/course_env.sh" ]]; then break; fi
+done
+if [[ ! -f "$_d/course_env.sh" ]]; then echo "ERROR: course_env.sh not found - submit from inside the course folder" >&2; exit 1; fi
+source "$_d/course_env.sh"
 
 export PYTHONNOUSERSITE=1
-ml EESSI/2025.06
-#module load torchtune/0.6.1-foss-2025b-PyTorch-2.12.0-CUDA-12.9.1
-module load vllm/0.22.1-foss-2025b-PyTorch-2.12.0-CUDA-12.9.1
+
+module load "${EESSI_MODULE}"
+module load "${VLLM_MODULE}"
 module load Transformers
 
 export NUMEXPR_MAX_THREADS=72
@@ -14,36 +37,27 @@ echo "--Allocated GPUs: ${NUM_GPUS}"
 echo
 
 # =====================================================================
-# --- CONFIGURABLE VARIABLES AND PATHS (USERS ONLY MODIFY THIS BLOCK) ---
+# --- SERVER SETTINGS (paths, model, adapter and container: see course_env.sh) ---
 # =====================================================================
+# Override at launch time, for example:
+#   LORA_PATH="" ./serve_vllm_eessi.sh                       -> no LoRA adapter
+#   LORA_PATH=/path/to/checkpoints/epoch_0 ./serve_vllm_eessi.sh
+#   PORT=8001 ./serve_vllm_eessi.sh                          -> use another port
+export BASE_MODEL_DIR="${MODEL_PATH:-${BASE_MODEL_DIR}}"
 
-# 1. Base Project Allocation
-export CLUSTER_PROJECT_ROOT="/cluster/projects/nn9997k"
-
-# 2. Personal Workspace Setup
-export PROJECT_DIR="${CLUSTER_PROJECT_ROOT}/${USER}/llm-hpc-course"
-export SHARED_DIR="${PROJECT_DIR}/shared"
-export RESULT_DIR="${PROJECT_DIR}/results"
-
-# 3. Model, Adapter & Serving Parameters
-export BASE_MODEL_DIR="${MODEL_PATH:-${SHARED_DIR}/models/Llama-3.2-1B-Instruct}"
-
-export LORA_ADAPTER_DIR="${LORA_PATH-${RESULT_DIR}/checkpoint_results/llama3.2-1b_lora_single_device/checkpoints/epoch_0}"
+# LoRA adapter (default from course_env.sh; LORA_PATH="" disables it)
+export LORA_ADAPTER_DIR="${LORA_PATH-${LORA_ADAPTER_DIR}}"
 
 export QUANTIZATION="${QUANTIZATION:-None}"
 export MAX_LORA_RANK="${MAX_LORA_RANK:-64}"
 export PORT="${PORT:-8000}"
 
-# 4. Output / Connection File Paths
-export CONNECTION_DIR="${PROJECT_DIR}/day2_multi_gpu/serving/single_device/vllm_eessi"
-mkdir -p "${CONNECTION_DIR}"
+# Connection file read by chat.sh (in this folder)
+export CONNECTION_DIR="${COURSE_ROOT}/day2_multi_gpu/serving/single_device/vllm_eessi"
 export CONNECTION_FILE="${CONNECTION_DIR}/connection.env"
-
-# 5. Caches under project share
-export HF_HOME="${PROJECT_DIR}/hf_cache"
-export VLLM_CACHE_ROOT="${PROJECT_DIR}/.cache/vllm"
-mkdir -p "${HF_HOME}" "${VLLM_CACHE_ROOT}"
+mkdir -p "${CONNECTION_DIR}" "${HF_HOME}" "${VLLM_CACHE_ROOT}"
 # =====================================================================
+
 
 # -------- LoRA Detection --------
 if [[ -n "${LORA_ADAPTER_DIR}" ]]; then
@@ -54,8 +68,7 @@ else
     MODEL_NAME="${BASE_MODEL_DIR}"
 fi
 
-echo "--- My Main Directory (host): ${PROJECT_DIR}"
-echo "--- Bind-mounted inside container as: /workspace"
+echo "--- Course folder (host): ${COURSE_ROOT}"
 echo
 echo "=== vLLM Server Configuration ==="
 echo "BASE_MODEL_DIR:   ${BASE_MODEL_DIR}"
@@ -65,8 +78,8 @@ echo "GPUs:             ${NUM_GPUS}"
 echo "Status:           Starting API Server on Port ${PORT}..."
 echo "================================="
 echo "💡 Usage Reminder:"
-echo "   • Run with LoRA (default):  ./serve_vllm.sh"
-echo "   • Run Base Model only:      LORA_PATH=\"\" ./serve_vllm.sh"
+echo "   • Run with LoRA (default):  ./serve_vllm_eessi.sh"
+echo "   • Run Base Model only:      LORA_PATH=\"\" ./serve_vllm_eessi.sh"
 echo "================================="
 echo
 
@@ -110,7 +123,7 @@ echo "--Model name for chat.sh: ${MODEL_NAME}"
 echo
 
 # =====================================================================
-# STEP 3: Build & Launch vLLM API Server Inside Apptainer
+# STEP 3: Build & Launch vLLM API Server
 # =====================================================================
 VLLM_ARGS=(
     "serve" "${BASE_MODEL_DIR}"

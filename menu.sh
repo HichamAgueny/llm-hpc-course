@@ -16,11 +16,14 @@ clear_screen() {
     clear 2>/dev/null || echo -e "\n----------------------------------------\n"
 }
 
+# Prints the menu on stderr so that only the answer is captured by $(choose_env)
 choose_env() {
-    echo ""
-    echo -e "${BOLD}Select Execution Environment:${NC}"
-    echo "  1) Apptainer Container (Recommended)"
-    echo "  2) Native EESSI Modules"
+    {
+        echo ""
+        echo -e "${BOLD}Select Execution Environment:${NC}"
+        echo "  1) Apptainer Container (Recommended)"
+        echo "  2) Native EESSI Modules"
+    } >&2
     read -rp "Choice [1-2] (default 1): " env_choice
     if [ "$env_choice" == "2" ]; then
         echo "eessi"

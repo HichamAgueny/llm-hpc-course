@@ -9,19 +9,15 @@ echo
 # =====================================================================
 # --- PATH CONFIGURATION ---
 # =====================================================================
-export CLUSTER_PROJECT_ROOT="/cluster/projects/nn9997k"
-export PROJECT_DIR="${CLUSTER_PROJECT_ROOT}/${USER}/llm-hpc-course"
-export RESULT_DIR="${PROJECT_DIR}/results"
+# Paths and container come from course_env.sh
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)/course_env.sh"
 
-# Apptainer Container Configuration
-export CONTAINER_DIR="${PROJECT_DIR}/apptainer"
-export APPTAINER_SIF="${CONTAINER_DIR}/vllm0.12_cu131_py3.12_arm_custom.sif"
-
-# Connection file generated dynamically by serve_vllm.sh
-export CONNECTION_FILE="${PROJECT_DIR}/day2_multi_gpu/serving/single_device/connection.env"
+# Connection file written by the running server (serve_vllm*.sh).
+# Default: the single-GPU container server; override with CONNECTION_FILE=...
+export CONNECTION_FILE="${CONNECTION_FILE:-${COURSE_ROOT}/day2_multi_gpu/serving/single_device/vllm_container/connection.env}"
 
 # Benchmark Output Directory & Filename
-export BENCHMARK_RESULT_DIR="${RESULT_DIR}/benchmark_logs"
+export BENCHMARK_RESULT_DIR="${BENCHMARK_RESULTS_DIR}"
 mkdir -p "${BENCHMARK_RESULT_DIR}"
 export BENCHMARK_FILENAME="vllm_benchmark_results.json"
 # =====================================================================
@@ -53,11 +49,9 @@ echo
 # =====================================================================
 echo "--- Starting local vLLM benchmark execution ---"
 
-apptainer exec --nv \
-      -B "${PROJECT_DIR}:/workspace" \
-      -B "${CLUSTER_PROJECT_ROOT}" \
+apptainer exec --nv ${CONTAINER_BINDS} \
       --pwd "/workspace" \
-      "${APPTAINER_SIF}" \
+      "${VLLM_SIF}" \
       vllm bench serve \
           --backend openai-chat \
           --model "${MODEL}" \

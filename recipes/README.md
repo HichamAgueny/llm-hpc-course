@@ -41,22 +41,29 @@ This directory contains standalone Python recipes for fine‑tuning, quantizatio
 ## Usage Examples
 
 ### Single-Device QA Fine-Tuning
+The Slurm scripts in `day1_single_gpu/` and `day2_multi_gpu/` run these recipes for you with the
+right paths. To run one by hand (inside a GPU allocation / the container), first `source course_env.sh`:
 ```bash
 python recipes/single_device/lora_finetune_single_device.py \
-    --config configs/lora/llama3_2_1B_lora_single_device_QA.yaml
+    --config configs/lora/llama3_2_1B_lora_single_device_QA.yaml \
+    --checkpoint_dir $BASE_MODEL_DIR --tokenizer_dir $TOKENIZER_DIR --dataset_dir $QA_DATASET_DIR \
+    --output_dir $CHECKPOINT_RESULTS_DIR/my_run/checkpoints --log_dir $CHECKPOINT_RESULTS_DIR/my_run/logs \
+    --profiling_dir $CHECKPOINT_RESULTS_DIR/my_run/profiles
 ```
 
 ### Merging LoRA Adapter with Base Model
 ```bash
 python recipes/merge/merge_and_save.py \
-    --base_model /cluster/projects/nn9997k/$USER/llm-hpc-course/shared/models/Llama-3.2-1B-Instruct \
-    --adapter_dir /cluster/projects/nn9997k/$USER/llm-hpc-course/results/checkpoint_results/llama3.2-1b_lora_single_device/checkpoints/epoch_0 \
-    --output_dir /cluster/projects/nn9997k/$USER/llm-hpc-course/results/checkpoint_results/Llama-3.2-1B-Instruct_merged
+    --base_model_path $BASE_MODEL_DIR \
+    --lora_adapter_path $LORA_ADAPTER_DIR \
+    --output_path $MERGED_MODEL_DIR \
+    --max_shard_size 5GB
 ```
 
 ### Serving / Inference with vLLM
 ```bash
 python recipes/inference/vllm_inference.py \
-    --model_id /cluster/projects/nn9997k/$USER/llm-hpc-course/shared/models/Llama-3.2-1B-Instruct \
-    --prompt "What is High-Performance Computing?"
+    --model $BASE_MODEL_DIR \
+    --lora-path $LORA_ADAPTER_DIR \
+    --prompt-file day2_multi_gpu/inference/prompt_QA.json
 ```

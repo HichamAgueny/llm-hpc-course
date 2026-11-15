@@ -9,7 +9,8 @@ Monitoring GPU utilization is crucial for optimizing your fine‑tuning, profili
 
 **Usage:**
 ```bash
-./gpu.monitor.sh <JobID>
+./run.sh monitor <JobID>     # from the course folder
+gpu.monitor.sh <JobID>       # from any folder, after: source course_env.sh
 ```
 
 **Features:**
@@ -26,6 +27,12 @@ Launches the interactive curses-based `nvitop` GPU process monitor. See [install
 ```bash
 ./run_nvitop.sh <JobID>
 ```
+
+---
+
+### 3. Shared NCCL / Slingshot settings (`nccl_env.sh`)
+Network environment variables for multi-node jobs. All multi-node job scripts source this single file
+(`source "${COURSE_ROOT}/utils/nccl_env.sh"`), so tuning it here applies to every multi-node lab.
 
 ---
 

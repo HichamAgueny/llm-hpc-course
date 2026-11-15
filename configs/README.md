@@ -44,11 +44,15 @@ This directory contains YAML configuration files for fine‑tuning and evaluatin
 These YAML configurations are typically passed to recipes via Slurm batch scripts or directly through the CLI:
 
 ```bash
-# Example: Running single-device LoRA fine-tuning
+# Example (inside a GPU allocation / the container, after: source course_env.sh)
 python recipes/single_device/lora_finetune_single_device.py \
     --config configs/lora/llama3_2_1B_lora_single_device_QA.yaml \
-    --checkpoint_dir /cluster/projects/nn9997k/$USER/llm-hpc-course/shared/models/Llama-3.2-1B-Instruct \
-    --output_dir /cluster/projects/nn9997k/$USER/llm-hpc-course/results/checkpoint_results/llama3.2-1b_lora_single_device/checkpoints
+    --checkpoint_dir $BASE_MODEL_DIR \
+    --tokenizer_dir $TOKENIZER_DIR \
+    --dataset_dir $QA_DATASET_DIR \
+    --output_dir $CHECKPOINT_RESULTS_DIR/my_run/checkpoints \
+    --log_dir $CHECKPOINT_RESULTS_DIR/my_run/logs \
+    --profiling_dir $CHECKPOINT_RESULTS_DIR/my_run/profiles
 ```
 
 > [!TIP]

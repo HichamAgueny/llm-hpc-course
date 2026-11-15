@@ -1,24 +1,24 @@
 #!/bin/bash
 
-# =========================================================================
-# EDIT PATHS HERE (ONLY ONCE)
-# =========================================================================
-IMAGE_PATH="/cluster/projects/nn9997k/${USER}/llm-hpc-course/apptainer/pytorch_25.08_cuda13.0_arm_custom.sif"
-WORKSPACE_DIR="/cluster/projects/nn9997k/${USER}/llm-hpc-course"
-PROJECTS_DIR="/cluster/projects/nn9997k/${USER}/llm-hpc-course"
+# Run a command inside the PyTorch course container.
+#   ./run_course.sh single  python my_script.py ...
+#   ./run_course.sh multinode python my_script.py ...   (adds Slingshot/NCCL libraries)
+# All paths come from course_env.sh.
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/course_env.sh"
+
+IMAGE_PATH="${PYTORCH_SIF}"
 
 # Host Slingshot/Network Paths
-HOST_NCCL="/cluster/software/NRIS/neoverse_v2/software/NCCL/2.30.4-GCCcore-14.3.0-CUDA-13.0.0"
-HOST_AWS_OFI="/cluster/software/NRIS/neoverse_v2/software/aws-ofi-nccl/1.19.1-GCCcore-14.3.0-CUDA-13.0.0/lib"
-HOST_FABRIC="/opt/cray/libfabric/2.3.1/lib64"
-HOST_CXI="/usr/lib64"
-# =========================================================================
+HOST_NCCL="${HOST_NCCL_PATH}"
+HOST_AWS_OFI="${HOST_AWS_OFI_NCCL_PATH}"
+HOST_FABRIC="${HOST_LIBFABRIC_LIB_PATH}"
+HOST_CXI="${HOST_CXI_LIB_PATH}"
 
 MODE=$1
 shift # Pass everything else (python, flags) to the container
 
 # Base binds used by every single job
-BINDS="--bind ${WORKSPACE_DIR}:/workspace --bind ${PROJECTS_DIR}:/projects_workspace"
+BINDS="${CONTAINER_BINDS} --bind ${COURSE_ROOT}:/projects_workspace"
 
 # If the job is multinode, append the network libraries and environment variables
 if [ "$MODE" == "multinode" ]; then

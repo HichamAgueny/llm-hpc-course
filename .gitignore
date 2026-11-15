@@ -34,6 +34,11 @@ apptainer/nvitop/
 results/checkpoint_results/
 results/profiling_results/
 results/evaluation_results/
+results/quantized_models/
+results/benchmark_logs/
+
+# Link to the shared course assets created by setup_env.sh
+/shared
 
 # HuggingFace & vLLM Caches
 hf_cache/

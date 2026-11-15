@@ -1,12 +1,9 @@
 #!/bin/bash
+# Terminal chat client for the vLLM server started from this folder.
+# Run it on a login node:  ./chat.sh
+# (the server writes connection.env next to this script when it starts)
 
-# =====================================================================
-# --- CONFIGURABLE VARIABLES AND PATHS ---
-# =====================================================================
-export CLUSTER_PROJECT_ROOT="/cluster/projects/nn9997k"
-export PROJECT_DIR="${CLUSTER_PROJECT_ROOT}/${USER}/llm-hpc-course"
-export CONNECTION_FILE="${PROJECT_DIR}/day2_multi_gpu/serving/single_device/vllm_container/connection.env"
-# =====================================================================
+CONNECTION_FILE="${CONNECTION_FILE:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/connection.env}"
 
 # Wait until the server connection file exists
 echo "Waiting for server connection file at: ${CONNECTION_FILE}..."

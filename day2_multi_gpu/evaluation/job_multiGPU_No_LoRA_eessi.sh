@@ -1,7 +1,5 @@
 #!/bin/bash -e
 #SBATCH --job-name=eval-llama3.2-1B-base-4gpu_mmlu_eessi
-##SBATCH --reservation=LLM_in_person_course
-#SBATCH --account=nn9997k
 #SBATCH --time=00:30:00
 #SBATCH --partition=accel
 #SBATCH --nodes=1
@@ -10,8 +8,16 @@
 #SBATCH --gpus-per-node=4
 #SBATCH --cpus-per-task=72
 #SBATCH --mem-per-gpu=96G
-#SBATCH --reservation=software
 #SBATCH -o ./out/%x-%j.out
+# Slurm account & reservation are set in course_env.sh - no need to add them here.
+
+# --- Load the course settings (account, paths, containers, modules) ----------
+for _d in "${SLURM_SUBMIT_DIR:-$PWD}" "$PWD" "${COURSE_ROOT:-/}"; do
+    until [[ -f "$_d/course_env.sh" || "$_d" == "/" ]]; do _d="$(dirname "$_d")"; done
+    if [[ -f "$_d/course_env.sh" ]]; then break; fi
+done
+if [[ ! -f "$_d/course_env.sh" ]]; then echo "ERROR: course_env.sh not found - submit from inside the course folder" >&2; exit 1; fi
+source "$_d/course_env.sh"
 
 # ---------------------------------------------------------------------
 # Environment
@@ -19,38 +25,26 @@
 
 export PYTHONNOUSERSITE=1
 
-ml EESSI/2025.06
-module load torchtune/0.6.1-foss-2025b-PyTorch-2.12.0-CUDA-12.9.1
+module load "${EESSI_MODULE}"
+module load "${TORCHTUNE_MODULE}"
 module load Transformers
 module load accelerate
-module load lm-eval/0.4.12-foss-2025b
+module load "${LM_EVAL_MODULE}"
 
 export NUMEXPR_MAX_THREADS=72
 
-# 1. Base Project Allocation (Change this if migrating to a different project share)
-export CLUSTER_PROJECT_ROOT="/cluster/projects/nn9997k"
-
-# 2. Personal Workspace Setup (Derived automatically from your root above)
-export PROJECT_DIR="${CLUSTER_PROJECT_ROOT}/${USER}/llm-hpc-course"
-export SHARED_DIR="${PROJECT_DIR}/shared"
-export RESULT_DIR="${PROJECT_DIR}/results"
-
-# 3. Model paths -----------------------------------------------------
-export BASE_MODEL_DIR="${SHARED_DIR}/models/Llama-3.2-1B-Instruct"
-export TOKENIZER_DIR="${BASE_MODEL_DIR}/original/tokenizer.model"
-# Point the YAML's ${checkpoint_dir} at the BASE model — no LoRA involved
+# =====================================================================
+# --- LAB SETTINGS (paths, model, adapter and container: see course_env.sh) ---
+# =====================================================================
+# Base model evaluation: no LoRA, no merge.
+# The eval YAML reads the model from MERGED_MODEL_DIR, so point it at the base model.
 export MERGED_MODEL_DIR="${BASE_MODEL_DIR}"
+export OUTPUT_DIR="${EVAL_RESULTS_DIR}/llama3.2-1b-base-mmlu_eessi"
 
-# >>> BASE MODEL EVAL: no LoRA, no merge <<<
-export EVAL_CHECKPOINT_DIR="${BASE_MODEL_DIR}"
+mkdir -p "${OUTPUT_DIR}" "${HF_HOME}"
+# =====================================================================
 
-# 4. Output Component Paths
-export OUTPUT_DIR="${RESULT_DIR}/evaluation_results/llama3.2-1b-base-mmlu_eessi"
-mkdir -p "$OUTPUT_DIR"
-
-# 7. HuggingFace caches (datasets + hub) under the project share
-export HF_HOME="${PROJECT_DIR}/hf_cache"
-mkdir -p "${HF_HOME}"
+course_require "${BASE_MODEL_DIR}" "Base model" "run ./setup_env.sh or check COURSE_ASSETS_DIR in course_env.sh"
 
 # ---------------------------------------------------------------------
 # GPU information
@@ -61,8 +55,10 @@ echo "Starting 4-GPU evaluation"
 echo "Job ID: ${SLURM_JOB_ID}"
 echo "Node: $(hostname)"
 echo "Allocated GPUs: ${SLURM_GPUS}"
-echo "Merged model: ${MERGED_MODEL_DIR}"
+echo "Model evaluated: ${MERGED_MODEL_DIR}"
+echo "Results: ${OUTPUT_DIR}"
 echo "======================================================"
+
 
 # ---------------------------------------------------------------------
 # Run lm-evaluation-harness with Accelerate
@@ -91,5 +87,5 @@ time srun --cpu-bind=${CPU_BIND} \
 
 echo "======================================================"
 echo "Evaluation completed."
+echo "Results: ${OUTPUT_DIR}"
 echo "======================================================"
-

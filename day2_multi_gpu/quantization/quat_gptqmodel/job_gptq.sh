@@ -1,6 +1,5 @@
 #!/bin/bash -e
 #SBATCH --job-name=qat-llama3-1B-lora-1gpu_gptq
-#SBATCH --account=nn9997k
 #SBATCH --time=00:30:00
 #SBATCH --partition=accel
 #SBATCH --nodes=1
@@ -10,19 +9,27 @@
 #SBATCH --cpus-per-task=72
 #SBATCH -o ./out/%x-%j.out
 #SBATCH --mem-per-gpu=96G
-#SBATCH --reservation=software
+# Slurm account & reservation are set in course_env.sh - no need to add them here.
+
+# --- Load the course settings (account, paths, containers, modules) ----------
+for _d in "${SLURM_SUBMIT_DIR:-$PWD}" "$PWD" "${COURSE_ROOT:-/}"; do
+    until [[ -f "$_d/course_env.sh" || "$_d" == "/" ]]; do _d="$(dirname "$_d")"; done
+    if [[ -f "$_d/course_env.sh" ]]; then break; fi
+done
+if [[ ! -f "$_d/course_env.sh" ]]; then echo "ERROR: course_env.sh not found - submit from inside the course folder" >&2; exit 1; fi
+source "$_d/course_env.sh"
 
 echo "--Node: $(hostname)"
 echo
 
 export PYTHONNOUSERSITE=1
 
-# --- Proxy Settings for Cluster Internet Access ---
-export http_proxy=http://10.63.2.48:3128/
-export https_proxy=http://10.63.2.48:3128/
+# --- Proxy for internet access from compute nodes (calibration data download) ---
+export http_proxy="${COURSE_HTTP_PROXY}"
+export https_proxy="${COURSE_HTTP_PROXY}"
 
-module load EESSI/2025.06
-module load torchtune/0.6.1-foss-2025b-PyTorch-2.12.0-CUDA-12.9.1
+module load "${EESSI_MODULE}"
+module load "${TORCHTUNE_MODULE}"
 module load Transformers
 module load accelerate
 module load GPTQModel
@@ -30,31 +37,24 @@ module load GPTQModel
 export NUMEXPR_MAX_THREADS=72
 
 # =====================================================================
-# --- CONFIGURABLE VARIABLES AND PATHS (USERS ONLY MODIFY THIS BLOCK) ---
+# --- LAB SETTINGS (paths and model: see course_env.sh) ---
 # =====================================================================
+# Input: the shared base model
+export MODEL_DIR="${BASE_MODEL_DIR}"
 
-# 1. Base Project Allocation (Change this if migrating to a different project share)
-export CLUSTER_PROJECT_ROOT="/cluster/projects/nn9997k"
-
-# 2. Personal Workspace Setup (Derived automatically from your root above)
-export PROJECT_DIR="${CLUSTER_PROJECT_ROOT}/${USER}/llm-hpc-course"
-export SHARED_DIR="${PROJECT_DIR}/shared"
-export RESULT_DIR="${PROJECT_DIR}/results"
-
-# 3. Input Component Paths
-export MODEL_DIR="${SHARED_DIR}/models/Llama-3.2-1B-Instruct"
-
-# 4. Output Component Paths
-export OUTPUT_DIR="${SHARED_DIR}/models/Llama-3.2-1B-Instruct-gptq_4bit"
+# Output: your own copy under results/quantized_models/
+# (the serving labs pick it up from there automatically)
+export OUTPUT_DIR="${QUANTIZED_MODELS_DIR}/${BASE_MODEL_NAME}-gptq_4bit"
 export OUT_DIR="${OUTPUT_DIR}"
 
-# 5. Script / Config Layout
-export PYTHON_FILE="${PROJECT_DIR}/recipes/quanti/quat_gptq.py"
-export PREPARE_FILE="${PROJECT_DIR}/recipes/quanti/prepare_data.py"
-
+export PYTHON_FILE="${COURSE_ROOT}/recipes/quanti/quat_gptq.py"
+export PREPARE_FILE="${COURSE_ROOT}/recipes/quanti/prepare_data.py"
+mkdir -p "${OUTPUT_DIR}" "${HF_HOME}"
 # =====================================================================
 
-# Local file configuration
+course_require "${BASE_MODEL_DIR}" "Base model" "run ./setup_env.sh or check COURSE_ASSETS_DIR in course_env.sh"
+
+# Calibration text file (created in the submit folder on first run)
 CALIBRATION_TXT="./calib_english.txt"
 
 # --- Other Quantization Options ---
@@ -67,13 +67,7 @@ GRP_SZ=128
 DTYPE="auto"
 DEVICE="auto"
 
-# Check if output directory exists; if not, create it
-if [ ! -d "${OUTPUT_DIR}" ]; then
-    echo "Output directory does not exist. Creating: ${OUTPUT_DIR}"
-    mkdir -p "${OUTPUT_DIR}"
-fi
-
-echo "--- My Main Directory (host): ${PROJECT_DIR}"
+echo "--- Course folder: ${COURSE_ROOT}"
 echo
 
 # --- Conditional Data Preparation Pass ---
@@ -84,13 +78,8 @@ if [ -f "$CALIBRATION_TXT" ]; then
 else
     echo "--> Calibration file '$CALIBRATION_TXT' not found."
     echo "--> Launching internet download script on node layer..."
-    
-    if [ -f "$PREPARE_FILE" ]; then
-        python "$PREPARE_FILE"
-    else
-        echo "--Error: Data preparation script missing at $PREPARE_FILE"
-        exit 1
-    fi
+    course_require "$PREPARE_FILE" "Data preparation script"
+    python "$PREPARE_FILE"
 fi
 echo
 
@@ -102,7 +91,6 @@ echo
 
 # --- Slurm setting
 N=$SLURM_JOB_NUM_NODES
-nproc_perN=$SLURM_NTASKS_PER_NODE
 total_nbr_gpus=$(($N * ${SLURM_GPUS_ON_NODE:-1}))
 echo "SLURM Job ID: $SLURM_JOB_ID"
 echo "--nbr of nodes: $N"
@@ -110,14 +98,11 @@ echo "--nbr of GPUs per node: ${SLURM_GPUS_ON_NODE:-1}"
 echo "--Total nbr of GPUs: $total_nbr_gpus"
 echo
 
-echo "--SLURM_PROCID: $SLURM_PROCID"
-echo
-
 # --- Locale Settings ---
 export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 
-# --- Execute Quantization with srun ---
+# --- Execute with srun ---
 time srun python "${PYTHON_FILE}" \
     --model_path "${MODEL_DIR}" \
     --output_path "${OUTPUT_DIR}" \
@@ -130,3 +115,5 @@ time srun python "${PYTHON_FILE}" \
 
 echo
 echo "--- Finished :) ---"
+echo "Quantized model: ${OUTPUT_DIR}"
+echo "Compare sizes:   du -sh ${BASE_MODEL_DIR} ${OUTPUT_DIR}"

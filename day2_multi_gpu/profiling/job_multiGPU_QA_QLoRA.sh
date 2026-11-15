@@ -1,6 +1,5 @@
 #!/bin/bash -e
 #SBATCH --job-name=ft-llama3-1B-qlora-4gpu_profiling
-#SBATCH --account=nn9997k
 #SBATCH --time=00:15:00
 #SBATCH --partition=accel
 #SBATCH --nodes=1
@@ -10,36 +9,55 @@
 #SBATCH --cpus-per-task=72
 #SBATCH -o ./out/%x-%j.out
 #SBATCH --mem-per-gpu=97G
+# Slurm account & reservation are set in course_env.sh - no need to add them here.
+
+# --- Load the course settings (account, paths, containers, modules) ----------
+for _d in "${SLURM_SUBMIT_DIR:-$PWD}" "$PWD" "${COURSE_ROOT:-/}"; do
+    until [[ -f "$_d/course_env.sh" || "$_d" == "/" ]]; do _d="$(dirname "$_d")"; done
+    if [[ -f "$_d/course_env.sh" ]]; then break; fi
+done
+if [[ ! -f "$_d/course_env.sh" ]]; then echo "ERROR: course_env.sh not found - submit from inside the course folder" >&2; exit 1; fi
+source "$_d/course_env.sh"
 
 echo "--Node: $(hostname)"
 echo
 
-# --- Variables and Paths (HOST-SIDE) ---
-PROJECT_DIR="/cluster/projects/nn9997k"
-MyWD="$PROJECT_DIR/$USER/llm-hpc-course"
-CONTAINER_DIR="${MyWD}/apptainer"
-APPTAINER_SIF="${CONTAINER_DIR}/pytorch_25.08_cuda13.0_arm_custom.sif"
+export PYTHONNOUSERSITE=1
 
-# Configs and python files for fine-tuning
-CONFIG_FILE="${MyWD}/configs/qlora/llama3_2_1B_qlora_multi_device_profiling.yaml"
-PYTHON_FILE="${MyWD}/recipes/distributed/lora_finetune_distributed.py"
+# =====================================================================
+# --- LAB SETTINGS (paths, model, dataset and container: see course_env.sh) ---
+# =====================================================================
+export RUN_NAME="profiling_llama3.2-1b_qlora_multi_device"
+export CONFIG_FILE="${COURSE_ROOT}/configs/qlora/llama3_2_1B_qlora_multi_device_profiling.yaml"
+export PYTHON_FILE="${COURSE_ROOT}/recipes/distributed/lora_finetune_distributed.py"
 
-echo "--- My Main Directory (host): ${MyWD}"
-echo "--- Bind-mounted inside container as: /workspace"
+# Profiles and logs go to results/profiling_results/<RUN_NAME>/
+# (checkpoints are throw-away here, so they go to the node-local /tmp)
+export OUTPUT_DIR="/tmp/${USER}_${SLURM_JOB_ID}/checkpoints"
+export LOG_DIR="${PROFILING_RESULTS_DIR}/${RUN_NAME}/logs"
+export PROFILING_DIR="${PROFILING_RESULTS_DIR}/${RUN_NAME}/profiles"
+# =====================================================================
+
+course_require "${PYTORCH_SIF}" "PyTorch container image" "run ./setup_env.sh or check COURSE_ASSETS_DIR in course_env.sh"
+course_require "${BASE_MODEL_DIR}" "Base model" "run ./setup_env.sh or check COURSE_ASSETS_DIR in course_env.sh"
+course_require "${QA_DATASET_DIR}" "QA dataset" "run ./setup_env.sh or check COURSE_ASSETS_DIR in course_env.sh"
+
+echo "--- Course folder (host): ${COURSE_ROOT}  (also mounted as /workspace)"
 echo
-
 echo "=== Running inside Apptainer ==="
 echo "CONFIG_FILE: ${CONFIG_FILE}"
 echo "PYTHON_FILE: ${PYTHON_FILE}"
+echo "CONTAINER:   ${PYTORCH_SIF}"
 echo
 
-# --- Slurm setting
-N=$SLURM_JOB_NUM_NODES
-nproc_perN=$SLURM_NTASKS_PER_NODE
-echo "SLURM Job ID: $SLURM_JOB_ID"
-echo "--nbr of nodes: $N"
-echo "--nbr of GPUs: $nproc_perN"
-echo
+# Flash Attention for efficiency
+export USE_FLASH_ATTENTION=1
+# Suppress LMOD debugging, set locale
+export LMOD_SH_DBG_ON=0
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+
+echo "--- Launching the application inside Apptainer ---"
 
 # Set up variables to control distributed PyTorch training
 export MASTER_ADDR=$(hostname)
@@ -47,53 +65,36 @@ export MASTER_PORT=25900
 export WORLD_SIZE=$SLURM_NPROCS
 export LOCAL_WORLD_SIZE=$SLURM_GPUS_PER_NODE
 
-echo "--SLURM_PROCID: $SLURM_PROCID"
-echo
+# --- Define the training task function ---
+run_training() {
 
-# --- Create the Inner Script (runs INSIDE container) ---
-INNER_SCRIPT_TEMP="./.my_script_temp_${SLURM_JOB_ID}"
-cat > "${INNER_SCRIPT_TEMP}" << EOF
-#!/bin/bash -e
+    # These resolve dynamically on each task/GPU node during srun
+    export RANK=$SLURM_PROCID
+    export LOCAL_RANK=$SLURM_LOCALID
 
-# Flash Attention for efficiency
-export USE_FLASH_ATTENTION=1
+    echo "Task ${SLURM_PROCID}: RANK=${RANK}, LOCAL_RANK=${LOCAL_RANK}, WORLD_SIZE=${WORLD_SIZE}, LOCAL_WORLD_SIZE=${LOCAL_WORLD_SIZE}"
+    echo "LOCAL_RANK: ${LOCAL_RANK}, CUDA_VISIBLE_DEVICES: ${CUDA_VISIBLE_DEVICES}"
 
-# Set up variables to control distributed PyTorch training
-export RANK=\$SLURM_PROCID
-export LOCAL_RANK=\$SLURM_LOCALID
+    python "${PYTHON_FILE}" --config "${CONFIG_FILE}" \
+             --checkpoint_dir "${BASE_MODEL_DIR}" \
+             --tokenizer_dir "${TOKENIZER_DIR}" \
+             --dataset_dir "${QA_DATASET_DIR}" \
+             --output_dir "${OUTPUT_DIR}" \
+             --log_dir "${LOG_DIR}" \
+             --profiling_dir "${PROFILING_DIR}"
+}
 
-echo "Task \${SLURM_PROCID}: RANK=${SLURM_PROCID}, LOCAL_RANK=${SLURM_LOCALID}, WORLD_SIZE = $WORLD_SIZE, LOCAL_WORLD_SIZE = $LOCAL_WORLD_SIZE"
-echo "LOCAL_RANK: \${LOCAL_RANK}, CUDA_VISIBLE_DEVICES: \${CUDA_VISIBLE_DEVICES}"
+# Export the function so srun tasks can see it
+export -f run_training
 
-# Run the fine-tuning script
-python "${PYTHON_FILE}" --config "${CONFIG_FILE}" 
-
-EOF
-
-chmod +x "${INNER_SCRIPT_TEMP}"
-
-# --- Suppress LMOD Debugging ---
-export LMOD_SH_DBG_ON=0
-# --- Locale Settings ---
-export LANG=en_US.UTF-8
-export LC_ALL=en_US.UTF-8
-
-echo "--- Launching the application inside Apptainer ---"
 # CPU affinity
 CPU_BIND="map_cpu:1,73,145,217"
 
 # --- Execute with Apptainer ---
-# Bind host project directory to /workspace inside container
-# --nv enables NVIDIA GPU support
-
-time srun --cpu-bind=${CPU_BIND} apptainer exec --nv \
-      -B "${MyWD}:/workspace" \
-      -B $PROJECT_DIR \
-      "${APPTAINER_SIF}" \
-      "${INNER_SCRIPT_TEMP}"
-
-# --- Clean Up Temporary Script ---
-rm -f "${INNER_SCRIPT_TEMP}"
+time srun --cpu-bind=${CPU_BIND} apptainer exec --nv ${CONTAINER_BINDS} \
+      "${PYTORCH_SIF}" bash -c run_training
 
 echo
 echo "--- Finished :) ---"
+echo "Profiles: ${PROFILING_DIR}"
+echo "Logs:     ${LOG_DIR}"

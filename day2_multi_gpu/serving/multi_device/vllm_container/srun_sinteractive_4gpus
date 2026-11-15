@@ -1,3 +1,6 @@
-srun -A nn9997k -p accel --nodes=1 --ntasks=1 --gpus=4 --ntasks-per-node=4  --cpus-per-task 72 --mem-per-gpu=97G --time=00:30:00 --reservation=software --pty bash -i 
-#--nodelist=gpu-1-50 
+#!/bin/bash
+# Start an interactive shell on a compute node.   Usage: bash srun_sinteractive_4gpus
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../.." && pwd)/course_env.sh"
 
+srun -A "${COURSE_SLURM_ACCOUNT}" ${COURSE_SLURM_RESERVATION:+--reservation="${COURSE_SLURM_RESERVATION}"} \
+     -p accel --nodes=1 --ntasks=1 --gpus=4 --cpus-per-task 72 --mem-per-gpu=97G --time=00:30:00 --pty bash -i

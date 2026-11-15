@@ -2,22 +2,29 @@
 
 This guide explains how to build a custom PyTorch container using **Apptainer (formerly Singularity)** on the Olivia supercomputer.
 
+> **Participants:** you do not need to build anything — the course images are provided and copied into
+> your course folder by `./setup_env.sh`. This guide is for instructors, or for anyone curious about how the images were made.
+> If you build a new image, put it in this folder (or in `COURSE_ASSETS_DIR/apptainer/`) and update
+> `PYTORCH_SIF` / `VLLM_SIF` in `course_env.sh`.
+
+The commands below assume you have loaded the course settings: `source course_env.sh`.
+
 ---
 
 ## Steps
 
 ### 1. Launch an interactive session
 ```bash
-srun -A nn9997k -p accel --nodes=1 --gpus=1 --mem-per-cpu=8G --time=00:30:00 --pty bash -i
+bash $COURSE_ROOT/apptainer/srun_interactive     # 1 GPU, uses the course account & reservation
 ```
 
 ### 2. Pull the Base PyTorch Container
 To accelerate pulling the container from the NVIDIA NGC catalog (and to prevent home-directory quota issues):
 
 ```bash
-mkdir -p /cluster/projects/nn9997k/$USER/llm-hpc-course/apptainer/tmp
-export APPTAINER_TMPDIR=/cluster/projects/nn9997k/$USER/llm-hpc-course/apptainer/tmp
-export APPTAINER_CACHEDIR=/cluster/projects/nn9997k/$USER/llm-hpc-course/apptainer/tmp
+mkdir -p $COURSE_ROOT/apptainer/tmp
+export APPTAINER_TMPDIR=$COURSE_ROOT/apptainer/tmp
+export APPTAINER_CACHEDIR=$COURSE_ROOT/apptainer/tmp
 
 export APPTAINER_DOCKER_USERNAME='$oauthtoken'
 export APPTAINER_DOCKER_PASSWORD=<Your-NVIDIA-Password>
@@ -36,7 +43,7 @@ apptainer pull --arch arm64 pytorch_25.08_cuda13.0_arm.sif \
 - If disabling cache is desired then add the flag `--disable-cache` to force a clean download (see also [Sigma2 Documentation](https://documentation.sigma2.no/hpc_machines/olivia/software_stack.html#downloading-containers)).
 - After the image has been pulled successfully, temporary cache files can be removed:
 ```bash
-rm -rf /cluster/projects/nn9997k/$USER/llm-hpc-course/apptainer/tmp/*
+rm -rf $COURSE_ROOT/apptainer/tmp/*
 ```
 
 ### 3. Build the Custom Container
@@ -57,7 +64,7 @@ apptainer build --ignore-fakeroot-command \
 
 ### 1. Navigate to the Working Directory
 ```bash
-cd /cluster/projects/nn9997k/$USER/llm-hpc-course/apptainer
+cd $COURSE_ROOT/apptainer
 ```
 
 ### 2. Start an Interactive Shell
@@ -88,14 +95,10 @@ Run the container with GPU support and bind the project directories:
 
 ## Shared Models & Datasets
 
-Pre-downloaded base models and datasets for the course are available under the shared project directory:
-```text
-/cluster/projects/nn9997k/$USER/llm-hpc-course/shared/models/Llama-3.2-1B-Instruct
-/cluster/projects/nn9997k/$USER/llm-hpc-course/shared/datasets/GPT-4-LLM/alpaca_gpt4_data.json
-```
-
-HuggingFace caching should be pointed to your personal share directory:
+Pre-downloaded base models and datasets are copied into the course folder by `./setup_env.sh`
+(from `COURSE_ASSETS_DIR/shared` in `course_env.sh` to `shared/`). After `source course_env.sh`:
 ```bash
-mkdir -p /cluster/projects/nn9997k/$USER/llm-hpc-course/hf_cache
-export HF_HOME=/cluster/projects/nn9997k/$USER/llm-hpc-course/hf_cache
+echo $BASE_MODEL_DIR    # .../shared/models/Llama-3.2-1B-Instruct
+echo $QA_DATASET_DIR    # .../shared/datasets/GPT-4-LLM/alpaca_gpt4_data.json
+echo $HF_HOME           # HuggingFace cache in your course folder (set automatically)
 ```

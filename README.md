@@ -92,17 +92,18 @@ flowchart TD
 
 ```text
 llm-hpc-course/
+├── course_env.sh    # THE single configuration file (account, reservation, paths, containers, modules)
+├── setup_env.sh     # One-time setup: copies shared assets, creates folders, runs check_env.sh
 ├── run.sh           # Unified CLI runner for all Day 1 & Day 2 jobs
 ├── menu.sh          # Interactive terminal menu launcher
 ├── check_env.sh     # Pre-flight environment & directory health check
-├── course_env.sh    # Centralized Slurm account & path configuration
 ├── apptainer/       # Container definitions (.def), build guides, and launch scripts
 ├── configs/         # YAML configurations (LoRA, QLoRA, QAT-LoRA, and Evaluation)
 ├── day1_single_gpu/ # Single-GPU labs: Fine-Tuning, Evaluation, and Profiling
 ├── day2_multi_gpu/  # Multi-GPU labs: Distributed FT, Evaluation, Profiling, Quantization, Serving & Inference
 ├── recipes/         # Standalone Python recipes for training, merging, evaluation, quantization, and vLLM
-├── utils/           # Cluster utilities (GPU monitoring, interactive nvitop)
-├── run_course.sh    # Multi-node / single-point execution launcher
+├── utils/           # Cluster utilities (GPU monitor, nvitop, shared NCCL settings)
+├── run_course.sh    # Run any command inside the PyTorch container (single / multinode)
 └── README.md        # ← You are here
 ```
 
@@ -116,50 +117,49 @@ All training, profiling, and evaluation runs save outputs into organized subfold
 results/
 ├── checkpoint_results/  # Checkpoints and adapter weights produced by fine-tuning
 ├── profiling_results/   # PyTorch Profiler JSON/HTML traces and training logs
-└── evaluation_results/  # EleutherAI LM Evaluation Harness benchmark outputs (MMLU)
+├── evaluation_results/  # EleutherAI LM Evaluation Harness benchmark outputs (MMLU)
+├── quantized_models/    # Your quantized models (Day 2 quantization lab)
+└── benchmark_logs/      # vLLM serving benchmark results
 ```
+
+Each job also writes its Slurm log to an `out/` folder next to the job script.
 
 ---
 
-## Getting Started on Olivia
+## Getting Started on Olivia (participants)
 
-### 1. SSH to Olivia & Clone Repo
+### 1. SSH to Olivia & Clone the Repo
 
-Connect to the **Olivia Supercomputer** via SSH:
 ```bash
 ssh username@olivia.sigma2.no
-```
-
-Navigate to your user directory on the project share and clone the repository:
-```bash
-cd /cluster/projects/nn9997k/$USER
-git clone https://github.com/HichamAgueny/llm-hpc-course.git
+mkdir -p /cluster/work/projects/nn9971k/$USER
+cd /cluster/work/projects/nn9971k/$USER     # course workspace (any folder works)
+git clone -b bergen-edition https://github.com/HichamAgueny/llm-hpc-course.git
 cd llm-hpc-course
 ```
 
----
+### 2. One-Time Setup
 
-### 2. Pre-Flight Health Check
-
-Verify cluster paths, permissions, container images, and initialize result folders:
 ```bash
-./check_env.sh
+./setup_env.sh
 ```
 
----
+This copies the shared models, datasets and container images into your course folder
+(`./setup_env.sh --link` links them instead, which is instant and saves disk quota), creates the `results/` and
+`out/` folders, and runs the pre-flight check (`./check_env.sh`, which you can re-run any time).
+**You do not need to edit any path or account in any script.**
 
-### 3. Running Jobs: Three Simple Ways
+### 3. Run the Labs
 
-You can run any lab using either the **Interactive Menu**, the **Unified CLI Runner**, or directly via standard `sbatch`.
+You can run any lab using the **Interactive Menu**, the **Unified CLI Runner**, or plain `sbatch`.
 
 #### Option A: Interactive Menu (Easiest)
-Simply run the interactive text menu and pick any Day 1 or Day 2 lab by number:
 ```bash
 ./menu.sh
 ```
 
 #### Option B: Unified CLI Runner (`./run.sh`)
-Submit jobs directly from the repository root without navigating into deep directories:
+Submit jobs from the repository root without navigating into deep directories:
 
 ```bash
 # --- DAY 1 (Single GPU) ---
@@ -175,26 +175,80 @@ Submit jobs directly from the repository root without navigating into deep direc
 ./run.sh day2 ft-multi           # Multi-node distributed fine-tuning
 ./run.sh day2 eval               # Multi-GPU MMLU evaluation
 ./run.sh day2 quantize bnb4      # 4-bit BitsAndBytes quantization
-./run.sh day2 serve              # Launch vLLM OpenAI-compatible server
+./run.sh day2 serve              # Launch vLLM OpenAI-compatible server (--quant=bnb|gptq|torchao)
 ./run.sh day2 chat               # Connect interactive chat client to vLLM server
 ./run.sh day2 inference          # Distributed high-throughput batch inference
 
 # --- UTILITIES ---
 ./run.sh monitor <JobID>         # Attach real-time GPU monitor to your active job
 ./run.sh status                  # Check active Slurm queue (squeue --me)
+./run.sh help                    # All commands and options
 ```
 
 #### Option C: Manual Slurm Submissions
-If you prefer inspecting or running Slurm scripts directly:
+Load the course settings **once per login** (this sets the Slurm account and reservation),
+then submit from the lab folder:
 ```bash
-# Day 1 LoRA (Container)
+source course_env.sh
+
 cd day1_single_gpu/finetuning/lora_slurm/job_container
 sbatch job_singleGPU_QA_LoRA.sh
-
-# Day 1 LoRA (EESSI)
-cd day1_single_gpu/finetuning/lora_slurm/job_eessi
-sbatch job_singleGPU_QA_LoRA_eessi.sh
 ```
+After `source course_env.sh`, the GPU monitor also works from any folder: `gpu.monitor.sh <JobID>`.
+
+### The Labs at a Glance
+
+Step-by-step worksheets: [Day 1](./day1_single_gpu/README.md) · [Day 2](./day2_multi_gpu/README.md)
+
+| Lab | Command (from the course folder) | Results |
+| :--- | :--- | :--- |
+| 1.1 LoRA fine-tuning (1 GPU) | `./run.sh day1 lora` | `results/checkpoint_results/llama3.2-1b_lora_single_device/` |
+| 1.2 QLoRA fine-tuning (1 GPU) | `./run.sh day1 qlora` | `results/checkpoint_results/llama3.2-1b_qlora_single_device/` |
+| 1.3 Profiling | `./run.sh day1 profile` | `results/profiling_results/` |
+| 1.4 Merge + MMLU evaluation | `./run.sh day1 eval` (`--base` for the baseline) | `results/evaluation_results/` |
+| 2.1 4-GPU fine-tuning | `./run.sh day2 ft-single --method=lora\|qlora\|qat-lora` | `results/checkpoint_results/*_multi_device/` |
+| 2.2 Multi-node fine-tuning | `./run.sh day2 ft-multi --method=...` | `results/checkpoint_results/*_multi_node/` |
+| 2.3 Distributed profiling | `./run.sh day2 profile --method=...` | `results/profiling_results/` |
+| 2.4 4-GPU evaluation | `./run.sh day2 eval` | `results/evaluation_results/` |
+| 2.5 Quantization | `./run.sh day2 quantize bnb4\|bnb8\|torchao\|gptq` | `results/quantized_models/` |
+| 2.6 vLLM serving + chat | `./run.sh day2 serve`, then `./run.sh day2 chat` | (interactive) |
+| 2.7 Batch inference | `./run.sh day2 inference` | Slurm log in `day2_multi_gpu/inference/out/` |
+
+Add `--env=eessi` to use EESSI modules instead of the container. Every job's Slurm log is in the
+`out/` folder next to its script, and each job prints where its results are when it finishes.
+
+### Choosing which LoRA adapter to evaluate / serve
+
+Evaluation, serving and inference use the Day 1 LoRA adapter by default
+(`results/checkpoint_results/llama3.2-1b_lora_single_device/checkpoints/epoch_0`, or the EESSI
+run if that is the only one). To use another adapter, set `LORA_PATH`:
+```bash
+LORA_PATH=$PWD/results/checkpoint_results/llama3.2-1b_lora_multi_device/checkpoints/epoch_0 ./run.sh day2 eval
+```
+
+---
+
+## For Instructors: Configuring the Course
+
+All course-wide settings live in **one file: [`course_env.sh`](./course_env.sh)**. Every job script,
+`run.sh`, `menu.sh`, `setup_env.sh` and `check_env.sh` loads it, so nothing else needs editing.
+
+| Setting | Variable in `course_env.sh` |
+| :--- | :--- |
+| Slurm account / reservation | `COURSE_SLURM_ACCOUNT`, `COURSE_SLURM_RESERVATION` (empty = no reservation) |
+| Shared models, datasets, `.sif` images | `COURSE_ASSETS_DIR` (expects `shared/` and `apptainer/` inside) |
+| Base model and dataset | `BASE_MODEL_NAME`, `BASE_MODEL_DIR`, `QA_DATASET_DIR` |
+| Container images | `PYTORCH_SIF`, `VLLM_SIF` |
+| EESSI module versions | `EESSI_MODULE`, `TORCHTUNE_MODULE`, `VLLM_MODULE`, `LM_EVAL_MODULE` |
+| Multi-node NCCL / Slingshot paths | `NCCL_MODULE`, `HOST_*_PATH` |
+
+The job scripts keep only what is specific to each lab: the `#SBATCH` resources, the run name,
+the config file and the Python recipe. The account and reservation are *not* in the `#SBATCH`
+headers: `sbatch` reads them from `SBATCH_ACCOUNT` / `SBATCH_RESERVATION`, which `course_env.sh`
+exports (and `run.sh` also passes them explicitly).
+
+After the course, submit without the reservation with
+`COURSE_SLURM_RESERVATION= ./run.sh ...` or by emptying the value in `course_env.sh`.
 
 ---
 

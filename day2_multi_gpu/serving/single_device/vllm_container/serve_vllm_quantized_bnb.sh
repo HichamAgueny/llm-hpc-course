@@ -1,6 +1,30 @@
 #!/bin/bash -e
+#SBATCH --job-name=vllm-serve-single-bnb
+#SBATCH --time=00:30:00
+#SBATCH --partition=accel
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --gpus-per-node=1
+#SBATCH --cpus-per-task=72
+#SBATCH --mem-per-gpu=96G
+#SBATCH -o ./out/%x-%j.out
+# Slurm account & reservation are set in course_env.sh - no need to add them here.
+#
+# Two ways to start this server:
+#   sbatch serve_vllm_quantized_bnb.sh     -> batch job, log in ./out/
+#   ./serve_vllm_quantized_bnb.sh          -> inside an interactive GPU shell (bash srun_sinteractive)
+# Then, from a login node in this folder:  ./chat.sh
+
+# --- Load the course settings (account, paths, containers, modules) ----------
+for _d in "${SLURM_SUBMIT_DIR:-$PWD}" "$PWD" "${COURSE_ROOT:-/}"; do
+    until [[ -f "$_d/course_env.sh" || "$_d" == "/" ]]; do _d="$(dirname "$_d")"; done
+    if [[ -f "$_d/course_env.sh" ]]; then break; fi
+done
+if [[ ! -f "$_d/course_env.sh" ]]; then echo "ERROR: course_env.sh not found - submit from inside the course folder" >&2; exit 1; fi
+source "$_d/course_env.sh"
 
 export PYTHONNOUSERSITE=1
+
 export NUMEXPR_MAX_THREADS=72
 
 export NUM_GPUS="${SLURM_GPUS_ON_NODE:-1}"
@@ -9,46 +33,34 @@ echo "--Allocated GPUs: ${NUM_GPUS}"
 echo
 
 # =====================================================================
-# --- CONFIGURABLE VARIABLES AND PATHS (USERS ONLY MODIFY THIS BLOCK) ---
+# --- SERVER SETTINGS (paths, model, adapter and container: see course_env.sh) ---
 # =====================================================================
+# Override at launch time, for example:
+#   LORA_PATH="" ./serve_vllm_quantized_bnb.sh                       -> no LoRA adapter
+#   LORA_PATH=/path/to/checkpoints/epoch_0 ./serve_vllm_quantized_bnb.sh
+#   PORT=8001 ./serve_vllm_quantized_bnb.sh                          -> use another port
+export BASE_MODEL_DIR="${MODEL_PATH:-${BASE_MODEL_DIR}}"
+# Quantized model: your own copy from the quantization lab (results/quantized_models/)
+# if it exists, otherwise the shared one. Override with QUANTIZED_MODEL_PATH=...
+export QUANTIZED_MODEL_DIR="${QUANTIZED_MODEL_PATH:-$(course_quantized_model bnb_8bit)}"
 
-# 1. Base Project Allocation
-export CLUSTER_PROJECT_ROOT="/cluster/projects/nn9997k"
-
-# 2. Personal Workspace Setup
-export PROJECT_DIR="${CLUSTER_PROJECT_ROOT}/${USER}/llm-hpc-course"
-export SHARED_DIR="${PROJECT_DIR}/shared"
-export RESULT_DIR="${PROJECT_DIR}/results"
-
-# 3. Model, Quantization, Adapter & Serving Parameters
-export BASE_MODEL_DIR="${MODEL_PATH:-${SHARED_DIR}/models/Llama-3.2-1B-Instruct}"
-# Set quantization method for bitsandbytes
-export QUANTIZED_MODEL_DIR="${QUANTIZED_MODEL_PATH:-${SHARED_DIR}/models/Llama-3.2-1B-Instruct-bnb_8bit}"
-
-# Serve the bitsandbytes quantized model as the base weight layer
+# Serve the BitsAndBytes quantized model as the base weight layer
 export ACTIVE_MODEL_DIR="${QUANTIZED_MODEL_DIR}"
 
-# LoRA Adapter path
-export LORA_ADAPTER_DIR="${LORA_PATH-${RESULT_DIR}/checkpoint_results/llama3.2-1b_lora_single_device/checkpoints/epoch_0}"
+# LoRA adapter (default from course_env.sh; LORA_PATH="" disables it)
+export LORA_ADAPTER_DIR="${LORA_PATH-${LORA_ADAPTER_DIR}}"
 
 export QUANTIZATION="${QUANTIZATION:-bitsandbytes}"
 export MAX_LORA_RANK="${MAX_LORA_RANK:-64}"
 export PORT="${PORT:-8000}"
 
-# 4. Output / Connection File Paths
-export CONNECTION_DIR="${PROJECT_DIR}/day2_multi_gpu/serving/single_device/vllm_container"
-mkdir -p "${CONNECTION_DIR}"
+# Connection file read by chat.sh (in this folder)
+export CONNECTION_DIR="${COURSE_ROOT}/day2_multi_gpu/serving/single_device/vllm_container"
 export CONNECTION_FILE="${CONNECTION_DIR}/connection.env"
-
-# 5. Apptainer Container Configuration
-export CONTAINER_DIR="${PROJECT_DIR}/apptainer"
-export APPTAINER_SIF="${CONTAINER_DIR}/vllm0.12_cu131_py3.12_arm_custom.sif"
-
-# 6. Caches under project share
-export HF_HOME="${PROJECT_DIR}/hf_cache"
-export VLLM_CACHE_ROOT="${PROJECT_DIR}/.cache/vllm"
-mkdir -p "${HF_HOME}" "${VLLM_CACHE_ROOT}"
+mkdir -p "${CONNECTION_DIR}" "${HF_HOME}" "${VLLM_CACHE_ROOT}"
 # =====================================================================
+course_require "${VLLM_SIF}" "vLLM container image" "run ./setup_env.sh or check COURSE_ASSETS_DIR in course_env.sh"
+
 
 # -------- LoRA Detection --------
 if [[ -n "${LORA_ADAPTER_DIR}" ]]; then
@@ -59,10 +71,10 @@ else
     MODEL_NAME="${ACTIVE_MODEL_DIR}"
 fi
 
-echo "--- My Main Directory (host): ${PROJECT_DIR}"
+echo "--- Course folder (host): ${COURSE_ROOT}"
 echo "--- Bind-mounted inside container as: /workspace"
 echo
-echo "=== vLLM TorchAO + LoRA Server Configuration ==="
+echo "=== vLLM BitsAndBytes + LoRA Server Configuration ==="
 echo "Quantized Base Model: ${ACTIVE_MODEL_DIR}"
 echo "Local Tokenizer Src:  ${BASE_MODEL_DIR}"
 echo "Quantization Method:  ${QUANTIZATION}"
@@ -71,8 +83,8 @@ echo "GPUs:                 ${NUM_GPUS}"
 echo "Status:               Starting API Server on Port ${PORT}..."
 echo "================================="
 echo "💡 Usage Reminder:"
-echo "   • Run with LoRA with quantized base model(default):  ./serve_vllm_quantized.sh"
-echo "   • Run Quantized Base Model only:      LORA_PATH=\"\" ./serve_vllm_quantized.sh"
+echo "   • Run with LoRA with quantized base model(default):  ./serve_vllm_quantized_bnb.sh"
+echo "   • Run Quantized Base Model only:      LORA_PATH=\"\" ./serve_vllm_quantized_bnb.sh"
 echo "================================="
 echo
 
@@ -82,7 +94,7 @@ echo
 echo "--- Validating model, tokenizer, and adapter paths ---"
 
 if [[ ! -d "${ACTIVE_MODEL_DIR}" ]]; then
-    echo "ERROR: TorchAO quantized model not found at: ${ACTIVE_MODEL_DIR}"
+    echo "ERROR: BitsAndBytes quantized model not found at: ${ACTIVE_MODEL_DIR}"
     exit 1
 fi
 
@@ -139,11 +151,9 @@ if [[ "${USE_LORA}" == true ]]; then
     )
 fi
 
-echo "--- Launching TorchAO + LoRA vLLM Server inside Apptainer ---"
+echo "--- Launching BitsAndBytes + LoRA vLLM Server inside Apptainer ---"
 
-apptainer exec --nv \
-      -B "${PROJECT_DIR}:/workspace" \
-      -B "${CLUSTER_PROJECT_ROOT}" \
+apptainer exec --nv ${CONTAINER_BINDS} \
       --pwd "/workspace" \
-      "${APPTAINER_SIF}" \
+      "${VLLM_SIF}" \
       vllm "${VLLM_ARGS[@]}"

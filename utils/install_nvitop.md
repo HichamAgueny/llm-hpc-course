@@ -1,16 +1,27 @@
-1. allocate an interactive node
+# Installing nvitop
 
-2. load python e.g.
+The easiest way: `run_nvitop.sh <JobID>` installs nvitop automatically on first use and attaches
+it to your running job:
+```bash
+source course_env.sh          # once per login (puts utils/ on your PATH)
+run_nvitop.sh <JobID>
+```
+
+## Manual installation (optional)
+
+1. Allocate an interactive node (e.g. `bash apptainer/srun_interactive`).
+2. Install nvitop into the course folder:
+```bash
+source course_env.sh
 module load CrayEnv
 module load cray-python/3.12.12
-
 export PYTHONNOUSERSITE=1
 
-mkdir -p /cluster/projects/nn9997k/$USER/llm-hpc-course/apptainer/nvitop
+mkdir -p $COURSE_ROOT/apptainer/nvitop
+python3 -m pip install --target=$COURSE_ROOT/apptainer/nvitop nvitop
 
-python3 -m pip install --target=/cluster/projects/nn9997k/$USER/llm-hpc-course/apptainer/nvitop nvitop
-
-export PATH=/cluster/projects/nn9997k/$USER/llm-hpc-course/apptainer/nvitop/bin:$PATH
-export PYTHONPATH=/cluster/projects/nn9997k/$USER/llm-hpc-course/apptainer/nvitop:$PYTHONPATH
+export PATH=$COURSE_ROOT/apptainer/nvitop/bin:$PATH
+export PYTHONPATH=$COURSE_ROOT/apptainer/nvitop:$PYTHONPATH
 
 nvitop
+```

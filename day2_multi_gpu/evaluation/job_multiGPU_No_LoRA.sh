@@ -1,7 +1,5 @@
 #!/bin/bash -e
 #SBATCH --job-name=eval-llama3.2-1B-base-4gpu_mmlu
-##SBATCH --reservation=LLM_in_person_course
-#SBATCH --account=nn9997k
 #SBATCH --time=00:30:00
 #SBATCH --partition=accel
 #SBATCH --nodes=1
@@ -10,56 +8,38 @@
 #SBATCH --gpus-per-node=4
 #SBATCH --cpus-per-task=72
 #SBATCH --mem-per-gpu=96G
-#SBATCH --reservation=software
 #SBATCH -o ./out/%x-%j.out
+# Slurm account & reservation are set in course_env.sh - no need to add them here.
+
+# --- Load the course settings (account, paths, containers, modules) ----------
+for _d in "${SLURM_SUBMIT_DIR:-$PWD}" "$PWD" "${COURSE_ROOT:-/}"; do
+    until [[ -f "$_d/course_env.sh" || "$_d" == "/" ]]; do _d="$(dirname "$_d")"; done
+    if [[ -f "$_d/course_env.sh" ]]; then break; fi
+done
+if [[ ! -f "$_d/course_env.sh" ]]; then echo "ERROR: course_env.sh not found - submit from inside the course folder" >&2; exit 1; fi
+source "$_d/course_env.sh"
 
 # ---------------------------------------------------------------------
 # Environment
 # ---------------------------------------------------------------------
 
 export PYTHONNOUSERSITE=1
+
 export NUMEXPR_MAX_THREADS=72
 
-# 1. Base Project Allocation (Change this if migrating to a different project share)
-export CLUSTER_PROJECT_ROOT="/cluster/projects/nn9997k"
-
-# 2. Personal Workspace Setup (Derived automatically from your root above)
-export PROJECT_DIR="${CLUSTER_PROJECT_ROOT}/${USER}/llm-hpc-course"
-export SHARED_DIR="${PROJECT_DIR}/shared"
-export RESULT_DIR="${PROJECT_DIR}/results"
-
-# 3. Model paths -----------------------------------------------------
-export BASE_MODEL_DIR="${SHARED_DIR}/models/Llama-3.2-1B-Instruct"
-export TOKENIZER_DIR="${BASE_MODEL_DIR}/original/tokenizer.model"
-# Point the YAML's ${checkpoint_dir} at the BASE model — no LoRA involved
+# =====================================================================
+# --- LAB SETTINGS (paths, model, adapter and container: see course_env.sh) ---
+# =====================================================================
+# Base model evaluation: no LoRA, no merge.
+# The eval YAML reads the model from MERGED_MODEL_DIR, so point it at the base model.
 export MERGED_MODEL_DIR="${BASE_MODEL_DIR}"
+export OUTPUT_DIR="${EVAL_RESULTS_DIR}/llama3.2-1b-base-mmlu"
 
-# >>> BASE MODEL EVAL: no LoRA, no merge <<<
-export EVAL_CHECKPOINT_DIR="${BASE_MODEL_DIR}"
+mkdir -p "${OUTPUT_DIR}" "${HF_HOME}"
+# =====================================================================
 
-# 4. Output Component Paths
-export OUTPUT_DIR="${RESULT_DIR}/evaluation_results/llama3.2-1b-base-mmlu"
-mkdir -p "$OUTPUT_DIR"
-
-# 5. Script Layout
-export PYTHON_FILE_EVAL="${PROJECT_DIR}/recipes/eval/eleuther_eval.py"
-
-# 6. Apptainer Container Configuration
-export CONTAINER_DIR="${PROJECT_DIR}/apptainer"
-export APPTAINER_SIF="${CONTAINER_DIR}/pytorch_25.08_cuda13.0_arm_custom.sif"
-
-# 7. HuggingFace caches (datasets + hub) under the project share
-export HF_HOME="${PROJECT_DIR}/hf_cache"
-mkdir -p "${HF_HOME}"
-
-# ---------------------------------------------------------------------
-# Check model and container
-# ---------------------------------------------------------------------
-
-if [ ! -f "${APPTAINER_SIF}" ]; then
-    echo "ERROR: Apptainer image not found: ${APPTAINER_SIF}"
-    exit 1
-fi
+course_require "${PYTORCH_SIF}" "PyTorch container image" "run ./setup_env.sh or check COURSE_ASSETS_DIR in course_env.sh"
+course_require "${BASE_MODEL_DIR}" "Base model" "run ./setup_env.sh or check COURSE_ASSETS_DIR in course_env.sh"
 
 # ---------------------------------------------------------------------
 # GPU information
@@ -70,8 +50,10 @@ echo "Starting 4-GPU evaluation"
 echo "Job ID: ${SLURM_JOB_ID}"
 echo "Node: $(hostname)"
 echo "Allocated GPUs: ${SLURM_GPUS}"
-echo "Merged model: ${MERGED_MODEL_DIR}"
+echo "Model evaluated: ${MERGED_MODEL_DIR}"
+echo "Results: ${OUTPUT_DIR}"
 echo "======================================================"
+
 
 # ---------------------------------------------------------------------
 # Run lm-evaluation-harness with Accelerate
@@ -83,10 +65,8 @@ time srun --cpu-bind=${CPU_BIND} \
     --ntasks=1 \
     --gpus=4 \
     --cpus-per-task=72 \
-    apptainer exec --nv \
-        -B "${PROJECT_DIR}:/workspace" \
-        -B "${CLUSTER_PROJECT_ROOT}" \
-        "${APPTAINER_SIF}" \
+    apptainer exec --nv ${CONTAINER_BINDS} \
+        "${PYTORCH_SIF}" \
         bash -lc '
             echo "Starting Accelerate evaluation..."
             echo "Output directory: '"${OUTPUT_DIR}"'"
@@ -104,5 +84,5 @@ time srun --cpu-bind=${CPU_BIND} \
 
 echo "======================================================"
 echo "Evaluation completed."
+echo "Results: ${OUTPUT_DIR}"
 echo "======================================================"
-

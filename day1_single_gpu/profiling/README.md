@@ -49,10 +49,12 @@ profiler:
 
 ## 2. Submitting a Profiling Job
 
-Submit the profiling job script from this directory:
+From the course folder: `./run.sh day1 profile --method=lora` (or `--method=qlora`).
+
+Or submit directly (after `source course_env.sh` once per login):
 
 ```bash
-cd day1_single_gpu/profiling
+cd $COURSE_ROOT/day1_single_gpu/profiling
 
 # Profile LoRA fine-tuning
 sbatch job_singleGPU_QA_LoRA_profiling.sh
@@ -63,9 +65,10 @@ sbatch job_singleGPU_QA_QLoRA_profiling.sh
 
 Profiling outputs and logs will be generated under:
 ```text
-/cluster/projects/nn9997k/$USER/llm-hpc-course/results/profiling_results/${RUN_NAME}/profiles
-/cluster/projects/nn9997k/$USER/llm-hpc-course/results/profiling_results/${RUN_NAME}/logs
+results/profiling_results/<RUN_NAME>/profiles      (full path: $PROFILING_RESULTS_DIR/<RUN_NAME>/profiles)
+results/profiling_results/<RUN_NAME>/logs
 ```
+with `<RUN_NAME>` = `profiling_llama3.2-1b_lora_single_device` or `profiling_llama3.2-1b_qlora_single_device`.
 
 ---
 
@@ -74,8 +77,9 @@ Profiling outputs and logs will be generated under:
 After the job completes, copy the profiling artifacts from the cluster to your local machine for analysis:
 
 ```bash
-# Replace USERNAME with your actual cluster username and RUN_NAME with your job run name
-scp -r USERNAME@olivia.sigma2.no:/cluster/projects/nn9997k/USERNAME/llm-hpc-course/results/profiling_results/profiling_llama3.2-1b_lora_single_device/profiles .
+# Replace USERNAME with your cluster username (path shown for the recommended clone location;
+# on Olivia, 'echo $PROFILING_RESULTS_DIR' prints yours)
+scp -r USERNAME@olivia.sigma2.no:/cluster/work/projects/nn9971k/USERNAME/llm-hpc-course/results/profiling_results/profiling_llama3.2-1b_lora_single_device/profiles .
 ```
 
 ### Viewing Traces

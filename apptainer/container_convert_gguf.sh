@@ -8,18 +8,17 @@ set -e
 # =====================================================================
 export PYTHONNOUSERSITE=1
 
-export PROJECT_DIR="/cluster/projects/nn9997k"
-export MyWD="$PROJECT_DIR/$USER/llm-hpc-course"
-
-CONTAINER_DIR="${MyWD}/apptainer"
-APPTAINER_SIF="${CONTAINER_DIR}/pytorch_25.08_cuda13.0_arm_custom.sif"
-
-export CONTAINER_WD="/workspace"
+# Paths and container come from course_env.sh
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/course_env.sh"
+MyWD="${COURSE_ROOT}"
+APPTAINER_SIF="${PYTORCH_SIF}"
 # =====================================================================
 # 2. Conversion Asset Paths
 # =====================================================================
-INPUT_HF_BASE_DIR="$MyWD/shared/models/Llama-3.2-1B-Instruct"
-OUTPUT_BASE_GGUF="$MyWD/shared/models/Llama-3.2-1B-Instruct-F16.gguf"
+INPUT_HF_BASE_DIR="${BASE_MODEL_DIR}"
+# Written to your results folder (the shared models folder is read-only)
+mkdir -p "${QUANTIZED_MODELS_DIR}"
+OUTPUT_BASE_GGUF="${QUANTIZED_MODELS_DIR}/${BASE_MODEL_NAME}-F16.gguf"
 BASE_PRECISION="f16"
 
 INPUT_LORA_DIR="$MyWD/results/checkpoints_out/llama3_2_1B_lora_multi_device/epoch_3"
@@ -34,7 +33,7 @@ if [ ! -f "$APPTAINER_SIF" ]; then
 fi
 
 # Define the shared Apptainer execution runtime wrapper
-APPTAINER_RUN="apptainer exec --nv -B ${MyWD}:${CONTAINER_WD} -B $PROJECT_DIR $APPTAINER_SIF"
+APPTAINER_RUN="apptainer exec --nv ${CONTAINER_BINDS} $APPTAINER_SIF"
 
 # =====================================================================
 # 3. Interactive Selection Menu

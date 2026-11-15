@@ -1,18 +1,12 @@
-
 #!/bin/bash
 set -e
+# NCCL interconnect benchmark between the GPUs of one node.
+# Run it inside an interactive 4-GPU shell:  bash srun_sinteractive_4gpus ; ./run_nccl.sh
 
 # ==========================================================
-# 1. Project paths
+# 1. Course settings (paths and container from course_env.sh)
 # ==========================================================
-
-export CLUSTER_PROJECT_ROOT="/cluster/projects/nn9997k"
-
-export PROJECT_DIR="${CLUSTER_PROJECT_ROOT}/${USER}/llm-hpc-course"
-
-export CONTAINER_DIR="${PROJECT_DIR}/apptainer"
-
-export APPTAINER_SIF="${CONTAINER_DIR}/vllm0.12_cu131_py3.12_arm_custom.sif"
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../.." && pwd)/course_env.sh"
 
 TEST_SCRIPT="/workspace/day2_multi_gpu/serving/multi_device/vllm_container/test_nccl.py"
 
@@ -26,8 +20,8 @@ echo "=========================================="
 echo "       NCCL Interconnect Benchmark"
 echo "=========================================="
 
-echo "Project:   ${PROJECT_DIR}"
-echo "Container: ${APPTAINER_SIF}"
+echo "Project:   ${COURSE_ROOT}"
+echo "Container: ${VLLM_SIF}"
 echo "GPUs:      ${NUM_GPUS}"
 echo "=========================================="
 
@@ -35,12 +29,12 @@ echo "=========================================="
 # 3. Validate configuration
 # ==========================================================
 
-if [ ! -f "${APPTAINER_SIF}" ]; then
-    echo "ERROR: Container image not found: ${APPTAINER_SIF}"
+if [ ! -f "${VLLM_SIF}" ]; then
+    echo "ERROR: Container image not found: ${VLLM_SIF}"
     exit 1
 fi
 
-if [ ! -f "${PROJECT_DIR}/day2_multi_gpu/serving/multi_device/vllm_container/test_nccl.py" ]; then
+if [ ! -f "${COURSE_ROOT}/day2_multi_gpu/serving/multi_device/vllm_container/test_nccl.py" ]; then
     echo "ERROR: NCCL benchmark script not found."
     exit 1
 fi
@@ -54,10 +48,9 @@ fi
 # 4. Run NCCL benchmark inside Apptainer
 # ==========================================================
 
-apptainer exec --nv \
-    --bind "${PROJECT_DIR}:/workspace" \
+apptainer exec --nv ${CONTAINER_BINDS} \
     --pwd "/workspace" \
-    "${APPTAINER_SIF}" \
+    "${VLLM_SIF}" \
     torchrun \
         --standalone \
         --nnodes=1 \

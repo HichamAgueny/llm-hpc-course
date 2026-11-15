@@ -1,12 +1,10 @@
 #!/bin/bash -e
-# --- Configuration ---
-export PROJECT_DIR="/cluster/projects/nn9997k"
-export MyWD="$PROJECT_DIR/$USER/llm-hpc-course"
-CONTAINER_DIR="${MyWD}/apptainer"
-APPTAINER_SIF="${CONTAINER_DIR}/pytorch_25.08_cuda13.0_arm_custom.sif"
+# Open the PyTorch course container WITHOUT any folder mounted,
+# to show why bind mounts (-B) are needed.
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/course_env.sh"
 
 # --- Launch (NO -B FLAGS) ---
 echo "--Launching Isolated Container (No Project Mounts)..."
 echo "--Try running 'ls /workspace' inside. It will fail!"
 apptainer shell --nv \
-      "${APPTAINER_SIF}"
+      "${PYTORCH_SIF}"

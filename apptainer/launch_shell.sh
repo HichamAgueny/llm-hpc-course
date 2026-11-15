@@ -1,14 +1,9 @@
 #!/bin/bash -e
-export PROJECT_DIR="/cluster/projects/nn9997k"
-export MyWD="$PROJECT_DIR/$USER/llm-hpc-course"
-export CONTAINER_WD="/workspace"
+# Open an interactive shell inside the PyTorch course container
+# (run it on a GPU node, e.g. after: bash apptainer/srun_interactive).
+# The course folder is mounted at its own path and as /workspace.
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/course_env.sh"
 
-CONTAINER_DIR="${MyWD}/apptainer"
-APPTAINER_SIF="${CONTAINER_DIR}/pytorch_25.08_cuda13.0_arm_custom.sif"
-
-apptainer shell --nv \
-      -B "${MyWD}:${CONTAINER_WD}" \
-      -B $PROJECT_DIR \
-      --env MyWD="$MyWD" \
-      "${APPTAINER_SIF}"
-
+apptainer shell --nv ${CONTAINER_BINDS} \
+      --env MyWD="${COURSE_ROOT}" \
+      "${PYTORCH_SIF}"

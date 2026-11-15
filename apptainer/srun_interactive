@@ -1,4 +1,8 @@
-srun -A nn9997k -p accel --nodes=1 --gpus=1 --mem-per-gpu=90G --time=02:65:00 --reservation=software  --pty bash -i
+#!/bin/bash
+# Start an interactive shell on a GPU node (1 GPU).   Usage: bash apptainer/srun_interactive
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/course_env.sh"
 
-#--nodelist=gpu-1-50 
+srun -A "${COURSE_SLURM_ACCOUNT}" ${COURSE_SLURM_RESERVATION:+--reservation="${COURSE_SLURM_RESERVATION}"} \
+     -p accel --nodes=1 --gpus=1 --mem-per-gpu=90G --time=02:00:00 --pty bash -i
 
+#--nodelist=gpu-1-50

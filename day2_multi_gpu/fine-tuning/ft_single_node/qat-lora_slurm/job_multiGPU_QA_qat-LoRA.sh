@@ -1,7 +1,5 @@
 #!/bin/bash -e
 #SBATCH --job-name=ft-llama3-1B-qat-lora-4gpu
-##SBATCH --reservation=LLM_in_person_course
-#SBATCH --account=nn9997k
 #SBATCH --time=00:10:00
 #SBATCH --partition=accel
 #SBATCH --nodes=1
@@ -11,7 +9,15 @@
 #SBATCH --cpus-per-task=72
 #SBATCH -o ./out/%x-%j.out
 #SBATCH --mem-per-gpu=96G
-#SBATCH --reservation=software
+# Slurm account & reservation are set in course_env.sh - no need to add them here.
+
+# --- Load the course settings (account, paths, containers, modules) ----------
+for _d in "${SLURM_SUBMIT_DIR:-$PWD}" "$PWD" "${COURSE_ROOT:-/}"; do
+    until [[ -f "$_d/course_env.sh" || "$_d" == "/" ]]; do _d="$(dirname "$_d")"; done
+    if [[ -f "$_d/course_env.sh" ]]; then break; fi
+done
+if [[ ! -f "$_d/course_env.sh" ]]; then echo "ERROR: course_env.sh not found - submit from inside the course folder" >&2; exit 1; fi
+source "$_d/course_env.sh"
 
 echo "--Node: $(hostname)"
 echo
@@ -19,44 +25,28 @@ echo
 export PYTHONNOUSERSITE=1
 
 # =====================================================================
-# --- CONFIGURABLE VARIABLES AND PATHS (USERS ONLY MODIFY THIS BLOCK) ---
+# --- LAB SETTINGS (paths, model, dataset and container: see course_env.sh) ---
 # =====================================================================
-
-# 1. Base Project Allocation (Change this if migrating to a different project share)
-export CLUSTER_PROJECT_ROOT="/cluster/projects/nn9997k"
-
-# 2. Personal Workspace Setup (Derived automatically from your root above)
-export PROJECT_DIR="${CLUSTER_PROJECT_ROOT}/${USER}/llm-hpc-course"
-export SHARED_DIR="${PROJECT_DIR}/shared"
-export RESULT_DIR="${PROJECT_DIR}/results/checkpoint_results"
-
-# 3. Input Component Paths
-export CHECKPOINT_DIR="${SHARED_DIR}/models/Llama-3.2-1B-Instruct"
-export TOKENIZER_DIR="${CHECKPOINT_DIR}/original/tokenizer.model"
-export DATASET_DIR="${SHARED_DIR}/datasets/GPT-4-LLM/alpaca_gpt4_data.json"
-
-# 4. Output Component Paths
 export RUN_NAME="llama3.2-1b_qat-lora_multi_device"
-export OUTPUT_DIR="${RESULT_DIR}/${RUN_NAME}/checkpoints"
-export LOG_DIR="${RESULT_DIR}/${RUN_NAME}/logs"
-export PROFILING_DIR="${RESULT_DIR}/${RUN_NAME}/profiles"
+export CONFIG_FILE="${COURSE_ROOT}/configs/qat-lora/llama3_2_1B_qat-lora_multi_device_QA.yaml"
+export PYTHON_FILE="${COURSE_ROOT}/recipes/distributed/qat_lora_finetune_distributed.py"
 
-# 5. Script / Config Layout
-export CONFIG_FILE="${PROJECT_DIR}/configs/qat-lora/llama3_2_1B_qat-lora_multi_device_QA.yaml"
-export PYTHON_FILE="${PROJECT_DIR}/recipes/distributed/qat_lora_finetune_distributed.py"
-
-# 6. Apptainer Container Configuration
-export CONTAINER_DIR="${PROJECT_DIR}/apptainer"
-export APPTAINER_SIF="${CONTAINER_DIR}/pytorch_25.08_cuda13.0_arm_custom.sif"
-
+# Outputs go to results/checkpoint_results/<RUN_NAME>/
+export OUTPUT_DIR="${CHECKPOINT_RESULTS_DIR}/${RUN_NAME}/checkpoints"
+export LOG_DIR="${CHECKPOINT_RESULTS_DIR}/${RUN_NAME}/logs"
+export PROFILING_DIR="${CHECKPOINT_RESULTS_DIR}/${RUN_NAME}/profiles"
 # =====================================================================
 
-echo "--- My Main Directory (host): ${PROJECT_DIR}"
-echo "--- Bind-mounted inside container as: /workspace"
+course_require "${PYTORCH_SIF}" "PyTorch container image" "run ./setup_env.sh or check COURSE_ASSETS_DIR in course_env.sh"
+course_require "${BASE_MODEL_DIR}" "Base model" "run ./setup_env.sh or check COURSE_ASSETS_DIR in course_env.sh"
+course_require "${QA_DATASET_DIR}" "QA dataset" "run ./setup_env.sh or check COURSE_ASSETS_DIR in course_env.sh"
+
+echo "--- Course folder (host): ${COURSE_ROOT}  (also mounted as /workspace)"
 echo
 echo "=== Running inside Apptainer ==="
 echo "CONFIG_FILE: ${CONFIG_FILE}"
 echo "PYTHON_FILE: ${PYTHON_FILE}"
+echo "CONTAINER:   ${PYTORCH_SIF}"
 echo
 
 echo "--- Launching the application inside Apptainer ---"
@@ -78,9 +68,9 @@ run_training() {
     echo "LOCAL_RANK: ${LOCAL_RANK}, CUDA_VISIBLE_DEVICES: ${CUDA_VISIBLE_DEVICES}"
 
     python "${PYTHON_FILE}" --config "${CONFIG_FILE}" \
-             --checkpoint_dir "${CHECKPOINT_DIR}" \
+             --checkpoint_dir "${BASE_MODEL_DIR}" \
              --tokenizer_dir "${TOKENIZER_DIR}" \
-             --dataset_dir "${DATASET_DIR}" \
+             --dataset_dir "${QA_DATASET_DIR}" \
              --output_dir "${OUTPUT_DIR}" \
              --log_dir "${LOG_DIR}" \
              --profiling_dir "${PROFILING_DIR}"
@@ -93,10 +83,10 @@ export -f run_training
 CPU_BIND="map_cpu:1,73,145,217"
 
 # --- Execute with Apptainer ---
-time srun --cpu-bind=${CPU_BIND} apptainer exec --nv \
-      -B "${PROJECT_DIR}:/workspace" \
-      -B "${CLUSTER_PROJECT_ROOT}" \
-      "${APPTAINER_SIF}" bash -c run_training
+time srun --cpu-bind=${CPU_BIND} apptainer exec --nv ${CONTAINER_BINDS} \
+      "${PYTORCH_SIF}" bash -c run_training
 
 echo
 echo "--- Finished :) ---"
+echo "Checkpoints: ${OUTPUT_DIR}"
+echo "Logs:        ${LOG_DIR}"

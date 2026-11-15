@@ -1,4 +1,7 @@
+#!/bin/bash
 set -e
+# Interactive GPU monitor (nvitop) attached to one of your running jobs.
+# Usage: run_nvitop.sh <JobID>
 
 # Check JobID argument
 if [ -z "$1" ]; then
@@ -16,11 +19,11 @@ module load cray-python/3.12.12
 # Prevent loading user-site packages
 export PYTHONNOUSERSITE=1
 
-export CLUSTER_PROJECT_ROOT="/cluster/projects/nn9997k"
-export PROJECT_DIR="${CLUSTER_PROJECT_ROOT}/${USER}/llm-hpc-course"
+# Course settings (paths) from course_env.sh
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/course_env.sh"
 
 # nvitop installation directory
-NVITOP_DIR="${PROJECT_DIR}/apptainer/nvitop"
+NVITOP_DIR="${COURSE_ROOT}/apptainer/nvitop"
 
 # Create installation directory
 mkdir -p "$NVITOP_DIR"

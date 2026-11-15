@@ -2,20 +2,25 @@
 # ==============================================================================
 # Unified Job Runner & Dispatcher
 # LLM Fine-Tuning & Inference on HPC
+#
+# Submits any lab from the course folder - no need to cd into lab folders.
+# Account, reservation and paths come from course_env.sh.
 # ==============================================================================
 
 set -e
 
 SCRIPT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-if [ -f "${SCRIPT_ROOT}/course_env.sh" ]; then
-    source "${SCRIPT_ROOT}/course_env.sh"
-fi
+source "${SCRIPT_ROOT}/course_env.sh"
 
 GREEN='\033[0;32m'
 BLUE='\033[0;34m'
 YELLOW='\033[1;33m'
+RED='\033[0;31m'
 BOLD='\033[1m'
 NC='\033[0m'
+
+D1="${SCRIPT_ROOT}/day1_single_gpu"
+D2="${SCRIPT_ROOT}/day2_multi_gpu"
 
 print_usage() {
     echo -e "${BOLD}Usage:${NC} ./run.sh <category> <action> [options]"
@@ -29,11 +34,12 @@ print_usage() {
     echo -e "${BOLD}Day 2 Commands (Multi-GPU & Distributed):${NC}"
     echo -e "  ./run.sh day2 ft-single  [--method=lora|qlora|qat-lora] [--env=container|eessi]  Single-node 4-GPU FT"
     echo -e "  ./run.sh day2 ft-multi   [--method=lora|qlora|qat-lora] [--env=container|eessi]  Multi-node distributed FT"
-    echo -e "  ./run.sh day2 eval       [--env=container|eessi] [--base]                         Distributed MMLU evaluation"
+    echo -e "  ./run.sh day2 eval       [--env=container|eessi] [--base]                         Multi-GPU MMLU evaluation"
     echo -e "  ./run.sh day2 profile    [--method=lora|qlora|qat-lora]                          Multi-GPU distributed profiling"
     echo -e "  ./run.sh day2 quantize   <bnb4|bnb8|torchao|gptq>                                Post-training quantization"
-    echo -e "  ./run.sh day2 serve      [--type=single|multi] [--env=container|eessi]            Launch vLLM server"
-    echo -e "  ./run.sh day2 chat       [--type=single|multi]                                    Open terminal chat client"
+    echo -e "  ./run.sh day2 serve      [--type=single|multi] [--env=container|eessi]"
+    echo -e "                           [--quant=none|bnb|gptq|torchao]                          Launch vLLM server"
+    echo -e "  ./run.sh day2 chat       [--type=single|multi] [--env=container|eessi]            Open terminal chat client"
     echo -e "  ./run.sh day2 inference  [--env=container|eessi]                                  Distributed batch inference"
     echo ""
     echo -e "${BOLD}Cluster Utilities:${NC}"
@@ -41,43 +47,44 @@ print_usage() {
     echo -e "  ./run.sh status            Show your active jobs (squeue --me)"
     echo -e "  ./run.sh check             Run pre-flight environment & directory check"
     echo ""
+    echo -e "${BOLD}Useful overrides:${NC}"
+    echo -e "  LORA_PATH=/path/to/checkpoints/epoch_N ./run.sh day1 eval   Evaluate / serve another adapter"
+    echo -e "  PORT=8001 ./run.sh day2 serve                               Use another port for the server"
+    echo ""
 }
 
-# Helper to run sbatch safely from the script's directory
+die() {
+    echo -e "${RED}Error: $*${NC}" >&2
+    exit 1
+}
+
+# Submit a job script from its own folder (so its ./out/ log folder is used)
 submit_job() {
     local target_dir="$1"
     local script_name="$2"
-    local extra_flags="$3"
-    local with_eval="$4"
-    local eval_dir="$5"
-    local eval_script="$6"
+    local with_eval="${3:-false}"
+    local eval_dir="${4:-}"
+    local eval_script="${5:-}"
 
+    [ -f "${target_dir}/${script_name}" ] || die "Job script not found: ${target_dir}/${script_name}"
     mkdir -p "${target_dir}/out"
 
-    # Build sbatch flags
-    local sbatch_args=()
-    if [ -n "${COURSE_SLURM_ACCOUNT:-}" ]; then
-        sbatch_args+=("--account=${COURSE_SLURM_ACCOUNT}")
-    fi
-    if [ -n "${COURSE_SLURM_RESERVATION:-}" ]; then
+    local sbatch_args=("--account=${COURSE_SLURM_ACCOUNT}")
+    if [ -n "${COURSE_SLURM_RESERVATION}" ]; then
         sbatch_args+=("--reservation=${COURSE_SLURM_RESERVATION}")
-    fi
-    if [ -n "${extra_flags}" ]; then
-        sbatch_args+=("${extra_flags}")
     fi
 
     echo -e "${BLUE}${BOLD}Submitting:${NC} ${script_name}"
-    echo -e "${BLUE}Directory:${NC}  ${target_dir}"
+    echo -e "${BLUE}Directory:${NC}  ${target_dir#${SCRIPT_ROOT}/}"
+    echo -e "${BLUE}Command:${NC}    sbatch ${sbatch_args[*]} ${script_name}"
 
-    cd "${target_dir}"
-    local output
-    output=$(sbatch "${sbatch_args[@]}" "${script_name}")
+    local output job_id
+    output=$(cd "${target_dir}" && sbatch "${sbatch_args[@]}" "${script_name}")
     echo -e "${GREEN}${BOLD}✓ ${output}${NC}"
-
-    local job_id
     job_id=$(echo "${output}" | awk '{print $NF}')
 
     echo ""
+    echo -e "Job log:      ${BOLD}${target_dir#${SCRIPT_ROOT}/}/out/${NC}"
     echo -e "Monitor job:  ${BOLD}./run.sh monitor ${job_id}${NC}"
     echo -e "Check status: ${BOLD}./run.sh status${NC}"
 
@@ -86,102 +93,80 @@ submit_job() {
         echo ""
         echo -e "${YELLOW}${BOLD}Chaining Evaluation Job (will run automatically when Job ${job_id} succeeds)...${NC}"
         mkdir -p "${eval_dir}/out"
-        cd "${eval_dir}"
         local eval_output
-        eval_output=$(sbatch --dependency=afterok:"${job_id}" "${sbatch_args[@]}" "${eval_script}")
+        eval_output=$(cd "${eval_dir}" && sbatch --dependency=afterok:"${job_id}" "${sbatch_args[@]}" "${eval_script}")
         echo -e "${GREEN}${BOLD}✓ Scheduled Evaluation: ${eval_output}${NC}"
     fi
-
-    cd "${SCRIPT_ROOT}"
 }
 
-# Parse options
+# --- Parse arguments -----------------------------------------------------------
 ENV_CHOICE="${DEFAULT_BACKEND:-container}"
 METHOD_CHOICE="lora"
 TYPE_CHOICE="multi"
+QUANT_CHOICE="none"
 WITH_EVAL=false
 EVAL_BASE=false
+POSITIONAL=()
 
-# Read subcommands
 CATEGORY="${1:-}"
 ACTION="${2:-}"
-shift 2 2>/dev/null || true
+shift 2 2>/dev/null || shift $# 2>/dev/null || true
 
 for arg in "$@"; do
     case "$arg" in
-        --env=*)
-            ENV_CHOICE="${arg#*=}"
-            ;;
-        --method=*)
-            METHOD_CHOICE="${arg#*=}"
-            ;;
-        --type=*)
-            TYPE_CHOICE="${arg#*=}"
-            ;;
-        --with-eval)
-            WITH_EVAL=true
-            ;;
-        --base)
-            EVAL_BASE=true
-            ;;
-        *)
-            ;;
+        --env=*)    ENV_CHOICE="${arg#*=}" ;;
+        --method=*) METHOD_CHOICE="${arg#*=}" ;;
+        --type=*)   TYPE_CHOICE="${arg#*=}" ;;
+        --quant=*)  QUANT_CHOICE="${arg#*=}" ;;
+        --with-eval) WITH_EVAL=true ;;
+        --base)     EVAL_BASE=true ;;
+        --*)        die "Unknown option '${arg}' (see ./run.sh help)" ;;
+        *)          POSITIONAL+=("$arg") ;;
     esac
 done
+
+case "${ENV_CHOICE}" in container|eessi) ;; *) die "--env must be 'container' or 'eessi'" ;; esac
+case "${TYPE_CHOICE}" in single|multi) ;; *) die "--type must be 'single' or 'multi'" ;; esac
+[ "${METHOD_CHOICE}" == "qat" ] && METHOD_CHOICE="qat-lora"
+
+# Only LoRA has an EESSI variant for the Day 2 fine-tuning labs
+container_only_note() {
+    if [ "${ENV_CHOICE}" == "eessi" ]; then
+        echo -e "${YELLOW}Note: '${METHOD_CHOICE}' is only available as a container job; submitting the container version.${NC}"
+    fi
+}
 
 case "${CATEGORY}" in
     day1)
         case "${ACTION}" in
             lora)
                 if [ "${ENV_CHOICE}" == "eessi" ]; then
-                    submit_job \
-                        "${SCRIPT_ROOT}/day1_single_gpu/finetuning/lora_slurm/job_eessi" \
-                        "job_singleGPU_QA_LoRA_eessi.sh" \
-                        "" \
-                        "${WITH_EVAL}" \
-                        "${SCRIPT_ROOT}/day1_single_gpu/evaluation" \
-                        "job_singleGPU_LoRA_eessi.sh"
+                    submit_job "${D1}/finetuning/lora_slurm/job_eessi" "job_singleGPU_QA_LoRA_eessi.sh" \
+                        "${WITH_EVAL}" "${D1}/evaluation" "job_singleGPU_LoRA_eessi.sh"
                 else
-                    submit_job \
-                        "${SCRIPT_ROOT}/day1_single_gpu/finetuning/lora_slurm/job_container" \
-                        "job_singleGPU_QA_LoRA.sh" \
-                        "" \
-                        "${WITH_EVAL}" \
-                        "${SCRIPT_ROOT}/day1_single_gpu/evaluation" \
-                        "job_singleGPU_LoRA.sh"
+                    submit_job "${D1}/finetuning/lora_slurm/job_container" "job_singleGPU_QA_LoRA.sh" \
+                        "${WITH_EVAL}" "${D1}/evaluation" "job_singleGPU_LoRA.sh"
                 fi
                 ;;
             qlora)
                 if [ "${ENV_CHOICE}" == "eessi" ]; then
-                    submit_job \
-                        "${SCRIPT_ROOT}/day1_single_gpu/finetuning/qlora_slurm/job_eessi" \
-                        "job_singleGPU_QA_QLoRA_eessi.sh"
+                    submit_job "${D1}/finetuning/qlora_slurm/job_eessi" "job_singleGPU_QA_QLoRA_eessi.sh"
                 else
-                    submit_job \
-                        "${SCRIPT_ROOT}/day1_single_gpu/finetuning/qlora_slurm/job_container" \
-                        "job_singleGPU_QA_QLoRA.sh"
+                    submit_job "${D1}/finetuning/qlora_slurm/job_container" "job_singleGPU_QA_QLoRA.sh"
                 fi
                 ;;
             eval)
-                local eval_script="job_singleGPU_LoRA.sh"
-                if [ "${EVAL_BASE}" == "true" ]; then
-                    eval_script="job_singleGPU_No_LoRA.sh"
-                fi
-                if [ "${ENV_CHOICE}" == "eessi" ]; then
-                    if [ "${EVAL_BASE}" == "true" ]; then
-                        eval_script="job_singleGPU_No_LoRA_eessi.sh"
-                    else
-                        eval_script="job_singleGPU_LoRA_eessi.sh"
-                    fi
-                fi
-                submit_job "${SCRIPT_ROOT}/day1_single_gpu/evaluation" "${eval_script}"
+                eval_script="job_singleGPU_LoRA"
+                [ "${EVAL_BASE}" == "true" ] && eval_script="job_singleGPU_No_LoRA"
+                [ "${ENV_CHOICE}" == "eessi" ] && eval_script="${eval_script}_eessi"
+                submit_job "${D1}/evaluation" "${eval_script}.sh"
                 ;;
             profile)
-                local prof_script="job_singleGPU_QA_LoRA_profiling.sh"
-                if [ "${METHOD_CHOICE}" == "qlora" ]; then
-                    prof_script="job_singleGPU_QA_QLoRA_profiling.sh"
-                fi
-                submit_job "${SCRIPT_ROOT}/day1_single_gpu/profiling" "${prof_script}"
+                case "${METHOD_CHOICE}" in
+                    lora)  submit_job "${D1}/profiling" "job_singleGPU_QA_LoRA_profiling.sh" ;;
+                    qlora) submit_job "${D1}/profiling" "job_singleGPU_QA_QLoRA_profiling.sh" ;;
+                    *)     die "--method must be lora or qlora for day1 profile" ;;
+                esac
                 ;;
             *)
                 echo -e "${YELLOW}Unknown Day 1 action: ${ACTION}${NC}"
@@ -197,95 +182,88 @@ case "${CATEGORY}" in
                 case "${METHOD_CHOICE}" in
                     lora)
                         if [ "${ENV_CHOICE}" == "eessi" ]; then
-                            submit_job "${SCRIPT_ROOT}/day2_multi_gpu/fine-tuning/ft_single_node/lora_slurm/job_eessi" "job_multiGPU_QA_LoRA_eessi.sh"
+                            submit_job "${D2}/fine-tuning/ft_single_node/lora_slurm/job_eessi" "job_multiGPU_QA_LoRA_eessi.sh"
                         else
-                            submit_job "${SCRIPT_ROOT}/day2_multi_gpu/fine-tuning/ft_single_node/lora_slurm/job_container" "job_multiGPU_QA_LoRA.sh"
+                            submit_job "${D2}/fine-tuning/ft_single_node/lora_slurm/job_container" "job_multiGPU_QA_LoRA.sh"
                         fi
                         ;;
                     qlora)
-                        submit_job "${SCRIPT_ROOT}/day2_multi_gpu/fine-tuning/ft_single_node/qlora_slurm" "job_multiGPU_QA_QLoRA.sh"
+                        container_only_note
+                        submit_job "${D2}/fine-tuning/ft_single_node/qlora_slurm" "job_multiGPU_QA_QLoRA.sh"
                         ;;
-                    qat|qat-lora)
-                        submit_job "${SCRIPT_ROOT}/day2_multi_gpu/fine-tuning/ft_single_node/qat-lora_slurm" "job_multiGPU_QA_qat-LoRA.sh"
+                    qat-lora)
+                        container_only_note
+                        submit_job "${D2}/fine-tuning/ft_single_node/qat-lora_slurm" "job_multiGPU_QA_qat-LoRA.sh"
                         ;;
+                    *) die "--method must be lora, qlora or qat-lora" ;;
                 esac
                 ;;
             ft-multi|ft-multi-node)
                 case "${METHOD_CHOICE}" in
                     lora)
                         if [ "${ENV_CHOICE}" == "eessi" ]; then
-                            submit_job "${SCRIPT_ROOT}/day2_multi_gpu/fine-tuning/ft_multi_node/lora_slurm/job_eessi" "job_multiNode_QA_LoRA_eessi.sh"
+                            submit_job "${D2}/fine-tuning/ft_multi_node/lora_slurm/job_eessi" "job_multiNode_QA_LoRA_eessi.sh"
                         else
-                            submit_job "${SCRIPT_ROOT}/day2_multi_gpu/fine-tuning/ft_multi_node/lora_slurm/job_container" "job_multiNode_QA_LoRA.sh"
+                            submit_job "${D2}/fine-tuning/ft_multi_node/lora_slurm/job_container" "job_multiNode_QA_LoRA.sh"
                         fi
                         ;;
                     qlora)
-                        submit_job "${SCRIPT_ROOT}/day2_multi_gpu/fine-tuning/ft_multi_node/qlora_slurm" "job_multiNode_QA_QLoRA.sh"
+                        container_only_note
+                        submit_job "${D2}/fine-tuning/ft_multi_node/qlora_slurm" "job_multiNode_QA_QLoRA.sh"
                         ;;
-                    qat|qat-lora)
-                        submit_job "${SCRIPT_ROOT}/day2_multi_gpu/fine-tuning/ft_multi_node/qat-lora_slurm" "job_multiNode_QA_qat-LoRA.sh"
+                    qat-lora)
+                        container_only_note
+                        submit_job "${D2}/fine-tuning/ft_multi_node/qat-lora_slurm" "job_multiNode_QA_qat-LoRA.sh"
                         ;;
+                    *) die "--method must be lora, qlora or qat-lora" ;;
                 esac
                 ;;
             eval)
-                local eval_script="job_multiGPU_LoRA.sh"
-                if [ "${EVAL_BASE}" == "true" ]; then
-                    eval_script="job_multiGPU_No_LoRA.sh"
-                fi
-                if [ "${ENV_CHOICE}" == "eessi" ]; then
-                    if [ "${EVAL_BASE}" == "true" ]; then
-                        eval_script="job_multiGPU_No_LoRA_eessi.sh"
-                    else
-                        eval_script="job_multiGPU_LoRA_eessi.sh"
-                    fi
-                fi
-                submit_job "${SCRIPT_ROOT}/day2_multi_gpu/evaluation" "${eval_script}"
+                eval_script="job_multiGPU_LoRA"
+                [ "${EVAL_BASE}" == "true" ] && eval_script="job_multiGPU_No_LoRA"
+                [ "${ENV_CHOICE}" == "eessi" ] && eval_script="${eval_script}_eessi"
+                submit_job "${D2}/evaluation" "${eval_script}.sh"
                 ;;
             profile)
-                local prof_script="job_multiGPU_QA_LoRA.sh"
-                if [ "${METHOD_CHOICE}" == "qlora" ]; then
-                    prof_script="job_multiGPU_QA_QLoRA.sh"
-                elif [ "${METHOD_CHOICE}" == "qat" ] || [ "${METHOD_CHOICE}" == "qat-lora" ]; then
-                    prof_script="job_multiGPU_QA_qat-LoRA.sh"
-                fi
-                submit_job "${SCRIPT_ROOT}/day2_multi_gpu/profiling" "${prof_script}"
+                case "${METHOD_CHOICE}" in
+                    lora)     submit_job "${D2}/profiling" "job_multiGPU_QA_LoRA.sh" ;;
+                    qlora)    submit_job "${D2}/profiling" "job_multiGPU_QA_QLoRA.sh" ;;
+                    qat-lora) submit_job "${D2}/profiling" "job_multiGPU_QA_qat-LoRA.sh" ;;
+                    *) die "--method must be lora, qlora or qat-lora" ;;
+                esac
                 ;;
             quantize)
-                local quant_type="${1:-bnb4}"
+                quant_type="${POSITIONAL[0]:-bnb4}"
                 case "${quant_type}" in
-                    bnb4)
-                        submit_job "${SCRIPT_ROOT}/day2_multi_gpu/quantization/quat_bitsandbytes" "job_bnb_4bit.sh"
-                        ;;
-                    bnb8)
-                        submit_job "${SCRIPT_ROOT}/day2_multi_gpu/quantization/quat_bitsandbytes" "job_bnb_8bit.sh"
-                        ;;
-                    torchao)
-                        submit_job "${SCRIPT_ROOT}/day2_multi_gpu/quantization/quat_torchao" "job_torchao.sh"
-                        ;;
-                    gptq)
-                        submit_job "${SCRIPT_ROOT}/day2_multi_gpu/quantization/quat_gptqmodel" "job_gptq.sh"
-                        ;;
-                    *)
-                        echo -e "${YELLOW}Unknown quantization type: ${quant_type}. Choose bnb4, bnb8, torchao, or gptq.${NC}"
-                        exit 1
-                        ;;
+                    bnb4)    submit_job "${D2}/quantization/quat_bitsandbytes" "job_bnb_4bit.sh" ;;
+                    bnb8)    submit_job "${D2}/quantization/quat_bitsandbytes" "job_bnb_8bit.sh" ;;
+                    torchao) submit_job "${D2}/quantization/quat_torchao" "job_torchao.sh" ;;
+                    gptq)    submit_job "${D2}/quantization/quat_gptqmodel" "job_gptq.sh" ;;
+                    *) die "Unknown quantization type: ${quant_type}. Choose bnb4, bnb8, torchao, or gptq." ;;
                 esac
                 ;;
             serve)
-                local serve_dir="${SCRIPT_ROOT}/day2_multi_gpu/serving/${TYPE_CHOICE}_device/vllm_${ENV_CHOICE}"
-                submit_job "${serve_dir}" "serve_vllm.sh"
+                serve_dir="${D2}/serving/${TYPE_CHOICE}_device/vllm_${ENV_CHOICE}"
+                case "${QUANT_CHOICE}" in
+                    none)             serve_script="serve_vllm" ;;
+                    bnb|gptq|torchao) serve_script="serve_vllm_quantized_${QUANT_CHOICE}" ;;
+                    *) die "--quant must be none, bnb, gptq or torchao" ;;
+                esac
+                [ "${ENV_CHOICE}" == "eessi" ] && serve_script="${serve_script}_eessi"
+                submit_job "${serve_dir}" "${serve_script}.sh"
+                echo ""
+                echo -e "When the server is up, chat with it: ${BOLD}./run.sh day2 chat --type=${TYPE_CHOICE} --env=${ENV_CHOICE}${NC}"
                 ;;
             chat)
-                local chat_dir="${SCRIPT_ROOT}/day2_multi_gpu/serving/${TYPE_CHOICE}_device/vllm_${ENV_CHOICE}"
-                cd "${chat_dir}"
-                bash chat.sh
+                chat_dir="${D2}/serving/${TYPE_CHOICE}_device/vllm_${ENV_CHOICE}"
+                exec bash "${chat_dir}/chat.sh"
                 ;;
             inference)
-                local inf_script="slurm_vllm_distributed_container.sh"
                 if [ "${ENV_CHOICE}" == "eessi" ]; then
-                    inf_script="slurm_vllm_distributed_eessi.sh"
+                    submit_job "${D2}/inference" "slurm_vllm_distributed_eessi.sh"
+                else
+                    submit_job "${D2}/inference" "slurm_vllm_distributed_container.sh"
                 fi
-                submit_job "${SCRIPT_ROOT}/day2_multi_gpu/inference" "${inf_script}"
                 ;;
             *)
                 echo -e "${YELLOW}Unknown Day 2 action: ${ACTION}${NC}"
@@ -296,11 +274,8 @@ case "${CATEGORY}" in
         ;;
 
     monitor)
-        local job_id="${ACTION}"
-        if [ -z "${job_id}" ]; then
-            echo -e "${RED}Error: Please provide a Slurm JobID: ./run.sh monitor <JobID>${NC}"
-            exit 1
-        fi
+        job_id="${ACTION}"
+        [ -n "${job_id}" ] || die "Please provide a Slurm JobID: ./run.sh monitor <JobID>"
         exec "${SCRIPT_ROOT}/utils/gpu.monitor.sh" "${job_id}"
         ;;
 
