@@ -20,6 +20,7 @@ flowchart TD
 
     subgraph Day2["Day 2: Distributed Scale & Serving"]
         D --> E["Distributed FSDP Training<br>(Single-Node 4x GPU / Multi-Node)"]
+        E --> I["Distributed Evaluation<br>(MMLU Benchmark on 4x GPU)"]
         E --> F["Post-Training Quantization<br>(BitsAndBytes / TorchAO / GPTQ)"]
         E --> G["vLLM High-Throughput Serving<br>(Interactive Chat Client)"]
         E --> H["Distributed Batch Inference<br>(Tensor Parallelism)"]
