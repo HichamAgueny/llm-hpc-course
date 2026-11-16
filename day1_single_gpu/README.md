@@ -144,32 +144,97 @@ More details: [profiling/README.md](./profiling/README.md)
 
 ---
 
-## Lab 1.4: Model Merging & Benchmark Evaluation (MMLU)
-**Goal:** Merge your trained LoRA adapter with the base model and measure its accuracy on MMLU tasks.
+## Lab 1.4: Evaluating Fine-Tuned LLMs — LoRA vs. Base Model
+**Goal:** Measure how LoRA fine-tuning changes the model's performance compared with the original base model,
+using standard benchmarks: MMLU, HellaSwag and TruthfulQA.
 
 > [!NOTE]
-> Lab 1.1 must be finished first: this lab evaluates the adapter it produced.
+> Lab 1.1 must be finished first: the LoRA job evaluates the adapter it produced.
 > The container script uses the container adapter, the EESSI script uses the EESSI adapter.
 
-**Run it (container):**
+Two jobs, in the same folder:
+- `job_singleGPU_No_LoRA.sh` — the original Llama 3.2 1B model (no adapter)
+- `job_singleGPU_LoRA.sh` — the same model merged with your LoRA adapter from Lab 1.1
+
+The benchmarks are chosen on the line starting with `tasks=` in each script.
+The scores are printed at the end of the job log in `out/` — copy them from there
+(each new run overwrites the previous `results.json`).
+
+> [!NOTE]
+> To keep the jobs short, each benchmark uses only 150 questions (`limit: 150` in
+> `configs/eval_cfg/eval_config.yaml`). Small differences between the two models may be noise.
+
+### Exercise 1 — Base Model on MMLU
+1. Run the base model on four MMLU subjects (already set in the script):
+   ```bash
+   cd /cluster/work/projects/nn9971k/$USER/llm-hpc-course/day1_single_gpu/evaluation
+   sbatch job_singleGPU_No_LoRA.sh
+   ```
+2. Record the accuracy (`acc`) for each subject, and calculate the average of the four.
+
+**Questions:** Does the base model perform equally well in all subjects? Which subject is the most difficult?
+
+### Exercise 2 — LoRA Model on MMLU
+1. Run the fine-tuned model on the same four subjects (same folder):
+   ```bash
+   sbatch job_singleGPU_LoRA.sh
+   ```
+2. Compare its accuracy with the base model. In which subjects did fine-tuning help, and in which did it hurt?
+
+**Questions:** Does LoRA fine-tuning improve general knowledge and reasoning in all subjects? Why might it get worse in some?
+
+### Exercise 3 — Commonsense Reasoning (HellaSwag)
+1. In **both** scripts, replace the `tasks=` line with:
+   ```bash
+         tasks=["hellaswag"] \
+   ```
+2. Run both jobs again (`sbatch job_singleGPU_No_LoRA.sh` and `sbatch job_singleGPU_LoRA.sh`)
+   and compare the scores (`acc_norm`).
+
+**Question:** Does better performance on the fine-tuning task mean better commonsense reasoning?
+
+### Exercise 4 — Truthfulness (TruthfulQA)
+1. In **both** scripts, replace the `tasks=` line with:
+   ```bash
+         tasks=["truthfulqa_mc2"] \
+   ```
+2. Run both jobs again and compare the scores (`acc`).
+
+**Question:** Can fine-tuning improve one benchmark while reducing truthfulness on another?
+
+When you are done, set the `tasks=` line back to the four MMLU subjects:
 ```bash
-cd /cluster/work/projects/nn9971k/$USER/llm-hpc-course/day1_single_gpu/evaluation
-sbatch job_singleGPU_LoRA.sh         # your fine-tuned model
-sbatch job_singleGPU_No_LoRA.sh      # the base model, for comparison
+      tasks=["mmlu_philosophy","mmlu_sociology","mmlu_business_ethics","mmlu_college_physics"] \
 ```
 
-**Run it (EESSI):** same folder, `sbatch job_singleGPU_LoRA_eessi.sh` and `sbatch job_singleGPU_No_LoRA_eessi.sh`.
+> [!TIP]
+> Short on time? Run Exercises 3 and 4 together: `tasks=["hellaswag","truthfulqa_mc2"] \` — 2 jobs instead of 4.
 
-**Results** (in `llm-hpc-course/results/evaluation_results/`):
+### Exercise 5 — Compare and Analyze
+Fill in this table with your measurements (copy it into your notes):
+
+| Benchmark | Base model | LoRA model | Difference |
+| :--- | :--- | :--- | :--- |
+| MMLU – Philosophy | | | |
+| MMLU – Sociology | | | |
+| MMLU – Business Ethics | | | |
+| MMLU – College Physics | | | |
+| HellaSwag | | | |
+| TruthfulQA (MC2) | | | |
+
+### Run it with EESSI
+Same steps with `job_singleGPU_No_LoRA_eessi.sh` and `job_singleGPU_LoRA_eessi.sh` (same folder).
+
+### Results
+Job logs (with the score tables): `day1_single_gpu/evaluation/out/`.
+The latest `results.json` of each job is in `llm-hpc-course/results/evaluation_results/`:
 | | Container | EESSI |
 | :--- | :--- | :--- |
-| Fine-tuned model | `llama3.2-1b-mmlu_singlegpu/` | `llama3.2-1b-mmlu_singlegpu_eessi/` |
+| LoRA model | `llama3.2-1b-mmlu_singlegpu/` | `llama3.2-1b-mmlu_singlegpu_eessi/` |
 | Base model | `llama3.2-1b-base_mmlu_singlegpu/` | `llama3.2-1b-base_mmlu_singlegpu_eessi/` |
 
 The merged model is saved once in `results/checkpoint_results/Llama-3.2-1B-Instruct_merged/`
 (EESSI: `..._merged_eessi/`) and reused by later runs.
-
-**Question:** Compare the accuracy of the base model and your fine-tuned model. Did fine-tuning on QA help?
 
 > [!TIP]
 > To evaluate another adapter (for example the QLoRA one), open `job_singleGPU_LoRA.sh`, change
