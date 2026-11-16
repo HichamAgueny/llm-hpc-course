@@ -1,5 +1,5 @@
 Bootstrap: localimage
-From: /cluster/work/projects/nn9997k/hicham/apptainer/pytorch_25.08_cuda13.0_base_arm.sif
+From: /cluster/work/projects/nn9997k/<username>/apptainer/pytorch_25.08_cuda13.0_base_arm.sif
 
 %files
     # Apptainer implicitly copies: [source_on_host] [destination_in_container]
