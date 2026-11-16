@@ -77,28 +77,68 @@ sbatch job_singleGPU_QA_QLoRA_eessi.sh
 
 ---
 
-## Lab 1.3: GPU Memory & Kernel Profiling
-**Goal:** Profile memory allocation, activation footprint, and kernel execution timelines using PyTorch Profiler.
+## Lab 1.3: GPU Memory Profiling — LoRA vs. QLoRA
+**Goal:** Understand how LoRA and QLoRA affect GPU memory use and training speed, and what activation checkpointing changes.
 
-**Run it:**
+The jobs use these configuration files (in your course folder):
+- LoRA: `configs/lora/llama3_2_1B_lora_single_device_profiling.yaml`
+- QLoRA: `configs/qlora/llama3_2_1B_qlora_single_device_profiling.yaml`
+
+### Exercise 1 — GPU Memory Profiling: LoRA vs. QLoRA
+1. Run both profiling jobs:
+   ```bash
+   cd /cluster/work/projects/nn9971k/$USER/llm-hpc-course/day1_single_gpu/profiling
+   sbatch job_singleGPU_QA_LoRA_profiling.sh      # profile LoRA
+   sbatch job_singleGPU_QA_QLoRA_profiling.sh     # profile QLoRA
+   ```
+2. Open the memory timeline of each run on your laptop (see [below](#look-at-the-memory-timeline-on-your-laptop)).
+3. Find the peak GPU memory and the main sources of memory use (model weights, activations, gradients, optimizer state).
+4. Compare LoRA and QLoRA.
+
+**Questions:** Which method uses less GPU memory? What explains the difference?
+
+### Exercise 2 — Impact of Activation Checkpointing
+1. Keep the Exercise 1 results by renaming their folders (otherwise the new runs overwrite them):
+   ```bash
+   cd /cluster/work/projects/nn9971k/$USER/llm-hpc-course/results/profiling_results
+   mv profiling_llama3.2-1b_lora_single_device  profiling_llama3.2-1b_lora_single_device_no_ac
+   mv profiling_llama3.2-1b_qlora_single_device profiling_llama3.2-1b_qlora_single_device_no_ac
+   ```
+2. In **both** configuration files, find the line `enable_activation_checkpointing: False` and change it to:
+   ```yaml
+   enable_activation_checkpointing: True
+   ```
+3. Rerun both profiling jobs (same `cd` and `sbatch` commands as in Exercise 1).
+4. Compare the peak GPU memory with and without activation checkpointing, and the training step time
+   (in the training log in `logs/` and the job log in `profiling/out/`).
+5. When you are done, set `enable_activation_checkpointing` back to `False` in both files.
+
+**Questions:** How much memory is saved? Does activation checkpointing add compute time? Why?
+
+### Analyze and Summarize Your Results
+Fill in this table with your own measurements (copy it into your notes):
+
+| Configuration | Peak GPU memory | Step time |
+| :--- | :--- | :--- |
+| LoRA | | |
+| QLoRA | | |
+| LoRA + Activation Checkpointing | | |
+| QLoRA + Activation Checkpointing | | |
+
+### Results
+* Job logs: `day1_single_gpu/profiling/out/`
+* Training logs and profiler traces: `results/profiling_results/profiling_llama3.2-1b_<method>_single_device/logs/` and `.../profiles/`
+  (`<method>` = `lora` or `qlora`; the Exercise 1 results are in the folders ending in `_no_ac`).
+
+### Look at the memory timeline on your laptop
+Run this on your laptop, not on Olivia (replace `<username>`; change `lora` to `qlora`, or add `_no_ac`, for the other runs):
 ```bash
-cd /cluster/work/projects/nn9971k/$USER/llm-hpc-course/day1_single_gpu/profiling
-sbatch job_singleGPU_QA_LoRA_profiling.sh      # profile LoRA
-sbatch job_singleGPU_QA_QLoRA_profiling.sh     # profile QLoRA
-```
-
-**Results:** job log in `profiling/out/`; profiler traces in
-`results/profiling_results/profiling_llama3.2-1b_lora_single_device/profiles/` (QLoRA: `..._qlora_single_device/`).
-
-**Look at the memory timeline on your laptop** (run this on your laptop, not on Olivia):
-```bash
-scp <username>@olivia.sigma2.no:/cluster/work/projects/nn9971k/<username>/llm-hpc-course/results/profiling_results/profiling_llama3.2-1b_lora_single_device/profiles/rank0_memory-timeline.html .
-open rank0_memory-timeline.html     # macOS  (Linux: xdg-open, Windows: start)
+scp <username>@olivia.sigma2.no:/cluster/work/projects/nn9971k/<username>/llm-hpc-course/results/profiling_results/profiling_llama3.2-1b_lora_single_device/profiles/rank0_memory-timeline.html lora_memory-timeline.html
+open lora_memory-timeline.html     # macOS  (Linux: xdg-open, Windows: start)
 ```
 More details: [profiling/README.md](./profiling/README.md)
 
-**Questions:**
-* How much peak GPU memory did QLoRA's 4-bit base weights save compared to LoRA?
+**Extra questions (if you have time):**
 * In the memory timeline, how much memory is taken by model weights vs. activations during the forward and backward passes?
 * What fraction of iteration time is spent on GPU compute vs. CPU host dispatching?
 
