@@ -99,7 +99,7 @@ ssh <username>@olivia.sigma2.no
 
 mkdir -p /cluster/work/projects/nn9971k/$USER
 cd /cluster/work/projects/nn9971k/$USER
-git clone -b bergen-simple https://github.com/HichamAgueny/llm-hpc-course.git
+git clone https://github.com/HichamAgueny/llm-hpc-course.git
 cd llm-hpc-course
 ```
 
