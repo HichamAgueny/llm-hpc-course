@@ -69,7 +69,15 @@ Run the container with GPU support and bind the project directories:
 ./launch_shell.sh
 ```
 
-### 3. Run Checks Inside the Container
+**Alternative — EESSI modules (no container):** instead of the container, load the same software stack
+as EESSI modules. Do this on a GPU node (for example in the interactive session from
+[step 1 above](#1-launch-an-interactive-session)):
+```bash
+module load EESSI/2025.06
+module load torchtune/0.6.1-foss-2025b-PyTorch-2.12.0-CUDA-12.9.1
+```
+
+### 3. Run Checks (inside the container, or with the EESSI modules loaded)
 - **Check CUDA Availability**:
   ```bash
   python -c "import torch; print(torch.cuda.is_available())"
@@ -89,7 +97,7 @@ Run the container with GPU support and bind the project directories:
 
 ## Fine‑tuning Setup
 
-Once you have successfully launched the PyTorch container, you can set up fine‑tuning for **LLaMA 3.2-1B-Instruct** using the provided training recipes.
+Once you have successfully launched the PyTorch container (or loaded the EESSI modules), you can set up fine‑tuning for **LLaMA 3.2-1B-Instruct** using the provided training recipes.
 
 ### 1. Download the Model
 Specify the path to the cache:
