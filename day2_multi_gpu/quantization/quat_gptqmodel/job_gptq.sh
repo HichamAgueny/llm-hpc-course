@@ -1,5 +1,5 @@
 #!/bin/bash -e
-#SBATCH --job-name=qat-llama3-1B-lora-1gpu_gptq
+#SBATCH --job-name=qat-llama3-1B-lora-1gpu_gptq_filter
 #SBATCH --account=nn9971k
 #SBATCH --time=00:30:00
 #SBATCH --partition=accel
@@ -49,7 +49,7 @@ export OUTPUT_DIR="${SHARED_DIR}/models/Llama-3.2-1B-Instruct-gptq_4bit"
 export OUT_DIR="${OUTPUT_DIR}"
 
 # 5. Script / Config Layout
-export PYTHON_FILE="${PROJECT_DIR}/recipes/quanti/quat_gptq.py"
+export PYTHON_FILE="${PROJECT_DIR}/recipes/quanti/quat_gptq_with_filter.py"
 export PREPARE_FILE="${PROJECT_DIR}/recipes/quanti/prepare_data.py"
 
 # =====================================================================
