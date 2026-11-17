@@ -9,7 +9,7 @@
 #SBATCH --gpus-per-node=4
 #SBATCH --cpus-per-task=72
 #SBATCH --mem-per-gpu=96G
-#SBATCH --reservation=nn9971k_213
+#SBATCH --reservation=LLM_day2
 #SBATCH -o ./out/%x-%j.out
 
 # ---------------------------------------------------------------------

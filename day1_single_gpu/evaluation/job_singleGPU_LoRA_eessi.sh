@@ -10,7 +10,7 @@
 #SBATCH --cpus-per-task=72
 #SBATCH -o ./out/%x-%j.out
 #SBATCH --mem-per-gpu=96G
-#SBATCH --reservation=nn9971k_213
+#SBATCH --reservation=LLM_day1
 
 echo "--Node: $(hostname)"
 echo

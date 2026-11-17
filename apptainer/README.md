@@ -11,7 +11,7 @@ This guide explains how to build a custom PyTorch container using **Apptainer (f
 
 ### 1. Launch an interactive session
 ```bash
-srun -A nn9971k --reservation=nn9971k_213 -p accel --nodes=1 --gpus=1 --mem-per-gpu=96G --time=00:20:00 --pty bash -i
+srun -A nn9971k --reservation=LLM_day1 -p accel --nodes=1 --gpus=1 --mem-per-gpu=96G --time=00:20:00 --pty bash -i
 ```
 
 ### 2. Pull the Base PyTorch Container

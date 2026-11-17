@@ -1,2 +1,2 @@
-srun -A nn9971k --nodes=1 --ntasks=1 --mem-per-cpu=8G --time=00:50:00 --reservation=nn9971k_213 --pty bash -i
+srun -A nn9971k --nodes=1 --ntasks=1 --mem-per-cpu=8G --time=00:50:00 --reservation=LLM_day2 --pty bash -i
 
