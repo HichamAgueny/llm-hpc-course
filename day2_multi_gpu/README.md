@@ -124,7 +124,7 @@ EESSI versions: `job_multiGPU_LoRA_eessi.sh` (adapter from the EESSI run of Lab 
 
 > [!TIP]
 > To evaluate your Day 2 adapter instead, open `job_multiGPU_LoRA.sh` and set
-> `LORA_ADAPTER_DIR` to `.../checkpoint_results/llama3.2-1b_lora_multi_device/checkpoints/epoch_0`.
+> `LORA_ADAPTER_DIR` to `.../checkpoint_results/llama3.2-1b_lora_multi_device/checkpoints/epoch_1`.
 > Also give `MERGED_MODEL_DIR` a new name, otherwise the old merged model is reused.
 
 ---

@@ -51,7 +51,7 @@ sbatch job_singleGPU_QA_LoRA_eessi.sh
 | :--- | :--- | :--- |
 | Job log | `lora_slurm/out/` | `lora_slurm/out/` |
 | Training loss | `llama3.2-1b_lora_single_device/logs/` | `eessi_llama3.2-1b_lora_single_device/logs/` |
-| Fine-tuned adapter | `llama3.2-1b_lora_single_device/checkpoints/epoch_0/` | `eessi_llama3.2-1b_lora_single_device/checkpoints/epoch_0/` |
+| Fine-tuned adapter | `llama3.2-1b_lora_single_device/checkpoints/epoch_1/` | `eessi_llama3.2-1b_lora_single_device/checkpoints/epoch_1/` |
 
 ---
 

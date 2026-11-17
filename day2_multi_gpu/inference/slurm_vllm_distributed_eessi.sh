@@ -41,7 +41,7 @@ export CURRENT_DIR="${PROJECT_DIR}/day2_multi_gpu/inference"
 
 # 3. Model, Adapter & Serving Parameters
 export BASE_MODEL_DIR="${MODEL_PATH:-${SHARED_DIR}/models/Llama-3.2-1B-Instruct}"
-export LORA_ADAPTER_DIR="${LORA_PATH:-${RESULT_DIR}/eessi_llama3.2-1b_lora_single_device/checkpoints/epoch_0}"
+export LORA_ADAPTER_DIR="${LORA_PATH:-${RESULT_DIR}/eessi_llama3.2-1b_lora_single_device/checkpoints/epoch_1}"
 export PROMPT_FILE="${PROMPT_FILE:-"${CURRENT_DIR}/prompt_QA.json"}"
 export QUANTIZATION="${QUANTIZATION:-None}"  # Set to "bitsandbytes" for QLoRA
 export MAX_LORA_RANK="${MAX_LORA_RANK:-64}"

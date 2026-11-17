@@ -37,7 +37,7 @@ export QUANTIZED_MODEL_DIR="${QUANTIZED_MODEL_PATH:-${SHARED_DIR}/models/Llama-3
 export ACTIVE_MODEL_DIR="${QUANTIZED_MODEL_DIR}"
 
 # LoRA Adapter path
-export LORA_ADAPTER_DIR="${LORA_PATH-${RESULT_DIR}/checkpoint_results/eessi_llama3.2-1b_lora_single_device/checkpoints/epoch_0}"
+export LORA_ADAPTER_DIR="${LORA_PATH-${RESULT_DIR}/checkpoint_results/eessi_llama3.2-1b_lora_single_device/checkpoints/epoch_1}"
 
 export QUANTIZATION="${QUANTIZATION:-torchao}"
 export MAX_LORA_RANK="${MAX_LORA_RANK:-64}"

@@ -29,7 +29,7 @@ export RESULT_DIR="${PROJECT_DIR}/results"
 # 3. Model, Adapter & Serving Parameters
 export BASE_MODEL_DIR="${MODEL_PATH:-${SHARED_DIR}/models/Llama-3.2-1B-Instruct}"
 
-export LORA_ADAPTER_DIR="${LORA_PATH-${RESULT_DIR}/checkpoint_results/eessi_llama3.2-1b_lora_single_device/checkpoints/epoch_0}"
+export LORA_ADAPTER_DIR="${LORA_PATH-${RESULT_DIR}/checkpoint_results/eessi_llama3.2-1b_lora_single_device/checkpoints/epoch_1}"
 
 export QUANTIZATION="${QUANTIZATION:-None}"
 export MAX_LORA_RANK="${MAX_LORA_RANK:-64}"

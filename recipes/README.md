@@ -50,7 +50,7 @@ python recipes/single_device/lora_finetune_single_device.py \
 ```bash
 python recipes/merge/merge_and_save.py \
     --base_model_path /cluster/work/projects/nn9971k/$USER/llm-hpc-course/shared/models/Llama-3.2-1B-Instruct \
-    --lora_adapter_path /cluster/work/projects/nn9971k/$USER/llm-hpc-course/results/checkpoint_results/llama3.2-1b_lora_single_device/checkpoints/epoch_0 \
+    --lora_adapter_path /cluster/work/projects/nn9971k/$USER/llm-hpc-course/results/checkpoint_results/llama3.2-1b_lora_single_device/checkpoints/epoch_1 \
     --output_path /cluster/work/projects/nn9971k/$USER/llm-hpc-course/results/checkpoint_results/Llama-3.2-1B-Instruct_merged
 ```
 
@@ -58,6 +58,6 @@ python recipes/merge/merge_and_save.py \
 ```bash
 python recipes/inference/vllm_inference.py \
     --model /cluster/work/projects/nn9971k/$USER/llm-hpc-course/shared/models/Llama-3.2-1B-Instruct \
-    --lora-path /cluster/work/projects/nn9971k/$USER/llm-hpc-course/results/checkpoint_results/llama3.2-1b_lora_single_device/checkpoints/epoch_0 \
+    --lora-path /cluster/work/projects/nn9971k/$USER/llm-hpc-course/results/checkpoint_results/llama3.2-1b_lora_single_device/checkpoints/epoch_1 \
     --prompt-file day2_multi_gpu/inference/prompt_QA.json
 ```

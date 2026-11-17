@@ -40,7 +40,7 @@ export RESULT_DIR="${PROJECT_DIR}/results"
 # 3. Model & Adapter Component Paths
 export BASE_MODEL_DIR="${SHARED_DIR}/models/Llama-3.2-1B-Instruct"
 # Adapter produced by the EESSI fine-tuning job (job_singleGPU_QA_LoRA_eessi.sh)
-export LORA_ADAPTER_DIR="${RESULT_DIR}/checkpoint_results/eessi_llama3.2-1b_lora_single_device/checkpoints/epoch_0"
+export LORA_ADAPTER_DIR="${RESULT_DIR}/checkpoint_results/eessi_llama3.2-1b_lora_single_device/checkpoints/epoch_1"
 export MERGED_MODEL_DIR="${RESULT_DIR}/checkpoint_results/Llama-3.2-1B-Instruct_merged_eessi"
 export TOKENIZER_DIR="${BASE_MODEL_DIR}/original/tokenizer.model"
 export MAX_SHARD_SIZE="5GB"
