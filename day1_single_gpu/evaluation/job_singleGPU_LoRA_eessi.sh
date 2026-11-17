@@ -1,6 +1,6 @@
 #!/bin/bash -e
 #SBATCH --job-name=mmlu_eval-llama3.2-1B-lora-1gpu_epoch0_eessi
-#SBATCH --account=nn9997k
+#SBATCH --account=nn9971k
 #SBATCH --time=00:30:00
 #SBATCH --partition=accel
 #SBATCH --nodes=1
@@ -10,7 +10,7 @@
 #SBATCH --cpus-per-task=72
 #SBATCH -o ./out/%x-%j.out
 #SBATCH --mem-per-gpu=96G
-#SBATCH --reservation=software
+#SBATCH --reservation=nn9971k_213
 
 echo "--Node: $(hostname)"
 echo
