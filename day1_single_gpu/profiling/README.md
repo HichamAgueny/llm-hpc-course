@@ -63,7 +63,7 @@ sbatch job_singleGPU_QA_QLoRA_profiling.sh
 
 Profiling outputs and logs will be generated under:
 ```text
-/cluster/work/projects/nn9971k/$USER/llm-hpc-course/results/profiling_results/<RUN_NAME>/profiles
+/cluster/work/projects/nn9971k/$USER/llm-hpc-course/results/profiling_results/<RUN_NAME>/profiles/iteration_10
 /cluster/work/projects/nn9971k/$USER/llm-hpc-course/results/profiling_results/<RUN_NAME>/logs
 ```
 
@@ -75,7 +75,7 @@ After the job completes, copy the profiling artifacts from the cluster to your l
 
 ```bash
 # Run this on your laptop; replace <username> with your cluster username
-scp -r <username>@olivia.sigma2.no:/cluster/work/projects/nn9971k/<username>/llm-hpc-course/results/profiling_results/profiling_llama3.2-1b_lora_single_device/profiles .
+scp -r <username>@olivia.sigma2.no:/cluster/work/projects/nn9971k/<username>/llm-hpc-course/results/profiling_results/profiling_llama3.2-1b_lora_single_device .
 ```
 
 ### Viewing Traces
@@ -85,7 +85,6 @@ The profiling outputs include memory timelines and trace files (e.g., `rank0_mem
   - **macOS**: `open profiles/rank0_memory-timeline.html`
   - **Linux**: `xdg-open profiles/rank0_memory-timeline.html`
   - **Windows**: `start profiles/rank0_memory-timeline.html`
-- **Chrome Tracing**: Navigate to `chrome://tracing` or [Perfetto](https://ui.perfetto.dev/) in Chrome and load the `*.pt.trace.json` file.
 
 ### TensorBoard Integration (Optional)
 For a more detailed interactive view, use the PyTorch Profiler plugin for TensorBoard:
@@ -96,7 +95,7 @@ For a more detailed interactive view, use the PyTorch Profiler plugin for Tensor
    ```
 2. **Launch TensorBoard**:
    ```bash
-   tensorboard --logdir=profiles
+   tensorboard --logdir=profiles/iteration_10
    ```
 3. **Open in Browser**: Navigate to `http://localhost:6006` and select the **"PyTorch Profiler"** tab.
 
