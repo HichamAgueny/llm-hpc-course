@@ -94,14 +94,14 @@ Once you have successfully launched the PyTorch container, you can set up fineâ€
 ### 1. Download the Model
 Specify the path to the cache:
 ```bash
-mkdir -p /cluster/work/projects/nn9970k/$USER/llm-hpc-course/.cache/huggingface
-export HF_HOME=/cluster/work/projects/nn9970k/$USER/llm-hpc-course/.cache/huggingface
+mkdir -p /cluster/work/projects/nn9971k/$USER/llm-hpc-course/.cache/huggingface
+export HF_HOME=/cluster/work/projects/nn9971k/$USER/llm-hpc-course/.cache/huggingface
 ```
 
 Use `tune` to fetch the pretrained weights (if not already present):
 ```bash
 tune download meta-llama/Llama-3.2-1B-Instruct \
-  --output-dir /cluster/work/projects/nn9970k/$USER/llm-hpc-course/data/Llama-3.2-1B-Instruct \
+  --output-dir /cluster/work/projects/nn9971k/$USER/llm-hpc-course/shared/models/Llama-3.2-1B-Instruct \
   --ignore-patterns "original/consolidated*" \
   --hf-token <your-hugging-face-token>
 ```
