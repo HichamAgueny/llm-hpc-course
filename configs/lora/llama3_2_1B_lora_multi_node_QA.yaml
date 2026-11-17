@@ -78,7 +78,7 @@ loss:
   _component_: torchtune.modules.loss.CEWithChunkedOutputLoss
 
 # Training
-epochs: 1
+epochs: 2
 max_steps_per_epoch: 225 #null
 gradient_accumulation_steps: 1  # Use to increase effective batch size
 clip_grad_norm: null
