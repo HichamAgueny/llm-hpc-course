@@ -45,7 +45,7 @@ sbatch job_singleGPU_QA_LoRA_eessi.sh
 ```
 
 **Watch the GPU while it runs** (in the same folder): `./gpu.monitor.sh <JobID>`
-An alternative is to use `nvitop`: `/cluster/work/projects/nn9971k/hicham/llm-hpc-course/utils/run_nvitop.sh`
+An alternative is to use `nvitop`: `/cluster/work/projects/nn9971k/hicham/llm-hpc-course/utils/run_nvitop.sh <JobID>`
 
 **Results** (in `llm-hpc-course/results/checkpoint_results/`):
 | | Container | EESSI |
