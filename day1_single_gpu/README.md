@@ -45,6 +45,7 @@ sbatch job_singleGPU_QA_LoRA_eessi.sh
 ```
 
 **Watch the GPU while it runs** (in the same folder): `./gpu.monitor.sh <JobID>`
+An alternative is to use `nvitop`: `/cluster/work/projects/nn9971k/hicham/llm-hpc-course/utils/run_nvitop.sh`
 
 **Results** (in `llm-hpc-course/results/checkpoint_results/`):
 | | Container | EESSI |
@@ -140,7 +141,6 @@ More details: [profiling/README.md](./profiling/README.md)
 
 **Extra questions (if you have time):**
 * In the memory timeline, how much memory is taken by model weights vs. activations during the forward and backward passes?
-* What fraction of iteration time is spent on GPU compute vs. CPU host dispatching?
 
 ---
 
@@ -250,6 +250,7 @@ tail -f out/*.out                             # follow the logs of this lab fold
 ./gpu.monitor.sh <JobID>                      # live GPU usage (in folders that contain it)
 /cluster/work/projects/nn9971k/$USER/llm-hpc-course/utils/gpu.monitor.sh <JobID>   # same, from any folder
 scancel <JobID>                               # cancel a job
+/cluster/work/projects/nn9971k/hicham/llm-hpc-course/utils/run_nvitop.sh
 ```
 
 ## If a Job Fails
@@ -257,4 +258,3 @@ scancel <JobID>                               # cancel a job
 1. Read the end of the log: `tail -50 out/<job-name>-<JobID>.out`
 2. `No such file or directory` for a model, dataset or `.sif` image → run `./setup_env.sh` again from the course folder.
 3. Evaluation fails because the adapter is missing → finish Lab 1.1 (same version: container or EESSI) first.
-4. Still stuck? Ask an instructor and show them the log file.
