@@ -117,23 +117,6 @@ cd llm-hpc-course
 This copies the base model, the dataset and the two container images into your course folder
 and creates the `results/` folders.
 
-### Step 3 — Submit your first job
-
-```bash
-cd /cluster/work/projects/nn9971k/$USER/llm-hpc-course/day1_single_gpu/finetuning/lora_slurm
-sbatch job_singleGPU_QA_LoRA.sh
-```
-
-Then follow it:
-
-```bash
-squeue --me                      # is my job waiting (PD) or running (R)?
-tail -f out/*.out                # follow the job log (Ctrl+C to stop following)
-./gpu.monitor.sh <JobID>         # live GPU usage while the job runs (Ctrl+C to stop)
-```
-
-That's it — every lab works the same way: **go to the lab folder, run `sbatch <script>`, read the log in `out/`.**
-
 ---
 
 ## The Labs at a Glance
@@ -190,7 +173,6 @@ Every job writes its **log** to the `out/` folder next to the script, and its **
 2. `No such file or directory` for a model or dataset → run `./setup_env.sh` again (Step 2) and check
    that the course is in `/cluster/work/projects/nn9971k/$USER/llm-hpc-course`.
 3. The evaluation / serving labs need a fine-tuned adapter: finish Lab 1.1 first.
-4. Still stuck? Ask an instructor and show them the log file.
 
 ---
 
