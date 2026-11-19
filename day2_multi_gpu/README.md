@@ -216,6 +216,7 @@ cd /cluster/work/projects/nn9971k/$USER/llm-hpc-course/day2_multi_gpu/serving/mu
 ```
 
 **4. Watch all 4 GPUs via `nvitop`** (the script install nvitop in the folder **utils**)
+Open a new terminal and run the script below
 ```bash
 /cluster/work/projects/nn9971k/$USER/llm-hpc-course/utils/run_nvitop.sh <JobID>
 ```
