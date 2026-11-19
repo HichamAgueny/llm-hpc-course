@@ -191,7 +191,6 @@ cd /cluster/work/projects/nn9971k/$USER/llm-hpc-course/day2_multi_gpu/serving/si
 Always run `./chat.sh` in the **same folder** as the server you started.
 The quantized servers need the matching model from Lab 2.5 (`bnb_8bit`, `gptq_4bit` or `torchao_int8`).
 
-**Options** (put them in front of `sbatch`):
 ```bash
 LORA_PATH="" ./serve_vllm.sh        # serve the base model only, without adapter
 PORT=8001 ./serve_vllm.sh           # use another port if 8000 is busy
