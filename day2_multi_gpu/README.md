@@ -134,15 +134,15 @@ EESSI versions: `job_multiGPU_LoRA_eessi.sh` (adapter from the EESSI run of Lab 
 
 **Run it** — one job per method:
 ```bash
-cd /cluster/work/projects/nn9971k/$USER/llm-hpc-course/day2_multi_gpu/quantization/quat_bitsandbytes
-sbatch job_bnb_4bit.sh               # BitsAndBytes 4-bit
-sbatch job_bnb_8bit.sh               # BitsAndBytes 8-bit (used by the serving lab)
-
 cd /cluster/work/projects/nn9971k/$USER/llm-hpc-course/day2_multi_gpu/quantization/quat_torchao
 sbatch job_torchao.sh                # TorchAO INT8
 
 cd /cluster/work/projects/nn9971k/$USER/llm-hpc-course/day2_multi_gpu/quantization/quat_gptqmodel
-sbatch job_gptq.sh                   # GPTQ 4-bit (job_gptq_with_filter.sh: filtered calibration data)
+sbatch job_gptq.sh                   # GPTQ 4-bit
+
+cd /cluster/work/projects/nn9971k/$USER/llm-hpc-course/day2_multi_gpu/quantization/quat_bitsandbytes
+sbatch job_bnb_4bit.sh               # BitsAndBytes 4-bit
+sbatch job_bnb_8bit.sh               # BitsAndBytes 8-bit (used by the serving lab)
 ```
 
 **Results:** the quantized models are saved in your course folder, in
@@ -158,23 +158,26 @@ du -sh /cluster/work/projects/nn9971k/$USER/llm-hpc-course/shared/models/*
 ## Lab 2.6: Serving with vLLM + Terminal Chat
 **Goal:** Start an OpenAI-compatible vLLM server with your LoRA adapter, then chat with it from the terminal.
 
-**1. Start the server** (it runs as a Slurm job for up to 30 minutes):
+### Single Device Setup
+**0. Start an interactive session**
 ```bash
 cd /cluster/work/projects/nn9971k/$USER/llm-hpc-course/day2_multi_gpu/serving/single_device/vllm_container
-sbatch serve_vllm.sh
+./srun_sinteractive
+```
+**1. Start the server** 
+```bash
+cd /cluster/work/projects/nn9971k/$USER/llm-hpc-course/day2_multi_gpu/serving/single_device/vllm_container
+./serve_vllm.sh
 ```
 
 **2. Wait until it is ready** — the log shows `Application startup complete`:
-```bash
-tail -f out/*.out          # Ctrl+C to stop following
-```
 
 **3. Chat with it** (same folder; type `exit` to quit):
 ```bash
 ./chat.sh
 ```
 
-**4. Stop the server** when you are done: `scancel <JobID>`
+**4. Stop the server** when you are done
 
 **Other servers** — same steps, other folder or script:
 
@@ -190,15 +193,28 @@ The quantized servers need the matching model from Lab 2.5 (`bnb_8bit`, `gptq_4b
 
 **Options** (put them in front of `sbatch`):
 ```bash
-LORA_PATH="" sbatch serve_vllm.sh        # serve the base model only, without adapter
-PORT=8001 sbatch serve_vllm.sh           # use another port if 8000 is busy
+LORA_PATH="" ./serve_vllm.sh        # serve the base model only, without adapter
+PORT=8001 ./serve_vllm.sh           # use another port if 8000 is busy
 ```
 
-**Optional — benchmark the running single-GPU container server:**
+### Multiple Device Setup
+**0. Start an interactive session**
 ```bash
-/cluster/work/projects/nn9971k/$USER/llm-hpc-course/recipes/bench/run_benchmark.sh
+cd /cluster/work/projects/nn9971k/$USER/llm-hpc-course/day2_multi_gpu/serving/multi_device/vllm_container
+./srun_sinteractive_4gpus
+```
+**1. Start the server** 
+```bash
+cd /cluster/work/projects/nn9971k/$USER/llm-hpc-course/day2_multi_gpu/serving/multi_device/vllm_container
+./serve_vllm.sh
 ```
 
+**2. Wait until it is ready** — the log shows `Application startup complete`:
+
+**3. Chat with it** (same folder; type `exit` to quit):
+```bash
+./chat.sh
+```
 ---
 
 ## Lab 2.7: Batch Inference with vLLM
@@ -226,6 +242,7 @@ squeue --me                                   # your jobs: PD = waiting, R = run
 tail -f out/*.out                             # follow the logs of this lab folder (Ctrl+C to stop)
 ./gpu.monitor.sh <JobID>                      # live GPU usage (in folders that contain it)
 /cluster/work/projects/nn9971k/$USER/llm-hpc-course/utils/gpu.monitor.sh <JobID>   # same, from any folder
+/cluster/work/projects/nn9971k/$USER/llm-hpc-course/utils/run_nvitop.sh <JobID>    # it uses `nvitop`
 scancel <JobID>                               # cancel a job
 ```
 
