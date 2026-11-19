@@ -214,6 +214,11 @@ cd /cluster/work/projects/nn9971k/$USER/llm-hpc-course/day2_multi_gpu/serving/mu
 ```bash
 ./chat.sh
 ```
+
+**4. Watch all 4 GPUs via `nvitop`** (the script install nvitop in the folder **utils**)
+```bash
+/cluster/work/projects/nn9971k/$USER/llm-hpc-course/utils/run_nvitop.sh <JobID>
+```
 ---
 
 ## Lab 2.7: Batch Inference with vLLM
